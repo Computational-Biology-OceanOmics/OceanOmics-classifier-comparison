@@ -1,4 +1,4 @@
-# Template for reproducible data analysis @ Minderoo OceanOmics: R version
+# Code to run the OceanOmics classifier comparison scripts and figures
 
 Launch analysis (RStudio): [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Hobbeist/reproducibility-template-R/HEAD?urlpath=rstudio)  
   
@@ -14,5 +14,12 @@ For an overview of what binder is, please check out [this link](https://mybinder
 
 ## Where does the data in this repo come from?
 
+TODO 
+
 # Documentation: Add documentation on any data created from raw files here
 
+TODO
+
+## How to run this
+
+The entire analysis is based on R targets. Check out the repo, run `targets::tar_make()`, it should rerun the entire analysis and make all figures.
