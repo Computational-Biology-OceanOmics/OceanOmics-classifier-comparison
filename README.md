@@ -37,6 +37,7 @@ graph LR
   end
   subgraph Graph
     direction LR
+    x4cbe0500373226c1(["classifier_data"]):::uptodate --> xe0fba61fbc506510(["report"]):::uptodate
     x264c7e682ec442b2(["dendrogram"]):::uptodate --> xaf4a1b2829040c15(["saved"]):::uptodate
     x64d5b6c864f8ce9c>"save_plot"]:::uptodate --> xaf4a1b2829040c15(["saved"]):::uptodate
     xf2c68c9c4c5bbbc3(["classifier_distances"]):::uptodate --> x4cbe0500373226c1(["classifier_data"]):::uptodate
