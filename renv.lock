@@ -603,6 +603,18 @@
       ],
       "Hash": "3a147ee02e85a8941aad9909f1b43b7b"
     },
+    "ggvenn": {
+      "Package": "ggvenn",
+      "Version": "0.1.10",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "dplyr",
+        "ggplot2",
+        "grid"
+      ],
+      "Hash": "76c1d0fc86099be703106f11ba755520"
+    },
     "globals": {
       "Package": "globals",
       "Version": "0.16.2",

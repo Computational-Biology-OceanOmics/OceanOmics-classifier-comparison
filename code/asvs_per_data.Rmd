@@ -1,0 +1,22 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-09-26"
+---
+```{r}
+library(tidyverse)
+```
+
+```{r}
+data <- read_tsv('data/asvs_per_classifier.csv')
+```
+
+```{r}
+data |> pivot_longer(-c(Database, Marker)) |> 
+  mutate(name = factor(name, levels = rev(c('Going in', 'ASVs', 'zOTU')))) |> 
+  rename(Type = name) |> 
+  ggplot(aes(x= Database, y = value, fill=Type)) + geom_col(position = 'dodge') + 
+  ylab('Count') + theme_minimal() + coord_flip()
+```
+
+
