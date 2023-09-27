@@ -11,6 +11,8 @@ list(
   tar_target(dendrogram, plot_dendrogram(classifier_data)), # make the plot
   tar_target(saved, save_plot(dendrogram)), # save the figure
   tar_render(report, 'code/report.Rmd'),
+  # plot classifier complexity
+  tar_render(classifier_complexity, 'code/classifier_complexity.Rmd'),
   # plotting ASVs per dataset
   tar_render(plot_asvs_per_dataset, 'code/asvs_per_data.Rmd'),
   # plotting classifier species hits
@@ -20,6 +22,13 @@ list(
   tar_target(kraken_hits, '/home/pbayer/Data/runClassifiers/7-kraken/combined.tsv', format = 'file'),
   tar_target(kraken_hits_data, get_hits_data(kraken_hits)),
   tar_target(subsambled_kraken_hits_data, subsample_blast_hits(kraken_hits_data)),
-  tar_target(plot_report, 'code/kraken_blast_plots.Rmd')
-
+  tar_target(plot_report, 'code/kraken_blast_plots.Rmd'),
+  tar_target(nbc_hits, '/home/pbayer/Data/runClassifiers/8-NBC/all_results.tsv', format='file'),
+  tar_target(nbc_hits_data, get_hits_data(nbc_hits)),
+  tar_target(subsampled_nbc_hits_data, subsample_nbc_hits(nbc_hits_data)),
+  tar_render(investigate_nbc, 'code/investigate_nbc.Rmd'),
+  # truth set
+  tar_target(truth_set, '/home/pbayer/Data/make_12s_16s_simulated_reads/9-assignSpeciesToASVs/truthsets_with_lineages.tsv', format='file'),
+  tar_target(truth_set_data, get_truth_data(truth_set)),
+  tar_render(truth_set_investigation, 'code/truth_set_check.Rmd')
 )
