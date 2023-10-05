@@ -1,0 +1,2 @@
+for l in ../../runClassifiers/*/all_results.tsv; do tool=$(echo $l | cut -f 4 -d '/'); cp $l ${tool}_$(basename $l); done
+for l in *tsv; do gzip $l; done

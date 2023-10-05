@@ -8,8 +8,5 @@ library(tidyverse)
 data <- targets::tar_read(subsampled_nbc_hits_data)
 ```
 
-```{r}
-data |> ggplot(aes(x=Score)) + geom_histogram() + ggtitle('Naive Bayes Classifier across 16S, 12S')
-```
 
 
