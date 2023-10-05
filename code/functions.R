@@ -76,10 +76,5 @@ subsample_blast_hits <- function(data) {
 load_and_merge_all_results <- function(files) {
   # files is a named list
   
-  #all_results_ecfccd47                  all_results_3794a5bc                  all_results_0df11726                  all_results_c18f63bd 
-  #"data//1-BLAST_all_results.tsv.gz"  "data//2-mmseqs2_all_results.tsv.gz"   "data//3-Qiime2_all_results.tsv.gz" "data//4-metabuli_all_results.tsv.gz" 
-  #all_results_213d2d72                  all_results_f4773b3e                  all_results_429da257                  all_results_0e9a9698 
-  #"data//5-vsearch_all_results.tsv.gz"   "data//6-mothur_all_results.tsv.gz"   "data//7-kraken_all_results.tsv.gz"      "data//8-NBC_all_results.tsv.gz" 
-  
-  # load it all into one 
+  read_tsv(files)
 }
