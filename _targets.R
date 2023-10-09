@@ -37,5 +37,7 @@ list(
   tar_render(truth_set_investigation, 'code/truth_set_check.Rmd'),
   # time to merge all results
   tar_files(all_results, 'data/' |> list.files(full.names = TRUE, pattern = 'tsv.gz$')),
-  tar_target(merged_all_results, load_and_merge_all_results(all_results))
+  tar_target(merged_all_results, load_and_merge_all_results(all_results)),
+  # now finally, compare all data and truth sets
+  tar_render(final_outcomes, 'code/final_checks.Rmd')
 )

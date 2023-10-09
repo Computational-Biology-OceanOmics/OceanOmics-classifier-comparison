@@ -1,0 +1,180 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-10-09"
+---
+
+```{r}
+library(tidyverse)
+library(forcats)
+```
+
+
+```{r}
+data <- targets::tar_read(merged_all_results)
+truth <- targets::tar_read(truth_set_data)
+```
+
+
+```{r}
+head(data)
+```
+
+```{r}
+table(data$Type)
+```
+Let's remove the >0.2 Kraken runs, those are too strict
+
+```{r}
+data <- data |> filter(!Type %in% c('Kraken_0.3', 'Kraken_0.4', 'Kraken_0.5', 'Kraken_0.6', 'Kraken_0.7', 'Kraken_0.8', 'Kraken_0.9'))
+```
+
+Made a mistake- Metabuli's Database is misspelled
+
+```{r}
+data <- data |> mutate(Subject = str_replace_all(Subject, pattern = '_ref.fasta', replacement=''))
+```
+
+```{r}
+table(data$Query)
+```
+
+# Check 12S results
+
+```{r}
+table(data$Subject)
+table(data$Subject)
+twelveS_data <- data |> filter(Subject == '12s_v010_final.fasta')
+sixteenS_data <- data |> filter(Subject == '16S_v04_final.fasta')
+table(twelveS_data$Query)
+table(sixteenS_data$Query)
+table(sixteenS_data$Subject)
+```
+
+```{r}
+twelveS_data_vs_12S_100 <- twelveS_data |> filter(Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa')
+sixteenS_data_vs_16S_100 <- sixteenS_data |> filter(Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' )
+```
+
+```{r}
+twelveS_data_vs_12S_100 |> select(Type, species) |> filter(species != 'dropped' &
+                                                             !is.na(species)) |>
+  group_by(Type) |> count(species) |> summarise(n = n()) |>
+  ggplot(aes(x = Type, y = n, fill = n)) + geom_col() + coord_flip() + 
+  theme_minimal() + 
+  ylab('Count') + 
+  ggtitle('12S: Species-level hits per classifier')
+```
+```{r}
+twelveS_data_vs_12S_100 |> select(Type, genus) |> filter(genus != 'dropped' &
+                                                             !is.na(genus)) |>
+  group_by(Type) |> count(genus) |> summarise(n = n()) |>
+  ggplot(aes(x = Type, y = n, fill = n)) + geom_col() + coord_flip() + 
+  theme_minimal() + 
+  ylab('Count') + 
+  ggtitle('12S: Genus-level hits per classifier')
+```
+
+```{r}
+twelveS_truth <- truth |> filter(Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa') |> select(OTU, family, species) |> rename(True_OTU = OTU, True_family = family, True_species = species)
+head(twelveS_truth)
+```
+
+```{r}
+twelveS_data_vs_12S_100 |> left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) |>
+  mutate(Correct = True_species == species) |> 
+  filter(species != 'dropped' & !is.na(species)) |> 
+  group_by(Type) |> count(Correct) |> 
+  ggplot(aes(x = fct_rev(fct_reorder2(Type, Correct, n)), fill = Correct, y = n))+ geom_col() +
+  coord_flip() + theme_minimal() + xlab('Type') + 
+  ggtitle('12S: Correct and incorrect species-level classifications (absolute)') +
+  scale_fill_manual(values = c("#E69F00", "#56B4E9", "#009E73",
+          "#F0E442", "#0072B2", "#D55E00", "#CC79A7"))
+
+```
+
+```{r}
+cols <- c('Correct species' = "#009E73", 'Correct genus'="#56B4E9", 'Correct family' = "#0072B2", 'Incorrect family' = "#E69F00", 'Incorrect genus'="#F0E442", 'Incorrect species'="#D55E00", 'NoHit'= "#CC79A7")
+```
+
+```{r}
+twelveS_data_vs_12S_100 |> left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) |>
+  separate(True_species, into = c('True_Genus', 'True_Epiteth'), remove = FALSE)|> 
+  mutate(species = na_if(species, 'dropped')) |> 
+  mutate(genus = na_if(genus, 'dropped')) |> 
+
+  mutate(CorrectSpecies = case_when(!is.na(species) & True_species == species ~ 'Correct species',
+                              !is.na(species) & True_species != species ~ 'Incorrect species',
+                              !is.na(genus) & !is.na(True_Genus) & True_Genus == genus ~ 'Correct genus',
+                              !is.na(genus) & !is.na(True_Genus) & True_Genus != genus ~ 'Incorrect genus',
+                              !is.na(family) & True_family == family ~ 'Correct family',
+                              !is.na(family) & True_family != family ~ 'Incorrect family',
+                              TRUE ~ NA)) |> 
+  group_by(Type) |> 
+  count(CorrectSpecies) |> 
+  mutate(total = sum(n)) |> 
+  mutate(missing = 99 - total) |> 
+  group_modify(~ add_row(.x)) |> 
+  group_modify(~ {
+    .x |> mutate(new_col= max(missing, na.rm=TRUE)) |> 
+      mutate(n = case_when(is.na(CorrectSpecies) & is.na(missing) ~ new_col,
+                                  TRUE ~ n)) |> 
+      select(-new_col)
+  } ) |> 
+  mutate(total = 99) |> 
+  mutate(perc = n / total * 100) |> 
+  mutate(CorrectSpecies = replace_na(CorrectSpecies, 'NoHit')) |> 
+  mutate(CorrectSpecies = factor(CorrectSpecies, rev(c('Correct species', 'Correct genus', 'Correct family', 'Incorrect family', 'Incorrect genus', 'Incorrect species', 'NoHit')))) |> 
+  ggplot(aes(x = fct_rev(fct_reorder2(Type, CorrectSpecies, n)), fill = CorrectSpecies, y = perc))+ 
+  geom_col() +
+  coord_flip() + 
+  theme_minimal() + 
+  ylab('Percentage') + xlab('Type') +
+  ggtitle('12S: Correct and incorrect species-level classifications (relative)') +
+  scale_fill_manual(name = 'Outcome', values = cols, breaks=names(cols))
+```
+
+# Same for 16S
+
+```{r}
+sixteenS_truth <- truth |> filter(Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa') |> select(OTU, family, species) |> rename(True_OTU = OTU, True_family = family, True_species = species)
+head(sixteenS_truth)
+```
+
+```{r}
+sixteenS_data_vs_16S_100 |> left_join(sixteenS_truth, by = c('OTU' = 'True_OTU')) |>
+ separate(True_species, into = c('True_Genus', 'True_Epiteth'), remove = FALSE)|> 
+  mutate(species = na_if(species, 'dropped')) |> 
+  mutate(genus = na_if(genus, 'dropped')) |> 
+
+  mutate(CorrectSpecies = case_when(!is.na(species) & True_species == species ~ 'Correct species',
+                              !is.na(species) & True_species != species ~ 'Incorrect species',
+                              !is.na(genus) & !is.na(True_Genus) & True_Genus == genus ~ 'Correct genus',
+                              !is.na(genus) & !is.na(True_Genus) & True_Genus != genus ~ 'Incorrect genus',
+                              !is.na(family) & True_family == family ~ 'Correct family',
+                              !is.na(family) & True_family != family ~ 'Incorrect family',
+                              TRUE ~ NA)) |> 
+  group_by(Type) |> 
+  count(CorrectSpecies) |> 
+  mutate(total = sum(n)) |> 
+  mutate(missing = 99 - total) |> 
+  group_modify(~ add_row(.x)) |> 
+  group_modify(~ {
+    .x |> mutate(new_col= max(missing, na.rm=TRUE)) |> 
+      mutate(n = case_when(is.na(CorrectSpecies) & is.na(missing) ~ new_col,
+                                  TRUE ~ n)) |> 
+      select(-new_col)
+  } ) |> 
+  mutate(total = 99) |> 
+  mutate(perc = n / total * 100) |> 
+  mutate(CorrectSpecies = replace_na(CorrectSpecies, 'NoHit')) |> 
+  mutate(CorrectSpecies = factor(CorrectSpecies, rev(c('Correct species', 'Correct genus', 'Correct family', 'Incorrect family', 'Incorrect genus', 'Incorrect species', 'NoHit')))) |> 
+  ggplot(aes(x = fct_rev(fct_reorder2(Type, CorrectSpecies, n)), fill = CorrectSpecies, y = perc))+ 
+  geom_col() +
+  coord_flip() + 
+  theme_minimal() + 
+  ylab('Percentage') + xlab('Type') +
+  ggtitle('16S: Correct and incorrect species-level classifications (relative)') +
+  scale_fill_manual(name = 'Outcome', values = cols, breaks=names(cols))
+```
+
