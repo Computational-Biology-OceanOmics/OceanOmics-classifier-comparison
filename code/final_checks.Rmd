@@ -15,6 +15,8 @@ library(patchwork)
 
 ```{r}
 data <- targets::tar_read(merged_all_results)
+# rename BLAST to BLAST97 to differentiate from BLAST100 (percentage identity in both cases)
+data <- data |> mutate(Type = str_replace(Type, '^BLAST$', 'BLAST97'))
 truth <- targets::tar_read(truth_set_data)
 ```
 
@@ -101,7 +103,7 @@ cols <- c('Correct species' = "#009E73", 'Correct genus'="#56B4E9", 'Correct fam
 ```
 
 ```{r}
-twelveS_data_vs_12S_100 |> left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) |>
+twelve_s_relative_plot <- twelveS_data_vs_12S_100 |> left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) |>
   separate(True_species, into = c('True_Genus', 'True_Epiteth'), remove = FALSE)|> 
   mutate(species = na_if(species, 'dropped')) |> 
   mutate(genus = na_if(genus, 'dropped')) |> 
@@ -135,6 +137,7 @@ twelveS_data_vs_12S_100 |> left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) 
   ylab('Percentage') + xlab('Type') +
   ggtitle('12S: Correct and incorrect species-level classifications (relative)') +
   scale_fill_manual(name = 'Outcome', values = cols, breaks=names(cols))
+twelve_s_relative_plot
 ```
 ## Calculate Upset-based species sightings
 
@@ -226,6 +229,7 @@ scores <- twelveS_data_vs_12S_100 |> left_join(twelveS_truth, by = c('OTU' = 'Tr
   mutate(sums = TP + FP + TN + FN) |> 
   select(-c(missing, sums))
 ```
+
 ```{r}
 precision <- function(TP, FP) {
   TP / (TP + FP )
@@ -239,15 +243,19 @@ f1 <- function(precision, recall) {
 f0.5 <- function(precision, recall) {
   ((1 + 0.5^2) * precision * recall) / (0.5^2 * precision + recall)
 }
+accuracy <- function(TP, FP, FN, TN) {
+  (TN + TP) / (TN + TP + FP + FN)
+}
 ```
 
 ```{r}
 scores <- scores |> rowwise() |> mutate(recall = recall(TP, FN), precision = precision(TP, FP),
-                              f1 = f1(precision, recall), f0.5 = f0.5(precision, recall))
+                              f1 = f1(precision, recall), f0.5 = f0.5(precision, recall), accuracy = accuracy(TP, FP, FN, TN))
 scores
 ```
 ```{r}
-scores |> select(-c(TP, FP, FN, TN)) |> pivot_longer(-Type, names_to='Score') |>  ggplot(aes(x = fct_rev(fct_reorder(Type, value)), y = value, group=Score, color = Score, fill =Score)) + geom_line() + ylim(c(0, 1))  + theme_minimal_hgrid()+ theme(axis.text.x = element_text( angle = 90)) + ylab('Score') + xlab('Tool') 
+twelveS_scoreS_plot <- scores |> select(-c(TP, FP, FN, TN)) |> pivot_longer(-Type, names_to='Score') |>  ggplot(aes(x = fct_rev(fct_reorder(Type, value)), y = value, group=Score, color = Score, fill =Score)) + geom_line() + ylim(c(0, 1))  + theme_minimal_hgrid()+ theme(axis.text.x = element_text( angle = 45, hjust = 1)) + ylab('Score') + xlab('Tool') + ggtitle('12S scores')
+twelveS_scoreS_plot
 ```
 
 # Same for 16S
@@ -258,7 +266,7 @@ head(sixteenS_truth)
 ```
 
 ```{r}
-sixteenS_data_vs_16S_100 |> left_join(sixteenS_truth, by = c('OTU' = 'True_OTU')) |>
+sixteenS_relative_plot <- sixteenS_data_vs_16S_100 |> left_join(sixteenS_truth, by = c('OTU' = 'True_OTU')) |>
  separate(True_species, into = c('True_Genus', 'True_Epiteth'), remove = FALSE)|> 
   mutate(species = na_if(species, 'dropped')) |> 
   mutate(genus = na_if(genus, 'dropped')) |> 
@@ -292,6 +300,7 @@ sixteenS_data_vs_16S_100 |> left_join(sixteenS_truth, by = c('OTU' = 'True_OTU')
   ylab('Percentage') + xlab('Type') +
   ggtitle('16S: Correct and incorrect species-level classifications (relative)') +
   scale_fill_manual(name = 'Outcome', values = cols, breaks=names(cols))
+sixteenS_relative_plot 
 ```
 
 ## Calculate scores
@@ -325,12 +334,14 @@ scores
 
 ```{r}
 scores <- scores |> rowwise() |> mutate(recall = recall(TP, FN), precision = precision(TP, FP),
-                              f1 = f1(precision, recall), f0.5 = f0.5(precision, recall))
+                              f1 = f1(precision, recall), f0.5 = f0.5(precision, recall), accuracy = accuracy(TP, FP, FN, TN))
 scores
 ```
 ```{r}
-scores |> select(-c(TP, FP, FN, TN)) |> pivot_longer(-Type, names_to='Score') |>  ggplot(aes(x = fct_rev(fct_reorder(Type, value)), y = value, group=Score, color = Score, fill =Score)) + geom_line() + ylim(c(0, 1))  + theme_minimal_hgrid()+ theme(axis.text.x = element_text( angle = 90)) + ylab('Score') + xlab('Tool') 
+sixteenS_score_plot <- scores |> select(-c(TP, FP, FN, TN)) |> pivot_longer(-Type, names_to='Score') |>  ggplot(aes(x = fct_rev(fct_reorder(Type, value)), y = value, group=Score, color = Score, fill =Score)) + geom_line() + ylim(c(0, 1))  + theme_minimal_hgrid() + theme(axis.text.x = element_text( angle = 45, hjust = 1)) + ylab('Score') + xlab('Tool') +  ggtitle('16S scores')
+sixteenS_score_plot 
 ```
+
 
 
 ## Calculate Upset-based species sightings
@@ -396,3 +407,23 @@ a + b + c & ylim(c(0, 20)) &
   axis.line = element_line(colour = "black")
   )
 ```
+
+# Relative plots 12S 16S
+
+```{r fig.height=8}
+sixteenS_relative_plot / twelve_s_relative_plot
+```
+
+
+```{r fig.height=7}
+(sixteenS_score_plot +geom_point() + theme(axis.title.x = element_blank()))/ (twelveS_scoreS_plot + geom_point())
+```
+
+# Now Rottnest island vs 12S
+
+```{r}
+rottnest_12S <- data |> filter(Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' & Subject == '12s_v010_final.fasta')
+rottnest_12S
+```
+
+# Now Rottnest island vs 16S
