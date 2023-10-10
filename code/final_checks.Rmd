@@ -419,11 +419,93 @@ sixteenS_relative_plot / twelve_s_relative_plot
 (sixteenS_score_plot +geom_point() + theme(axis.title.x = element_blank()))/ (twelveS_scoreS_plot + geom_point())
 ```
 
-# Now Rottnest island vs 12S
+# 12S exclusion databases
 
 ```{r}
-rottnest_12S <- data |> filter(Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' & Subject == '12s_v010_final.fasta')
-rottnest_12S
+twelve_exclusions <- data |> filter(str_starts(Subject, '12s_v010_final.fasta_Taxonomies.CountedFams.txt_')) |> 
+  filter(Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa')
+table(twelve_exclusions$Subject)
+twelve_exclusions_split <- twelve_exclusions |> separate(Subject, into = c('before', 'hit'), sep='.txt_') |> 
+  # get rid of leftover non-subsetted databases
+  filter(!is.na(hit)) |> 
+  separate(hit, into=c('Database', 'after'), sep='_subset')
+```
+```{r}
+twelve_exclusions_split_averaged <- twelve_exclusions_split |> left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) |>
+  separate(True_species, into = c('True_Genus', 'True_Epiteth'), remove = FALSE)|> 
+  mutate(species = na_if(species, 'dropped')) |> 
+  mutate(genus = na_if(genus, 'dropped')) |> 
+
+  mutate(CorrectSpecies = case_when(!is.na(species) & True_species == species ~ 'Correct species',
+                              !is.na(species) & True_species != species ~ 'Incorrect species',
+                              !is.na(genus) & !is.na(True_Genus) & True_Genus == genus ~ 'Correct genus',
+                              !is.na(genus) & !is.na(True_Genus) & True_Genus != genus ~ 'Incorrect genus',
+                              !is.na(family) & True_family == family ~ 'Correct family',
+                              !is.na(family) & True_family != family ~ 'Incorrect family',
+                              TRUE ~ NA)) |> 
+  group_by(Type, Database, after) |>
+  summarise(TP = sum(str_detect(CorrectSpecies, pattern='Correct species'), na.rm=TRUE),
+            FP = sum(str_detect(CorrectSpecies, pattern = 'Incorrect species'), na.rm=TRUE),
+            TN = sum(str_detect(replace_na(CorrectSpecies,'NA'), pattern='NA') & is.na(True_species), na.rm=TRUE),
+            FN = sum(is.na(species) & !is.na(True_species))) |> 
+  mutate(sums = TP + FP + TN + FN) |> 
+  mutate(missing = 99 - sums) |> 
+  mutate(FN = FN + missing) |> 
+  mutate(sums = TP + FP + TN + FN) |> 
+  select(-c(missing, sums)) |> 
+  group_by(Type, Database) |> 
+  summarise(mean_TP = mean(TP),
+            mean_FP = mean(FP),
+            mean_TN = mean(TN),
+            mean_FN = mean(FN)) |> 
+  rowwise() |> 
+  mutate(recall = recall(mean_TP, mean_FN), 
+         precision = precision(mean_TP, mean_FP),
+         f1 = f1(precision, recall),
+         f0.5 = f0.5(precision, recall),
+         accuracy = accuracy(mean_TP, mean_FP, mean_FN, mean_TN)) 
+twelve_exclusions_split_averaged <- twelve_exclusions_split_averaged |> 
+  mutate(Database = case_when ( Database == 'fifty' ~ '50%',
+                               Database == 'seventy' ~ '70%',
+                               Database == 'thirty' ~ '30%',
+                               TRUE ~ Database))
 ```
 
-# Now Rottnest island vs 16S
+```{r}
+f1_pl <- twelve_exclusions_split_averaged |> 
+  ggplot(aes(x = Type, y = f1, group = Database, color = Database, fill = Database)) + 
+  geom_point() +
+  geom_line() +
+  theme_minimal()
+```
+
+```{r}
+f0.5_pl <- twelve_exclusions_split_averaged |> 
+  ggplot(aes(x = Type, y = f0.5, group = Database, color = Database, fill = Database)) + 
+  geom_point() +
+  geom_line() +
+  theme_minimal()
+```
+
+```{r}
+precision_pl <- twelve_exclusions_split_averaged |> 
+  ggplot(aes(x = Type, y = precision, group = Database, color = Database, fill = Database)) + 
+  geom_point() +
+  geom_line() +
+  theme_minimal()
+```
+
+```{r}
+recall_pl <- twelve_exclusions_split_averaged |> 
+  ggplot(aes(x = Type, y = recall, group = Database, color = Database, fill = Database)) + 
+  geom_point() +
+  geom_line() +
+  theme_minimal()
+```
+
+```{r fig.height=8}
+(f1_pl / f0.5_pl / precision_pl / recall_pl) +  plot_layout(guides = 'collect')
+
+``` 
+
+
