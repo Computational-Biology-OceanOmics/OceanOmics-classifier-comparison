@@ -508,4 +508,74 @@ recall_pl <- twelve_exclusions_split_averaged |>
 
 ``` 
 
+Lets zero in on the precision and make boxplots with jitter dots
+
+```{r}
+un_summarised_twelve <- twelve_exclusions_split |> left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) |>
+  separate(True_species, into = c('True_Genus', 'True_Epiteth'), remove = FALSE)|> 
+  mutate(species = na_if(species, 'dropped')) |> 
+  mutate(genus = na_if(genus, 'dropped')) |> 
+
+  mutate(CorrectSpecies = case_when(!is.na(species) & True_species == species ~ 'Correct species',
+                              !is.na(species) & True_species != species ~ 'Incorrect species',
+                              !is.na(genus) & !is.na(True_Genus) & True_Genus == genus ~ 'Correct genus',
+                              !is.na(genus) & !is.na(True_Genus) & True_Genus != genus ~ 'Incorrect genus',
+                              !is.na(family) & True_family == family ~ 'Correct family',
+                              !is.na(family) & True_family != family ~ 'Incorrect family',
+                              TRUE ~ NA)) |> 
+  group_by(Type, Database, after) |>
+  summarise(TP = sum(str_detect(CorrectSpecies, pattern='Correct species'), na.rm=TRUE),
+            FP = sum(str_detect(CorrectSpecies, pattern = 'Incorrect species'), na.rm=TRUE),
+            TN = sum(str_detect(replace_na(CorrectSpecies,'NA'), pattern='NA') & is.na(True_species), na.rm=TRUE),
+            FN = sum(is.na(species) & !is.na(True_species))) |> 
+  mutate(sums = TP + FP + TN + FN) |> 
+  mutate(missing = 99 - sums) |> 
+  mutate(FN = FN + missing) |> 
+  mutate(sums = TP + FP + TN + FN) |> 
+  select(-c(missing, sums)) |> 
+  rowwise() |> 
+  mutate(recall = recall(TP, FN), 
+         precision = precision(TP, FP),
+         f1 = f1(precision, recall),
+         f0.5 = f0.5(precision, recall),
+         accuracy = accuracy(TP, FP, FN, TN)) |> 
+  mutate(Database = case_when ( Database == 'fifty' ~ '50%',
+                               Database == 'seventy' ~ '70%',
+                               Database == 'thirty' ~ '30%',
+                               TRUE ~ Database))
+```
+
+```{r}
+un_summarised_twelve |> group_by(Type, Database) |> mutate(best = max(mean(precision))) |>
+  ggplot(aes(x = fct_reorder(Type, best), group = interaction(Type, Database),  color=Database, y = precision)) +
+  geom_boxplot(outlier.shape = NA) +
+  coord_flip() +
+  theme_minimal() +
+  xlab('Type') +
+  ylab('Precision') +
+  geom_point(position = position_jitterdodge(), alpha=0.5)
+```
+```{r}
+un_summarised_twelve  |> group_by(Type, Database) |> mutate(best = max(mean(f0.5))) |>
+  ggplot(aes(x = fct_reorder(Type, best), group = interaction(Type, Database), color=Database, y = f0.5)) +
+  geom_boxplot(outlier.shape = NA) + 
+  coord_flip() + 
+  theme_minimal() + 
+  xlab('Type') +
+  ylab('f0.5') +
+  ylim(c(0, 1)) +
+  geom_point(position = position_jitterdodge(), alpha=0.5)
+```
+
+```{r}
+un_summarised_twelve  |> group_by(Type, Database) |> mutate(best = max(mean(recall))) |>
+  ggplot(aes(x = fct_reorder(Type, best), group = interaction(Type, Database), color=Database, y = recall)) +
+  geom_boxplot(outlier.shape = NA) + 
+  coord_flip() + 
+  theme_minimal() + 
+  xlab('Type') +
+  ylab('f0.5') +
+  ylim(c(0, 1)) +
+  geom_point(position = position_jitterdodge(), alpha=0.5)
+```
 
