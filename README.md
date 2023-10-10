@@ -24,7 +24,7 @@ TODO
 
 The entire analysis is based on R targets. Check out the repo, run `targets::tar_make()`, it should rerun the entire analysis and make all figures.
 
-(regenerate the following using `cat('```mermaid', tar_mermaid(), '```', sep='\n')`)
+(regenerate the following using `cat('```mermaid', targets::tar_mermaid(), '```', sep='\n')`)
 
 ```mermaid
 graph LR

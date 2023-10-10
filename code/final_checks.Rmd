@@ -4,9 +4,12 @@ output: html_document
 date: "2023-10-09"
 ---
 
-```{r}
+```{r setup}
 library(tidyverse)
 library(forcats)
+library(cowplot)
+library(ggupset)
+library(patchwork)
 ```
 
 
@@ -133,6 +136,119 @@ twelveS_data_vs_12S_100 |> left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) 
   ggtitle('12S: Correct and incorrect species-level classifications (relative)') +
   scale_fill_manual(name = 'Outcome', values = cols, breaks=names(cols))
 ```
+## Calculate Upset-based species sightings
+
+```{r}
+type_list <- twelveS_data_vs_12S_100 |> select(Type, species) |> unique() |> filter(!is.na(species) & species != 'dropped') |> 
+  group_by(species) |> 
+  summarize('Type' = list(Type))
+
+a <- type_list |>
+  ggplot(aes(x = Type)) + 
+  geom_bar() +
+  scale_x_upset(n_intersections = 12) +
+  ggtitle('12S: Shared species') +
+  ylab('Species')
+a
+```
+
+```{r}
+type_list <- twelveS_data_vs_12S_100 |> left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) |>
+  filter(species == True_species) |> 
+  filter(species != 'dropped' & !is.na(species)) |> 
+  select(Type, species) |> unique() |> 
+  group_by(species) |> 
+  summarize('Type' = list(Type))
+
+b <- type_list |>
+  ggplot(aes(x = Type)) + 
+  geom_bar() +
+  scale_x_upset(n_intersections = 12) +
+  ggtitle('12S: Shared correct species') +
+  ylab('Species')
+b
+```
+
+```{r}
+type_list <- twelveS_data_vs_12S_100 |> left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) |>
+  filter(species != True_species) |> 
+  filter(species != 'dropped' & !is.na(species)) |> 
+  select(Type, species) |> unique() |> 
+  group_by(species) |> 
+  summarize('Type' = list(Type))
+
+c <- type_list |>
+  ggplot(aes(x = Type)) + 
+  geom_bar() +
+  scale_x_upset(n_intersections = 12) +
+  ggtitle('12S: Shared incorrect species') +
+  ylab('Species')
+c
+```
+
+```{r fig.height=8, warning=FALSE}
+a + b + c & ylim(c(0, 30)) & 
+  theme(
+  # Hide panel borders and remove grid lines
+  panel.border = element_blank(),
+  panel.grid.major = element_blank(),
+  panel.background = element_blank(),
+  panel.grid.minor = element_blank(),
+  #panel.grid.major.y = element_line(),
+  # Change axis line
+  axis.line = element_line(colour = "black")
+  )
+```
+
+## Calculate FP/TP/TN/FN
+
+```{r}
+scores <- twelveS_data_vs_12S_100 |> left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) |>
+  separate(True_species, into = c('True_Genus', 'True_Epiteth'), remove = FALSE)|> 
+  mutate(species = na_if(species, 'dropped')) |> 
+  mutate(genus = na_if(genus, 'dropped')) |> 
+
+  mutate(CorrectSpecies = case_when(!is.na(species) & True_species == species ~ 'Correct species',
+                              !is.na(species) & True_species != species ~ 'Incorrect species',
+                              !is.na(genus) & !is.na(True_Genus) & True_Genus == genus ~ 'Correct genus',
+                              !is.na(genus) & !is.na(True_Genus) & True_Genus != genus ~ 'Incorrect genus',
+                              !is.na(family) & True_family == family ~ 'Correct family',
+                              !is.na(family) & True_family != family ~ 'Incorrect family',
+                              TRUE ~ NA)) |> 
+  group_by(Type) |>
+  summarise(TP = sum(str_detect(CorrectSpecies, pattern='Correct species'), na.rm=TRUE),
+            FP = sum(str_detect(CorrectSpecies, pattern = 'Incorrect species'), na.rm=TRUE),
+            TN = sum(str_detect(replace_na(CorrectSpecies,'NA'), pattern='NA') & is.na(True_species), na.rm=TRUE),
+            FN = sum(is.na(species) & !is.na(True_species))) |> 
+  mutate(sums = TP + FP + TN + FN) |> 
+  mutate(missing = 99 - sums) |> 
+  mutate(FN = FN + missing) |> 
+  mutate(sums = TP + FP + TN + FN) |> 
+  select(-c(missing, sums))
+```
+```{r}
+precision <- function(TP, FP) {
+  TP / (TP + FP )
+}
+recall <- function(TP, FN) {
+  TP / (TP + FN)
+}
+f1 <- function(precision, recall) {
+  2*precision * recall / (precision + recall)
+}
+f0.5 <- function(precision, recall) {
+  ((1 + 0.5^2) * precision * recall) / (0.5^2 * precision + recall)
+}
+```
+
+```{r}
+scores <- scores |> rowwise() |> mutate(recall = recall(TP, FN), precision = precision(TP, FP),
+                              f1 = f1(precision, recall), f0.5 = f0.5(precision, recall))
+scores
+```
+```{r}
+scores |> select(-c(TP, FP, FN, TN)) |> pivot_longer(-Type, names_to='Score') |>  ggplot(aes(x = fct_rev(fct_reorder(Type, value)), y = value, group=Score, color = Score, fill =Score)) + geom_line() + ylim(c(0, 1))  + theme_minimal_hgrid()+ theme(axis.text.x = element_text( angle = 90)) + ylab('Score') + xlab('Tool') 
+```
 
 # Same for 16S
 
@@ -178,3 +294,105 @@ sixteenS_data_vs_16S_100 |> left_join(sixteenS_truth, by = c('OTU' = 'True_OTU')
   scale_fill_manual(name = 'Outcome', values = cols, breaks=names(cols))
 ```
 
+## Calculate scores
+
+```{r}
+scores <- sixteenS_data_vs_16S_100 |> left_join(sixteenS_truth, by = c('OTU' = 'True_OTU')) |>
+  separate(True_species, into = c('True_Genus', 'True_Epiteth'), remove = FALSE)|> 
+  mutate(species = na_if(species, 'dropped')) |> 
+  mutate(genus = na_if(genus, 'dropped')) |> 
+
+  mutate(CorrectSpecies = case_when(!is.na(species) & True_species == species ~ 'Correct species',
+                              !is.na(species) & True_species != species ~ 'Incorrect species',
+                              !is.na(genus) & !is.na(True_Genus) & True_Genus == genus ~ 'Correct genus',
+                              !is.na(genus) & !is.na(True_Genus) & True_Genus != genus ~ 'Incorrect genus',
+                              !is.na(family) & True_family == family ~ 'Correct family',
+                              !is.na(family) & True_family != family ~ 'Incorrect family',
+                              TRUE ~ NA)) |> 
+  group_by(Type) |>
+  summarise(TP = sum(str_detect(CorrectSpecies, pattern='Correct species'), na.rm=TRUE),
+            FP = sum(str_detect(CorrectSpecies, pattern = 'Incorrect species'), na.rm=TRUE),
+            TN = sum(str_detect(replace_na(CorrectSpecies,'NA'), pattern='NA') & is.na(True_species), na.rm=TRUE),
+            FN = sum(is.na(species) & !is.na(True_species))) |> 
+  mutate(sums = TP + FP + TN + FN) |> 
+  mutate(missing = 99 - sums) |> 
+  mutate(FN = FN + missing) |> 
+  mutate(sums = TP + FP + TN + FN) |> 
+  select(-c(missing, sums))
+scores
+```
+
+
+```{r}
+scores <- scores |> rowwise() |> mutate(recall = recall(TP, FN), precision = precision(TP, FP),
+                              f1 = f1(precision, recall), f0.5 = f0.5(precision, recall))
+scores
+```
+```{r}
+scores |> select(-c(TP, FP, FN, TN)) |> pivot_longer(-Type, names_to='Score') |>  ggplot(aes(x = fct_rev(fct_reorder(Type, value)), y = value, group=Score, color = Score, fill =Score)) + geom_line() + ylim(c(0, 1))  + theme_minimal_hgrid()+ theme(axis.text.x = element_text( angle = 90)) + ylab('Score') + xlab('Tool') 
+```
+
+
+## Calculate Upset-based species sightings
+
+```{r}
+type_list <- sixteenS_data_vs_16S_100  |> select(Type, species) |> unique() |> filter(!is.na(species) & species != 'dropped') |> 
+  group_by(species) |> 
+  summarize('Type' = list(Type))
+
+a <- type_list |>
+  ggplot(aes(x = Type)) + 
+  geom_bar() +
+  scale_x_upset(n_intersections = 12) +
+  ggtitle('16S: Shared species') +
+  ylab('Species')
+a
+```
+
+```{r}
+type_list <- sixteenS_data_vs_16S_100 |> left_join(sixteenS_truth,  by = c('OTU' = 'True_OTU')) |>
+  filter(species == True_species) |> 
+  filter(species != 'dropped' & !is.na(species)) |> 
+  select(Type, species) |> unique() |> 
+  group_by(species) |> 
+  summarize('Type' = list(Type))
+
+b <- type_list |>
+  ggplot(aes(x = Type)) + 
+  geom_bar() +
+  scale_x_upset(n_intersections = 12) +
+  ggtitle('16S: Shared correct species') +
+  ylab('Species')
+b
+```
+
+```{r}
+type_list <- sixteenS_data_vs_16S_100 |> left_join(sixteenS_truth, by = c('OTU' = 'True_OTU')) |>
+  filter(species != True_species) |> 
+  filter(species != 'dropped' & !is.na(species)) |> 
+  select(Type, species) |> unique() |> 
+  group_by(species) |> 
+  summarize('Type' = list(Type))
+
+c <- type_list |>
+  ggplot(aes(x = Type)) + 
+  geom_bar() +
+  scale_x_upset(n_intersections = 12) +
+  ggtitle('16S: Shared incorrect species') +
+  ylab('Species')
+c
+```
+
+```{r fig.height=8, warning=FALSE}
+a + b + c & ylim(c(0, 20)) & 
+  theme(
+  # Hide panel borders and remove grid lines
+  panel.border = element_blank(),
+  panel.grid.major = element_blank(),
+  panel.background = element_blank(),
+  panel.grid.minor = element_blank(),
+  #panel.grid.major.y = element_line(),
+  # Change axis line
+  axis.line = element_line(colour = "black")
+  )
+```
