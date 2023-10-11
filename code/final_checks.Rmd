@@ -4,12 +4,16 @@ output: html_document
 date: "2023-10-09"
 ---
 
+# Setup
+
 ```{r setup}
 library(tidyverse)
 library(forcats)
 library(cowplot)
 library(ggupset)
+library(RColorBrewer)
 library(patchwork)
+library(pheatmap)
 ```
 
 
@@ -20,10 +24,6 @@ data <- data |> mutate(Type = str_replace(Type, '^BLAST$', 'BLAST97'))
 truth <- targets::tar_read(truth_set_data)
 ```
 
-
-```{r}
-head(data)
-```
 
 ```{r}
 table(data$Type)
@@ -206,7 +206,8 @@ a + b + c & ylim(c(0, 30)) &
 ## Calculate FP/TP/TN/FN
 
 ```{r}
-scores <- twelveS_data_vs_12S_100 |> left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) |>
+add_scores <- function(twelveS_data_vs_12S_100_with_MaxTruth, twelveS_truth ) {
+  twelveS_data_vs_12S_100_with_MaxTruth|> left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) |>
   separate(True_species, into = c('True_Genus', 'True_Epiteth'), remove = FALSE)|> 
   mutate(species = na_if(species, 'dropped')) |> 
   mutate(genus = na_if(genus, 'dropped')) |> 
@@ -228,6 +229,11 @@ scores <- twelveS_data_vs_12S_100 |> left_join(twelveS_truth, by = c('OTU' = 'Tr
   mutate(FN = FN + missing) |> 
   mutate(sums = TP + FP + TN + FN) |> 
   select(-c(missing, sums))
+}
+```
+
+```{r}
+scores <- add_scores(twelveS_data_vs_12S_100, twelveS_truth)
 ```
 
 ```{r}
@@ -257,6 +263,75 @@ scores
 twelveS_scoreS_plot <- scores |> select(-c(TP, FP, FN, TN)) |> pivot_longer(-Type, names_to='Score') |>  ggplot(aes(x = fct_rev(fct_reorder(Type, value)), y = value, group=Score, color = Score, fill =Score)) + geom_line() + ylim(c(0, 1))  + theme_minimal_hgrid()+ theme(axis.text.x = element_text( angle = 45, hjust = 1)) + ylab('Score') + xlab('Tool') + ggtitle('12S scores')
 twelveS_scoreS_plot
 ```
+
+### Scores heatmap
+
+Let's also make a heatmap from that
+
+```{r}
+b <- scores$Type
+m <- scores |> select(-Type) |> select(accuracy, recall, precision, f1, f0.5) |> as.matrix()
+rownames(m) <- b
+pheatmap(m, cluster_cols=FALSE, display_numbers = TRUE,
+         color = colorRampPalette(brewer.pal(n = 7, name =
+  "RdYlGn"))(100))
+```
+```{r}
+b <- scores$Type
+m <- scores |> select(-Type) |> select(TP, FP, FN) |> as.matrix()
+rownames(m) <- b
+pheatmap(m, cluster_cols=FALSE, display_numbers = TRUE,
+         color = colorRampPalette(brewer.pal(n = 7, name =
+  "RdYlGn"))(100))
+```
+
+## Metaclassifier
+
+```{r}
+table(twelveS_data_vs_12S_100$Type)
+```
+
+First, we count the per-OTU species hits
+```{r}
+twelveS_data_vs_12S_100_maxCount <- twelveS_data_vs_12S_100 |>  
+  mutate(species = na_if(species, 'dropped')) |> 
+  filter(!is.na(species)) |> 
+  #filter(! Type %in% c('Mothur', 'VSEARCH', 'Kraken_0.2', 'Qiime2', 'Metabuli', 'NBC', 'BLAST97', 'Kraken_0.0', 'Kraken_0.1')) |> 
+  group_by(Query, Subject, OTU) |> 
+  count(species) |> 
+  # double check the truth
+  #left_join(twelveS_truth, by = c('OTU' = 'True_OTU')) |> 
+  #mutate(Truth = True_species == species) |> 
+  # pull out the per-group highest n
+  filter( n > 4) |> 
+  slice_max(n, n=1, with_ties = FALSE) |> 
+  mutate(Type = 'MaxCount', .before = 'Query') |> 
+  select(-n)
+twelveS_data_vs_12S_100_maxCount
+```
+
+```{r}
+twelveS_data_vs_12S_100_with_MaxTruth <- twelveS_data_vs_12S_100 |> 
+  bind_rows(twelveS_data_vs_12S_100_maxCount) #|>  
+  #filter(! Type %in% c('Mothur', 'VSEARCH', 'Kraken_0.2', 'Qiime2', 'Metabuli', 'NBC', 'BLAST97', 'Kraken_0.0', 'Kraken_0.1')) 
+  
+```
+
+
+```{r}
+maxTruth_scores <-  add_scores(twelveS_data_vs_12S_100_with_MaxTruth, twelveS_truth )
+```
+
+```{r}
+maxTruth_scores <- maxTruth_scores |> rowwise() |> mutate(recall = recall(TP, FN), precision = precision(TP, FP),
+                              f1 = f1(precision, recall), f0.5 = f0.5(precision, recall), accuracy = accuracy(TP, FP, FN, TN))
+```
+
+```{r}
+maxTruth_scoreS_plot <- maxTruth_scores |> select(-c(TP, FP, FN, TN)) |> pivot_longer(-Type, names_to='Score') |>  ggplot(aes(x = fct_rev(fct_reorder(Type, value)), y = value, group=Score, color = Score, fill =Score)) + geom_line() + ylim(c(0, 1))  + theme_minimal_hgrid()+ theme(axis.text.x = element_text( angle = 45, hjust = 1)) + ylab('Score') + xlab('Tool') + geom_point() + ggtitle('12S scores')
+maxTruth_scoreS_plot
+```
+Interestingly, just counting the labels is not good! It performs worse than BLAST.
 
 # Same for 16S
 
@@ -306,28 +381,7 @@ sixteenS_relative_plot
 ## Calculate scores
 
 ```{r}
-scores <- sixteenS_data_vs_16S_100 |> left_join(sixteenS_truth, by = c('OTU' = 'True_OTU')) |>
-  separate(True_species, into = c('True_Genus', 'True_Epiteth'), remove = FALSE)|> 
-  mutate(species = na_if(species, 'dropped')) |> 
-  mutate(genus = na_if(genus, 'dropped')) |> 
-
-  mutate(CorrectSpecies = case_when(!is.na(species) & True_species == species ~ 'Correct species',
-                              !is.na(species) & True_species != species ~ 'Incorrect species',
-                              !is.na(genus) & !is.na(True_Genus) & True_Genus == genus ~ 'Correct genus',
-                              !is.na(genus) & !is.na(True_Genus) & True_Genus != genus ~ 'Incorrect genus',
-                              !is.na(family) & True_family == family ~ 'Correct family',
-                              !is.na(family) & True_family != family ~ 'Incorrect family',
-                              TRUE ~ NA)) |> 
-  group_by(Type) |>
-  summarise(TP = sum(str_detect(CorrectSpecies, pattern='Correct species'), na.rm=TRUE),
-            FP = sum(str_detect(CorrectSpecies, pattern = 'Incorrect species'), na.rm=TRUE),
-            TN = sum(str_detect(replace_na(CorrectSpecies,'NA'), pattern='NA') & is.na(True_species), na.rm=TRUE),
-            FN = sum(is.na(species) & !is.na(True_species))) |> 
-  mutate(sums = TP + FP + TN + FN) |> 
-  mutate(missing = 99 - sums) |> 
-  mutate(FN = FN + missing) |> 
-  mutate(sums = TP + FP + TN + FN) |> 
-  select(-c(missing, sums))
+scores <- add_scores(sixteenS_data_vs_16S_100, sixteenS_truth)
 scores
 ```
 
@@ -341,9 +395,23 @@ scores
 sixteenS_score_plot <- scores |> select(-c(TP, FP, FN, TN)) |> pivot_longer(-Type, names_to='Score') |>  ggplot(aes(x = fct_rev(fct_reorder(Type, value)), y = value, group=Score, color = Score, fill =Score)) + geom_line() + ylim(c(0, 1))  + theme_minimal_hgrid() + theme(axis.text.x = element_text( angle = 45, hjust = 1)) + ylab('Score') + xlab('Tool') +  ggtitle('16S scores')
 sixteenS_score_plot 
 ```
+```{r}
+b <- scores$Type
+m <- scores |> select(-Type) |> select(accuracy, recall, precision, f1, f0.5) |> as.matrix()
+rownames(m) <- b
+pheatmap(m, cluster_cols=FALSE, display_numbers = TRUE,
+         color = colorRampPalette(brewer.pal(n = 7, name =
+  "RdYlGn"))(100))
+```
 
-
-
+```{r}
+b <- scores$Type
+m <- scores |> select(-Type) |> select(TP, FP, FN) |> as.matrix()
+rownames(m) <- b
+pheatmap(m, cluster_cols=FALSE, display_numbers = TRUE,
+         color = colorRampPalette(brewer.pal(n = 7, name =
+  "RdYlGn"))(100))
+```
 ## Calculate Upset-based species sightings
 
 ```{r}
@@ -577,5 +645,49 @@ un_summarised_twelve  |> group_by(Type, Database) |> mutate(best = max(mean(reca
   ylab('f0.5') +
   ylim(c(0, 1)) +
   geom_point(position = position_jitterdodge(), alpha=0.5)
+```
+
+```{r}
+un_summarised_twelve  |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Qiime2')) |> 
+  ggplot(aes(x=Database, y = precision, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
+  geom_boxplot() +
+  labs(fill='Type') + 
+  ylab('Precision') + 
+  theme_minimal()
+```
+
+```{r}
+false_positives <- un_summarised_twelve  |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Kraken_0.1', 'MMSeqs2')) |> 
+  ggplot(aes(x=Database, y = FP/99*100, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
+  geom_boxplot(outlier.shape=NA) +
+  labs(fill='Type') + 
+  ylab('False positives (%)') + 
+  geom_point(aes(color=Type), 
+             position = position_jitterdodge(jitter.width = 0.2), 
+             alpha=0.5,
+             show.legend = FALSE)+
+  theme_minimal()
+false_positives
+```
+
+```{r}
+true_positives <- un_summarised_twelve  |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Kraken_0.1', 'MMSeqs2')) |> 
+  ggplot(aes(x=Database, y = TP/99*100, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
+  geom_boxplot(outlier.shape=NA) +
+  labs(fill='Type') + 
+  ylab('True positives (%)') + 
+  geom_point(aes(color=Type), 
+           position = position_jitterdodge(jitter.width = 0.2), 
+           alpha=0.5,
+           show.legend = FALSE)+
+  theme_minimal()
+true_positives
+```
+
+```{r fig.height=6}
+false_positives/ true_positives + plot_layout(guides = 'collect') & coord_flip()
 ```
 
