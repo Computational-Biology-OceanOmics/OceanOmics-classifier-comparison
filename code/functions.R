@@ -1,3 +1,5 @@
+source('code/helpers.R')
+
 get_classifier_data <- function(file) {
   read.csv(file, sep='\t', row.names=1)
 }
@@ -9,9 +11,9 @@ plot_dendrogram <- function(data) {
     ggdendrogram(rotate = TRUE, theme_dendro = TRUE, labels = TRUE)
 }
 
-save_plot <- function(plot) {
-  ggsave(filename = 'figures/classifier_dendrogram.png',
-          plot = plot, dpi = 300)
+my_save_plot <- function(plot, name) {
+  ggsave(filename = paste0('figures/', name),
+          plot = plot, dpi = 300, width = 10, height = (9/16)*10 )
 }
 
 get_hits_data <- function(file) {
@@ -75,6 +77,216 @@ subsample_blast_hits <- function(data) {
 
 load_and_merge_all_results <- function(files) {
   # files is a named list
-  
   read_tsv(files)
+}
+
+assess_correctness <- function(data, truth) {
+  truth <- truth |> 
+    select(Query, OTU, species, family) |> 
+    mutate(species = na_if(species, 'dropped')) |>
+    rename(True_Query = Query, True_OTU = OTU, True_species = species, True_family = family)
+  
+  filtered_data <- data |> 
+    mutate(Type = str_replace(Type, '^BLAST$', 'BLAST97')) |>
+    filter(Subject %in% c('16S_v04_final.fasta', '12s_v010_final.fasta')) |>
+    filter(!Type %in% c('Kraken_0.2', 'Kraken_0.3', 'Kraken_0.4', 'Kraken_0.5', 'Kraken_0.6', 'Kraken_0.7', 'Kraken_0.8', 'Kraken_0.9')) |> 
+    mutate(Type = str_replace(Type, 'Kraken', 'Kraken2')) |> 
+    mutate(Subject = str_replace_all(Subject, pattern = '_ref.fasta', replacement=''),
+           species = na_if(species, 'dropped')) |> 
+    select(Type, Query, Subject, genus, family, species, OTU) |>
+    left_join(truth, by=c('Query'= 'True_Query', 'OTU' = 'True_OTU')) |>
+    filter( ( Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' & Subject == '12s_v010_final.fasta') | 
+              (  Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' & Subject == '16S_v04_final.fasta') |
+              ( Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' & Subject == '12s_v010_final.fasta') | 
+              (  Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' & Subject == '16S_v04_final.fasta') |
+              ( Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' & Subject == '12s_v010_final.fasta') | 
+              (  Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' & Subject == '16S_v04_final.fasta')) |> 
+    mutate(CorrectSpecies = case_when(!is.na(species) & True_species == species ~ 'Correct species',
+                                      !is.na(species) & True_species != species ~ 'Incorrect species',
+                                      TRUE ~ NA)) 
+  # you can test here using with(filtered_data, table(Query, Subject))   
+  filtered_data
+}
+
+make_mean_median_f1_table <- function(filtered_data) {
+  # this is Table 2
+
+  Counted_data <- filtered_data |> 
+    mutate(all_asvs = case_when(Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 24,
+                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 27,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 102,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 112,
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99)) |>
+    group_by(Type, Query, Subject, all_asvs) |>
+    summarise(TP = sum(str_detect(CorrectSpecies, pattern = '^Correct species$'), na.rm=TRUE),
+              FP = sum(str_detect(CorrectSpecies, pattern = 'Incorrect species'), na.rm=TRUE),
+              TN = sum(str_detect(replace_na(CorrectSpecies,'NA'), pattern='NA') & is.na(True_species), na.rm=TRUE),
+              FN = sum(is.na(species) & !is.na(True_species))) |> 
+    mutate(sums = TP + FP + TN + FN)  |>
+    mutate(missing = all_asvs - sums) |>
+    mutate(FN = FN + missing) |> 
+    select(-c(missing, sums))
+  
+  Counted_data |> 
+    mutate(Precision = precision(TP, FP),
+           Recall = recall(TP, FN),
+           F1 = f1(Precision, Recall),
+           F0.5 = f0.5(Precision, Recall),
+           Accuracy = accuracy(TP, FP, FN, TN)) |> 
+    ungroup() |> 
+    select(Type, Precision, Recall, F1, F0.5, Accuracy) |> 
+    pivot_longer(-Type, names_to = 'Measure') |> 
+    group_by(Type, Measure) |> 
+    summarise(median = median(value)) |> 
+    pivot_wider(names_from = Measure, values_from = median) 
+    
+}
+
+count_correctness <- function(filtered_data) {
+  filtered_data |>
+    separate(True_species,
+             into = c('True_Genus', 'True_Epiteth'),
+             remove = FALSE) |>
+    mutate(species = na_if(species, 'dropped')) |>
+    mutate(genus = na_if(genus, 'dropped')) |>
+    
+    mutate(
+      CorrectSpecies = case_when(
+        !is.na(species) &
+          True_species == species ~ 'Correct species',
+        !is.na(species) &
+          True_species != species ~ 'Incorrect species',
+        !is.na(genus) &
+          !is.na(True_Genus) &
+          True_Genus == genus ~ 'Correct genus',
+        !is.na(genus) &
+          !is.na(True_Genus) &
+          True_Genus != genus ~ 'Incorrect genus',
+        !is.na(family) &
+          True_family == family ~ 'Correct family',
+        !is.na(family) &
+          True_family != family ~ 'Incorrect family',
+        TRUE ~ NA
+      )
+    ) |>
+    group_by(Query, Type, Subject) |>
+    count(CorrectSpecies) |>
+    group_by(Query, Type, Subject) |>
+    mutate(total = sum(n)) |>
+    mutate(
+      all_asvs = case_when(
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 24,
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 27,
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 102,
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 112,
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99
+      )
+    ) |>
+    mutate(missing = all_asvs - total) |>
+    group_modify( ~ add_row(.x)) |>
+    group_modify( ~ {
+      .x |> mutate(
+        new_col = max(missing, na.rm = TRUE),
+        newcol2 = max(all_asvs, na.rm = TRUE)
+      ) |>
+        mutate(
+          n = case_when(is.na(CorrectSpecies) & is.na(missing) ~ new_col,
+                        TRUE ~ n),
+          all_asvs = case_when(
+            is.na(CorrectSpecies) & is.na(missing) ~ newcol2,
+            TRUE ~ all_asvs
+          )
+        )
+    }) |>
+    mutate(perc = n / all_asvs * 100) |>
+    mutate(CorrectSpecies = replace_na(CorrectSpecies, 'No hit')) |>
+    mutate(
+      Query = case_when(
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 'Rottnest',
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 'Rottnest',
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species'
+      )
+    ) |>
+    mutate(Subject = case_when(Subject == '12s_v010_final.fasta' ~ '12S',
+                               TRUE ~ '16S')) |>
+    mutate(CorrectSpecies = factor(CorrectSpecies, rev(
+      c(
+        'Correct species',
+        'Correct genus',
+        'Correct family',
+        'Incorrect family',
+        'Incorrect genus',
+        'Incorrect species',
+        'No hit'
+      )
+    ))) |> 
+    rename("Classifier" = Type) |> 
+    group_modify ( ~ { .x |> tidyr::complete(CorrectSpecies, fill = list(n=0, total = max(.x$all_asvs), missing = NA, perc = 0)) } )    
+}
+
+plot_correctness <- function(counted_data) {
+  cols <- c('Correct species' = "#009E73", 
+            'Correct genus'="#56B4E9", 
+            'Correct family' = "#0072B2", 
+            'Incorrect family' = "#E69F00", 
+            'Incorrect genus'="#F0E442", 
+            'Incorrect species'="#D55E00", 
+            'No hit'= "#D3D3D3")
+  
+  my_plot <- function(counted_data) {
+    counted_data |> 
+    ggplot(aes(
+      x = fct_rev(fct_reorder2(Classifier, CorrectSpecies, n)),
+      fill = CorrectSpecies,
+      y = perc
+    )) +
+    geom_col() +
+    coord_flip() +
+    theme_minimal() +
+    ylab('Percentage') +
+    xlab('Classifier') +
+    scale_fill_manual(name = 'Outcome',
+                      values = cols,
+                      breaks = names(cols))
+  }
+  # The version with 'proper' A-F tags via patchwork
+  # plots <- counted_data |> 
+  #   group_by(Query, Subject)  |> 
+  #   group_split(.keep = TRUE) |> 
+  #   lapply(my_plot) |> 
+  #   wrap_plots() + 
+  #   plot_annotation(tag_levels = 'A') + 
+  #   plot_layout(guides = 'collect') &
+  #   theme(legend.position = 'bottom')
+  # # turn off some of the shared labels
+  # plots[[2]]$labels$x <- ''
+  # plots[[3]]$labels$x <- ''
+  # plots[[5]]$labels$x <- ''
+  # plots[[6]]$labels$x <- ''
+  # plots[[1]]$labels$y <- ''
+  # plots[[2]]$labels$y <- ''
+  # plots[[3]]$labels$y <- ''
+  
+  # the version with facet_wrap
+  plots <- my_plot(counted_data) + facet_wrap (~ Subject + Query) + 
+    theme(legend.position = 'bottom', 
+    plot.background = element_rect(
+      fill = "white",
+      colour = "white"
+    ))
+  plots
+}
+
+get_stats_on_correctness <- function(counted_data){
+  counted_data |> 
+    ungroup() |> 
+    group_by(Classifier, Subject) |> 
+    filter(CorrectSpecies == 'Correct species') |> 
+    summarise(average_correctness = mean(perc)) |> 
+    arrange(average_correctness)
 }

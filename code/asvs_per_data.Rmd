@@ -9,6 +9,7 @@ library(tidyverse)
 
 ```{r}
 data <- read_tsv('data/asvs_per_classifier.csv')
+data |> select(-zOTU)
 ```
 
 ```{r}

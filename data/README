@@ -1,2 +1,7 @@
 for l in ../../runClassifiers/*/all_results.tsv; do tool=$(echo $l | cut -f 4 -d '/'); cp $l ${tool}_$(basename $l); done
 for l in *tsv; do gzip $l; done
+
+# I then manually deleted the Kraken output and copied a filtered version in
+rm 7-kraken_all_results.tsv.gz
+cp ../../runClassifiers/7-kraken/all_results.subsetConfidence.tsv .
+gzip all_results.subsetConfidence.tsv

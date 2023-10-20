@@ -2,14 +2,14 @@ library(targets)
 library(tarchetypes)
 source('code/functions.R')
 
-tar_option_set(packages = c('tidyverse', 'ggdendro', 'ggvenn'))
+tar_option_set(packages = c('tidyverse', 'ggdendro', 'ggvenn', 'tidyr'))
 
 list(
   # phylogeny of classifiers
-  tar_target(classifier_distances, 'data/distances.csv', format='file'), # designate the file
-  tar_target(classifier_data, get_classifier_data(classifier_distances)), # load the file
-  tar_target(dendrogram, plot_dendrogram(classifier_data)), # make the plot
-  tar_target(saved, save_plot(dendrogram)), # save the figure
+  tar_target(classifier_distances, 'data/distances.csv', format='file'),
+  tar_target(classifier_data, get_classifier_data(classifier_distances)),
+  tar_target(dendrogram, plot_dendrogram(classifier_data)),
+  tar_target(saved, my_save_plot(dendrogram, 'classifier_dendrogram.png')),
   tar_render(report, 'code/report.Rmd'),
   # plot classifier complexity
   tar_render(classifier_complexity, 'code/classifier_complexity.Rmd'),
@@ -21,7 +21,7 @@ list(
   tar_target(blast_hits_data, get_hits_data(blast_hits)),
   tar_target(subsambled_blast_hits_data, subsample_blast_hits(blast_hits_data)),
   tar_target(thirty_subsambled_blast_hits_data, subsample_blast_thirty_hits(blast_hits_data)),
-  tar_target(kraken_hits, 'data/7-kraken_all_results.tsv.gz', format = 'file'),
+  tar_target(kraken_hits, 'data/7-Kraken_all_results.subsetConfidence.tsv.gz', format = 'file'),
   tar_target(kraken_hits_data, get_hits_data(kraken_hits)),
   tar_target(subsambled_kraken_hits_data, subsample_blast_hits(kraken_hits_data)),
   tar_target(thirty_subsampled_kraken_hits_data, subsample_blast_thirty_hits(kraken_hits_data)),
@@ -39,5 +39,14 @@ list(
   tar_files(all_results, 'data/' |> list.files(full.names = TRUE, pattern = 'tsv.gz$')),
   tar_target(merged_all_results, load_and_merge_all_results(all_results)),
   # now finally, compare all data and truth sets
-  tar_render(final_outcomes, 'code/final_checks.Rmd')
+  tar_render(final_outcomes_100, 'code/100_species_final_checks.Rmd'),
+  tar_render(final_outcomes_rottnest, 'code/rottnest_species_final_checks.Rmd'),
+  tar_render(final_outcomes_negative_bacteria, 'code/negative_bacteria_final_checks.Rmd'),
+  # make a table where we mean/median all F1s etc. across all query datasets,
+  tar_target(correctness_table, assess_correctness(merged_all_results, truth_set_data)),
+  tar_target(counted_correctness, count_correctness(correctness_table)),
+  tar_target(median_f1_table, make_mean_median_f1_table(correctness_table)),
+  tar_target(correctness_figure, plot_correctness(counted_correctness)),
+  tar_target(save_correct, my_save_plot(correctness_figure, 'Correctness.png'))
+  
 )
