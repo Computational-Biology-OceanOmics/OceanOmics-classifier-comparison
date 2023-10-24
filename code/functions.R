@@ -103,7 +103,8 @@ assess_correctness <- function(data, truth) {
               (  Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' & Subject == '16S_v04_final.fasta')) |> 
     mutate(CorrectSpecies = case_when(!is.na(species) & True_species == species ~ 'Correct species',
                                       !is.na(species) & True_species != species ~ 'Incorrect species',
-                                      TRUE ~ NA)) 
+                                      TRUE ~ NA))
+  
   # you can test here using with(filtered_data, table(Query, Subject))   
   filtered_data
 }
@@ -230,7 +231,8 @@ count_correctness <- function(filtered_data) {
 }
 
 plot_correctness <- function(counted_data) {
-  cols <- c('Correct species' = "#009E73", 
+
+    cols <- c('Correct species' = "#009E73", 
             'Correct genus'="#56B4E9", 
             'Correct family' = "#0072B2", 
             'Incorrect family' = "#E69F00", 
@@ -273,7 +275,7 @@ plot_correctness <- function(counted_data) {
   # plots[[3]]$labels$y <- ''
   
   # the version with facet_wrap
-  plots <- my_plot(counted_data) + facet_wrap (~ Subject + Query) + 
+  plots <- my_plot(counted_data) + facet_wrap(~ Subject + Query) + 
     theme(legend.position = 'bottom', 
     plot.background = element_rect(
       fill = "white",
@@ -289,4 +291,74 @@ get_stats_on_correctness <- function(counted_data){
     filter(CorrectSpecies == 'Correct species') |> 
     summarise(average_correctness = mean(perc)) |> 
     arrange(average_correctness)
+}
+
+make_error_types_table <- function(correctness_table) {
+  # need to know which errors are being made. Is it totally wrong species? wrong species, but correct genus?
+
+  correctness_table |> 
+    mutate(Subject = case_when(Subject == '12s_v010_final.fasta' ~ '12S',
+                               TRUE ~ '16S')) |> 
+    separate(species, into = c('genus', 'epiteth')) |> 
+    separate(True_species, into = c('True_genus', 'True_epiteth')) |> 
+    mutate(CorrectGenus = case_when( True_genus == genus ~ 'Correct genus', 
+                                     True_genus != genus ~ 'Incorrect genus',
+                                     TRUE ~ NA)) |> 
+    mutate(Outcome = case_when(CorrectSpecies == 'Correct species' & CorrectGenus == 'Correct genus' ~ 'Genus + species correct',
+                            CorrectSpecies == 'Incorrect species' & CorrectGenus == 'Correct genus' ~ 'Genus correct, species wrong',
+                            CorrectSpecies != 'Correct species' & CorrectGenus != 'Correct genus' ~ 'Genus + species wrong')) |> 
+    mutate(Outcome = factor(Outcome, levels = c('Genus + species correct','Genus correct, species wrong', 'Genus + species wrong'))) |> 
+    group_by(Type, Query, Subject, Outcome) |> 
+    filter(!is.na(Outcome)) |> 
+    count() |> 
+    group_by(Type, Query, Subject) |> 
+    mutate(totals = sum(n),
+           Percentage = n/totals*100)
+}
+
+make_error_types_figure <- function(error_types_table) {
+  cols <- list('Genus + species correct' = "#009E73",
+               'Genus correct, species wrong' = "#56B4E9",
+               'Genus + species wrong' = "#D55E00")
+  
+  error_types_table |> 
+    ggplot(aes(x = Type, y = Percentage, fill = Outcome))  + 
+    geom_col() + 
+    facet_wrap(~Subject + Query) + 
+    coord_flip() +
+    scale_fill_manual(values = cols) +
+    xlab('Classifier') +
+    theme_minimal() +
+    theme(legend.position = 'bottom', 
+          plot.background = element_rect(
+            fill = "white",
+            colour = "white"
+        ))
+}
+
+make_big_table <- function(correctness_table) {
+
+  # we make one table where we have all the species labels, one column per classifier
+  outcome_spread <- correctness_table |> 
+    select(-c(family, genus, CorrectSpecies)) |> 
+    spread(Type, species) |> 
+    # rename those outcome columns
+    rename_at(vars(-Query, -Subject, -OTU, -True_species, -True_family), ~ paste0(., '_outcome'))
+  
+  # and another table where we have whether those labels are correct or not, again one column per classifier
+  label_spread <- correctness_table |> 
+    select(-c(species, family, genus)) |> 
+    spread(Type, CorrectSpecies) |> 
+    # rename those outcome columns
+    rename_at(vars(-Query, -Subject, -OTU, -True_species, -True_family), ~ paste0(., '_label'))
+  
+  # now we chuck that together
+  together <- cbind(label_spread, 
+                    outcome_spread |> select(-c(Query, Subject, OTU, True_species, True_family))) |> 
+    # sort the columns so label and outcome are together
+    select(sort(tidyselect::peek_vars())) |> 
+    # get my 'leading' columns back to the front
+    relocate(c(OTU, Query, Subject, True_family, True_species))
+  
+  together
 }

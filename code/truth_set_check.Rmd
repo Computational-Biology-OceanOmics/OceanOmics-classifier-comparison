@@ -4,6 +4,7 @@ output: html_document
 date: "2023-09-27"
 ---
 ```{r}
+source('code/helpers.R')
 library(tidyverse)
 ```
 
@@ -12,7 +13,7 @@ data <- targets::tar_read(truth_set_data)
 blast <- targets::tar_read(subsambled_blast_hits_data)
 kraken <- targets::tar_read(subsambled_kraken_hits_data) 
 
-kraken <- kraken |> separate(Type, c('Type', 'Kraken_confidence'), sep='_') |> 
+kraken <- kraken |> separate(Type, c('Type', 'Kraken_confidence'), sep = '_') |> 
   mutate(Kraken_confidence = as.numeric(Kraken_confidence))
 
 

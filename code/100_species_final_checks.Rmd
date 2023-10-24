@@ -7,6 +7,7 @@ date: "2023-10-09"
 # Setup
 
 ```{r setup}
+source('code/helpers.R')
 library(tidyverse)
 library(forcats)
 library(cowplot)
@@ -17,7 +18,6 @@ library(patchwork)
 library(vegan)
 library(pheatmap)
 library(ggradar)
-source('code/helpers.R')
 library(broom)
 ```
 
