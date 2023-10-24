@@ -23,7 +23,7 @@ all_results_c546527e|branch|f752287cc3d4b287|ac8a48418f7a4371|ef46db3751d8e999|-
 all_results_eccc5a34|branch|910811664df8a3fd|ac8a48418f7a4371|ef46db3751d8e999|295219120|data//1.1-BLAST100Perc_all_results.tsv.gz|t19640.1939256255s|763848e75a1de95a|75130|file|local|vector|all_results||0||
 all_results_ecfccd47|branch|fcdedd2f20b15fb0|ac8a48418f7a4371|ef46db3751d8e999|-2024345111|data//1-BLAST_all_results.tsv.gz|t19635.3208260617s|72b8778a34a5eaa0|136881|file|local|vector|all_results||0.001||
 all_results_f4773b3e|branch|90c90d046406c69b|ac8a48418f7a4371|ef46db3751d8e999|-1688595257|data//6-mothur_all_results.tsv.gz|t19641.336168016s|919ff25b22c03afc|478752|file|local|vector|all_results||0||
-all_results_files|stem|570fc769d9f3f6ae|c72fb0b8b89da6ec|ef46db3751d8e999|516498240||t19654.260637232s|2721c650416a264a|204|rds|local|vector||all_results_files_6021c2ca*all_results_files_b1cf7249*all_results_files_695a191e*all_results_files_47e3bc3f*all_results_files_edb14ae3*all_results_files_6f58b0ca*all_results_files_eb5641dd*all_results_files_7846b9fd*all_results_files_8bfe73bb|0.86|package ggplot2 was built under R version 4.2.3. package tidyr was built under R version 4.2.2. package purrr was built under R version 4.2.2. package dplyr was built under R version 4.2.2. package stringr was built under R version 4.2.2|
+all_results_files|stem|570fc769d9f3f6ae|c72fb0b8b89da6ec|ef46db3751d8e999|516498240||t19654.302135456s|2721c650416a264a|204|rds|local|vector||all_results_files_6021c2ca*all_results_files_b1cf7249*all_results_files_695a191e*all_results_files_47e3bc3f*all_results_files_edb14ae3*all_results_files_6f58b0ca*all_results_files_eb5641dd*all_results_files_7846b9fd*all_results_files_8bfe73bb|0.95|package tidyr was built under R version 4.2.2. package purrr was built under R version 4.2.2. package stringr was built under R version 4.2.2|
 assess_correctness|function|356ba7933284a4ae|||||||||||||||
 big_species_table|stem|8757d3320960229d|2c5deea00415b807|08607734854dbae5|-1812841974||t19654.2539898398s|a69922c813ae64e1|16900|rds|local|vector|||0.06||
 blast_hits|stem|fcdedd2f20b15fb0|212ff986b80655bf|ef46db3751d8e999|769111007|data/1-BLAST_all_results.tsv.gz|t19650.2142035653s|72b8778a34a5eaa0|136881|file|local|vector|||0||
@@ -37,14 +37,14 @@ correctness_table|stem|c4249e4caba8b4d6|1ef5da4036cb76ff|9d294570ac347228|-21367
 count_correctness|function|4cf0b65b94210ee1|||||||||||||||
 counted_correctness|stem|03f6342b6afc86ff|250553d3143efe1c|033321e7b07329a3|31741457||t19654.2540855593s|91256d73c99a017d|4608|rds|local|vector|||8||
 dendrogram|stem|db6555547800a49f|25d5d61a9cedd614|af2e2878d70266c7|-1276247565||t19654.2480037615s|937f3baae2456cce|113079|rds|local|vector|||0.08||
-error_types_figure|stem|d2435fa529056728|84d52b972a6f244b|0cca92e1bfe24f3b|421693072||t19654.2540867958s|96120249f3ed5364|93634|rds|local|vector|||0.05||
-error_types_table|stem|d2da9d16d6eaa72a|cf7e12cce067a9c0|70b061f45346c88e|-1840419897||t19654.2539889188s|e3694fa906971dcf|2488|rds|local|vector|||0.2||
+error_types_figure|stem|07e9dc1144a49500|84d52b972a6f244b|4bb0a9d498f946d9|421693072||t19654.2967443586s|55180491e950fd0b|173087|rds|local|vector|||0.06||
+error_types_table|stem|a97b6db35e52c1a9|cf7e12cce067a9c0|e9bb553a115cb1e5|-1840419897||t19654.2967422574s|1d0923d651018724|2208|rds|local|vector|||0.23||
 f0.5|function|c8157420c452c74a|||||||||||||||
 f1|function|06c2c538e53d9ca8|||||||||||||||
 final_outcomes|stem|bfea5c1324389ee1|a5e42b66cf5e06e7|66d04d209987ab02|-788458200|code/final_checks.html*code/final_checks.Rmd|t19643.1235827624s|d6a89459719242f9|7050317|file|local|vector|||34.632||
-final_outcomes_100|stem|cfd1d9eba5b121c6|1b1b31224ae92ccd|820476f78b0fa130|-940418235|code/100_species_final_checks.html*code/100_species_final_checks.Rmd|t19654.2496160245s|4f0189a5d6cf5b75|3055322|file|local|vector|||66.17|Removed 50 rows containing nonfinite values stat_count.. Removed 22 rows containing nonfinite values stat_count.. Removed 14 rows containing nonfinite values stat_count.. Removed 46 rows containing nonfinite values stat_count.. Removed 26 rows containing nonfinite values stat_count.. Removed 8 rows containing nonfinite values stat_count.|
+final_outcomes_100|stem|eed2006a2e470328|1b1b31224ae92ccd|820476f78b0fa130|-940418235|code/100_species_final_checks.html*code/100_species_final_checks.Rmd|t19654.2994584843s|7ae84e9ea0d0a45c|3054506|file|local|vector|||43.08||
 final_outcomes_negative_bacteria|stem|b2ea983bdee22f8a|8df2bf5a3e1824d0|820476f78b0fa130|690698864|code/negative_bacteria_final_checks.html*code/negative_bacteria_final_checks.Rmd|t19654.2496778898s|a70a50a00e7f20d8|677048|file|local|vector|||5.15||
-final_outcomes_rottnest|stem|1129651857803707|657ddb1fe175d014|820476f78b0fa130|1612126785|code/rottnest_species_final_checks.html*code/rottnest_species_final_checks.Rmd|t19654.2488483629s|2c5a91bdf78c82af|2988219|file|local|vector|||66.97|Removed 46 rows containing nonfinite values stat_count.. Removed 25 rows containing nonfinite values stat_count.. Removed 9 rows containing nonfinite values stat_count.. Removed 34 rows containing nonfinite values stat_count.. Removed 17 rows containing nonfinite values stat_count.. Removed 11 rows containing nonfinite values stat_count.|
+final_outcomes_rottnest|stem|af0b736893d6f543|657ddb1fe175d014|820476f78b0fa130|1612126785|code/rottnest_species_final_checks.html*code/rottnest_species_final_checks.Rmd|t19654.2989588313s|fd56904aadc0d3b0|2985758|file|local|vector|||45.53||
 get_classifier_data|function|e553cd2560ad684b|||||||||||||||
 get_hits_data|function|4a738f6df7ca353a|||||||||||||||
 get_stats_on_correctness|function|606f7c97097f6ceb|||||||||||||||
@@ -55,12 +55,12 @@ kraken_hits_data|stem|44e332217178d036|a3e04adac4a46e25|dc0e4c926db3271c|-663603
 library|function|7e252f3e8edaddb1|||||||||||||||
 load_and_merge_all_results|function|006326475fbb0723|||||||||||||||
 make_big_table|function|4ac2e55bb16b72b2|||||||||||||||
-make_error_types_figure|function|6b4721244e4d625c|||||||||||||||
-make_error_types_table|function|53cfd6de2269f2ef|||||||||||||||
+make_error_types_figure|function|4d76c4d8a796b9ff|||||||||||||||
+make_error_types_table|function|173e9099227ac6d5|||||||||||||||
 make_mean_median_f1_table|function|cc649b1bf8035be7|||||||||||||||
 mcc|function|e204f3ad757de21f|||||||||||||||
 median_f1_table|stem|098ff5b3d14faa15|82812d3475c2487b|9119f76c024ef4a4|58168190||t19654.2539928207s|d57738d6411fcd8b|796|rds|local|vector|||0.25||
-merged_all_results|stem|8f218473158edb4b|18871802b86b8777|14ba82598465831b|1957529882||t19654.2480016892s|3eb8082de3700f23|2011050|rds|local|vector|||3.12||
+merged_all_results|stem|8f218473158edb4b|08b22d4392161b37|005824b97c02283d|1957529882||t19654.3021804426s|3eb8082de3700f23|2011050|rds|local|vector|||2.12||
 my_save_plot|function|a5a1e33a89512dcb|||||||||||||||
 my_save_table|function|38fff847343c03f0|||||||||||||||
 nbc_hits|stem|2b26e3ce483a0e9a|600bf4bfc5656aaa|ef46db3751d8e999|204417559|data/8-NBC_all_results.tsv.gz|t19650.2142042596s|50306289fe6c6bd1|486788|file|local|vector|||0||
@@ -74,12 +74,12 @@ plot_report|stem|490b10ce296aa6ea|2fbab17db4fdada1|ef46db3751d8e999|47318105||t1
 precision|function|a5d9aa8bfbef1a6f|||||||||||||||
 recall|function|bc8b3e28a1f2bdec|||||||||||||||
 report|stem|70baf09a73036196|176a475331ea5780|43eeefba2e72b7cb|-237041703|code/report.html*code/report.Rmd|t19654.0695729235s|62f12af85d072df7|624984|file|local|vector|||3.06||
-save_correct|stem|3d9d440866b0fbd7|c8412da370aaaf75|22395d91025353e0|-1107703196||t19654.2541056948s|ff026697d66e9a9f|75|rds|local|vector|||0.81||
+save_correct|stem|7765973f99bf0c93|bbd12dd3decb2e47|22395d91025353e0|-1107703196||t19654.2958652335s|ff026697d66e9a9f|75|rds|local|vector|||1.39||
 save_correct_table|stem|58bafa71b8001056|8e7191f038c3e9f1|1ea3879df5518150|-925773280||t19654.2606400199s|ce9b4a225e799bab|165|rds|local|vector|||0.05||
 save_plot|function|b4d702e3b4cf9f5f|||||||||||||||
 saved|stem|9fb7e9bd52bee1f4|24e83b3d76660d0f|7f60bddc37e2fb00|-1316260880||t19654.2496817002s|0e696b453c03de61|85|rds|local|vector|||0.25||
-saved_error_types|stem|be5ffb43abb65cd6|32371e080d48cc6a|660befcfb8070497|-1917939727||t19654.2594808559s|ce9b4a225e799bab|165|rds|local|vector|||0.1||
-saved_errors|stem|707758226756e3de|521243b604178f36|9f3c288426d455e6|1293928997||t19654.2540962933s|ff026697d66e9a9f|75|rds|local|vector|||0.69||
+saved_error_types|stem|be5ffb43abb65cd6|32371e080d48cc6a|6acaccd78deb4848|-1917939727||t19654.296745028s|ce9b4a225e799bab|165|rds|local|vector|||0.03||
+saved_errors|stem|707758226756e3de|521243b604178f36|7311e2473b68fd6c|1293928997||t19654.2967586489s|ff026697d66e9a9f|75|rds|local|vector|||1.14||
 saved_median_f1_table|stem|04611adbd3e8b903|9c48e8e675d3f0e2|8b8c39ca1c779d17|-1944924293||t19654.2598509871s|ae3ca543e47cf4fd|166|rds|local|vector|||0.03||
 subsambled_blast_hits_data|stem|d9063c752687aee4|4b0280aa957b103a|94b6a02756a8a15e|544726943||t19654.2479245295s|4817c9dce2f4b9f4|4458|rds|local|vector|||0.22||
 subsambled_kraken_hits_data|stem|ab6853b30b22f137|fdfc4d15e3b38864|346ca869a26ac039|-975434067||t19654.2479115197s|584744b336831387|6073|rds|local|vector|||0.3||
@@ -94,4 +94,4 @@ thirty_subsampled_kraken_hits_data|stem|44e16fa697969e10|56c5fcb7a264e68d|dca008
 thirty_subsampled_nbc_hits_data|stem|fe000ff9db35944f|09d88538f58e3bba|591a6210b3b307cd|-1077222718||t19654.2479217416s|f2c3ed0080542ca5|2040|rds|local|vector|||0.37||
 truth_set|stem|5a0bce0f9e35c73e|c71ad143dcc18455|ef46db3751d8e999|640448977|data/truth/truthsets_with_lineages.tsv.gz|t19654.0689967651s|6044e0195a090f92|19248|file|local|vector|||1.01|package ggplot2 was built under R version 4.2.3. package tidyr was built under R version 4.2.2. package purrr was built under R version 4.2.2. package dplyr was built under R version 4.2.2. package stringr was built under R version 4.2.2|
 truth_set_data|stem|27a1724e8a4c8223|94c239d32ae62f37|620c154d5ccbf14a|717282996||t19654.2478647044s|0ad76e281323e912|24049|rds|local|vector|||0.46||
-truth_set_investigation|stem|65c8052ea6d7fac2|4c74d29181d5c7d0|1e683cc374173cb4|-1713979401|code/truth_set_check.html*code/truth_set_check.Rmd|t19654.2480643375s|3a7370b57f3ba243|732215|file|local|vector|||5.35||
+truth_set_investigation|stem|9ad6d2c5beae7cd5|4c74d29181d5c7d0|1e683cc374173cb4|-1713979401|code/truth_set_check.html*code/truth_set_check.Rmd|t19654.3008590629s|7a3b605f150d772a|732135|file|local|vector|||4.08||

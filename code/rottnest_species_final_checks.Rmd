@@ -8,6 +8,8 @@ This is the same notebook as 100_species, but we look at the rottnest queryset. 
 # Setup
 
 ```{r setup}
+knitr::opts_chunk$set(warning = FALSE)
+
 source('code/helpers.R')
 library(tidyverse)
 library(forcats)

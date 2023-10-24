@@ -299,8 +299,8 @@ pre code {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -308,16 +308,9 @@ pre code {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -368,7 +361,10 @@ pre code {
 </div>
 
 
-<pre class="r"><code>source(&#39;code/helpers.R&#39;)
+<pre class="r"><code>knitr::opts_chunk$set(warning = FALSE)
+
+source(&#39;code/helpers.R&#39;)
+
 library(tidyverse)</code></pre>
 <pre class="r"><code>data &lt;- targets::tar_read(truth_set_data)
 blast &lt;- targets::tar_read(subsambled_blast_hits_data)
@@ -429,7 +425,7 @@ nbc &lt;- targets::tar_read(subsampled_nbc_hits_data)</code></pre>
 ##  8 dropped      Cheilopogon cyanopterus
 ##  9 dropped      Cottus asper           
 ## 10 dropped      Cirrhigaleus australis 
-## # … with 336 more rows</code></pre>
+## # ℹ 336 more rows</code></pre>
 <pre class="r"><code>blast |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Blast&#39;, &#39;Truth&#39;)) |&gt; nrow()</code></pre>
 <pre><code>## [1] 461</code></pre>
 <p>So we have 137 false negatives, 96 true positives, 13 false
@@ -456,12 +452,12 @@ blast_f0.5 &lt;- 1.25 * ( blast_precision * blast_recall / (0.25 * blast_precisi
 ##  8 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
 ##  9 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
 ## 10 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-## # … with 451 more rows, and 17 more variables: classKraken &lt;chr&gt;,
-## #   orderKraken &lt;chr&gt;, familyKraken &lt;chr&gt;, genusKraken &lt;chr&gt;,
-## #   speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;, SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;,
-## #   lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;, domainTruth &lt;chr&gt;, phylumTruth &lt;chr&gt;,
-## #   classTruth &lt;chr&gt;, orderTruth &lt;chr&gt;, familyTruth &lt;chr&gt;, genusTruth &lt;chr&gt;,
-## #   speciesTruth &lt;chr&gt;</code></pre>
+## # ℹ 451 more rows
+## # ℹ 17 more variables: classKraken &lt;chr&gt;, orderKraken &lt;chr&gt;,
+## #   familyKraken &lt;chr&gt;, genusKraken &lt;chr&gt;, speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;,
+## #   SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;, lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;,
+## #   domainTruth &lt;chr&gt;, phylumTruth &lt;chr&gt;, classTruth &lt;chr&gt;, orderTruth &lt;chr&gt;,
+## #   familyTruth &lt;chr&gt;, genusTruth &lt;chr&gt;, speciesTruth &lt;chr&gt;</code></pre>
 <p>True positives, False positives:</p>
 <pre class="r"><code>kraken |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesKraken, speciesTruth) |&gt; 
@@ -503,7 +499,7 @@ blast_f0.5 &lt;- 1.25 * ( blast_precision * blast_recall / (0.25 * blast_precisi
 ##  8 &lt;NA&gt;          Cheilopogon cyanopterus
 ##  9 &lt;NA&gt;          Cottus asper           
 ## 10 &lt;NA&gt;          Cirrhigaleus australis 
-## # … with 310 more rows</code></pre>
+## # ℹ 310 more rows</code></pre>
 <p>106 True positives, 29 False Positives, 3 true negatives, 111 false
 negatives</p>
 <pre class="r"><code>kraken_accuracy &lt;- 106 / (106+29+3+111) 
@@ -555,7 +551,7 @@ kraken_f0.5 &lt;- 1.25 * ( kraken_precision * kraken_recall / (0.25 * kraken_pre
 ##  8 &lt;NA&gt;          Hydrolagus affinis   
 ##  9 &lt;NA&gt;          Istigobius campbelli 
 ## 10 &lt;NA&gt;          Bathyraja maccaini   
-## # … with 338 more rows</code></pre>
+## # ℹ 338 more rows</code></pre>
 <p>92 True positives, 15 False Positives, 3 true negatives, 139 false
 negatives</p>
 <pre class="r"><code>kraken_0.1_accuracy &lt;- 92 / (92+15+3+139) 
@@ -582,11 +578,12 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
 ##  8 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
 ##  9 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
 ## 10 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-## # … with 451 more rows, and 15 more variables: familyKraken &lt;lgl&gt;,
-## #   genusKraken &lt;chr&gt;, speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;, SubjectTruth &lt;chr&gt;,
-## #   taxids &lt;chr&gt;, lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;, domainTruth &lt;chr&gt;,
-## #   phylumTruth &lt;chr&gt;, classTruth &lt;chr&gt;, orderTruth &lt;chr&gt;, familyTruth &lt;chr&gt;,
-## #   genusTruth &lt;chr&gt;, speciesTruth &lt;chr&gt;</code></pre>
+## # ℹ 451 more rows
+## # ℹ 15 more variables: familyKraken &lt;lgl&gt;, genusKraken &lt;chr&gt;,
+## #   speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;, SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;,
+## #   lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;, domainTruth &lt;chr&gt;, phylumTruth &lt;chr&gt;,
+## #   classTruth &lt;chr&gt;, orderTruth &lt;chr&gt;, familyTruth &lt;chr&gt;, genusTruth &lt;chr&gt;,
+## #   speciesTruth &lt;chr&gt;</code></pre>
 <p>True positives, False positives:</p>
 <pre class="r"><code>nbc |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;NBC&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesNBC, speciesTruth) |&gt; 
@@ -628,7 +625,7 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
 ##  8 &lt;NA&gt;       Cleisthenes herzensteini
 ##  9 &lt;NA&gt;       Holacanthus ciliaris    
 ## 10 &lt;NA&gt;       Pristis pectinata       
-## # … with 318 more rows</code></pre>
+## # ℹ 318 more rows</code></pre>
 <p>96 True positives, 31 False Positives, 3 true negatives, 119 false
 negatives</p>
 <pre class="r"><code>nbc_accuracy &lt;- 96 / (96+31+3+119) 
@@ -674,7 +671,7 @@ df</code></pre>
 ##  8 Liparis bathyarcticus    &lt;NA&gt;                    Liparis bathy… &lt;NA&gt;         
 ##  9 Dipturus intermedius     &lt;NA&gt;                    &lt;NA&gt;           &lt;NA&gt;         
 ## 10 Hemigymnus melapterus    Hemigymnus melapterus   Hemigymnus me… Hemigymnus m…
-## # … with 173 more rows</code></pre>
+## # ℹ 173 more rows</code></pre>
 </div>
 <div id="more" class="section level1">
 <h1>MORE</h1>
@@ -736,7 +733,7 @@ nbc_thirty &lt;- targets::tar_read(thirty_subsampled_nbc_hits_data) </code></pre
 ##  8 dropped      Ctenochaetus tominiensis      
 ##  9 dropped      Ostracion rhinorhynchos       
 ## 10 dropped      Cleisthenes herzensteini      
-## # … with 412 more rows</code></pre>
+## # ℹ 412 more rows</code></pre>
 <pre class="r"><code>blast_thirty |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Blast&#39;, &#39;Truth&#39;)) |&gt; nrow()</code></pre>
 <pre><code>## [1] 461</code></pre>
 <p>So we have 213 false negatives, 27 true positives, 6 false positives,
@@ -764,12 +761,12 @@ blast_f0.5 &lt;- 1.25 * ( blast_precision * blast_recall / (0.25 * blast_precisi
 ##  8 Kraken                 0 make_12s_16… 16S_v04_fina… &lt;NA&gt;         &lt;NA&gt;        
 ##  9 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
 ## 10 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-## # … with 451 more rows, and 17 more variables: classKraken &lt;chr&gt;,
-## #   orderKraken &lt;chr&gt;, familyKraken &lt;chr&gt;, genusKraken &lt;chr&gt;,
-## #   speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;, SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;,
-## #   lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;, domainTruth &lt;chr&gt;, phylumTruth &lt;chr&gt;,
-## #   classTruth &lt;chr&gt;, orderTruth &lt;chr&gt;, familyTruth &lt;chr&gt;, genusTruth &lt;chr&gt;,
-## #   speciesTruth &lt;chr&gt;</code></pre>
+## # ℹ 451 more rows
+## # ℹ 17 more variables: classKraken &lt;chr&gt;, orderKraken &lt;chr&gt;,
+## #   familyKraken &lt;chr&gt;, genusKraken &lt;chr&gt;, speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;,
+## #   SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;, lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;,
+## #   domainTruth &lt;chr&gt;, phylumTruth &lt;chr&gt;, classTruth &lt;chr&gt;, orderTruth &lt;chr&gt;,
+## #   familyTruth &lt;chr&gt;, genusTruth &lt;chr&gt;, speciesTruth &lt;chr&gt;</code></pre>
 <p>True positives, False positives:</p>
 <pre class="r"><code>kraken_thirty |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesKraken, speciesTruth) |&gt; 
@@ -811,7 +808,7 @@ blast_f0.5 &lt;- 1.25 * ( blast_precision * blast_recall / (0.25 * blast_precisi
 ##  8 &lt;NA&gt;          Tropidophorus hangnam   
 ##  9 &lt;NA&gt;          Hydrolagus affinis      
 ## 10 &lt;NA&gt;          Istigobius campbelli    
-## # … with 347 more rows</code></pre>
+## # ℹ 347 more rows</code></pre>
 <p>33 True positives, 65 False Positives, 3 true negatives, 148 false
 negatives</p>
 <pre class="r"><code>kraken_accuracy &lt;- 33 / (33+65+3+148) 
@@ -837,12 +834,12 @@ kraken_f0.5 &lt;- 1.25 * ( kraken_precision * kraken_recall / (0.25 * kraken_pre
 ##  8 Kraken               0.1 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
 ##  9 Kraken               0.1 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
 ## 10 Kraken               0.1 make_12s_16… 12s_v010_fin… &lt;NA&gt;         &lt;NA&gt;        
-## # … with 451 more rows, and 17 more variables: classKraken &lt;chr&gt;,
-## #   orderKraken &lt;chr&gt;, familyKraken &lt;chr&gt;, genusKraken &lt;chr&gt;,
-## #   speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;, SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;,
-## #   lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;, domainTruth &lt;chr&gt;, phylumTruth &lt;chr&gt;,
-## #   classTruth &lt;chr&gt;, orderTruth &lt;chr&gt;, familyTruth &lt;chr&gt;, genusTruth &lt;chr&gt;,
-## #   speciesTruth &lt;chr&gt;</code></pre>
+## # ℹ 451 more rows
+## # ℹ 17 more variables: classKraken &lt;chr&gt;, orderKraken &lt;chr&gt;,
+## #   familyKraken &lt;chr&gt;, genusKraken &lt;chr&gt;, speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;,
+## #   SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;, lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;,
+## #   domainTruth &lt;chr&gt;, phylumTruth &lt;chr&gt;, classTruth &lt;chr&gt;, orderTruth &lt;chr&gt;,
+## #   familyTruth &lt;chr&gt;, genusTruth &lt;chr&gt;, speciesTruth &lt;chr&gt;</code></pre>
 <p>True positives, False positives:</p>
 <pre class="r"><code>kraken_0.1_thirty |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesKraken, speciesTruth) |&gt; 
@@ -884,7 +881,7 @@ kraken_f0.5 &lt;- 1.25 * ( kraken_precision * kraken_recall / (0.25 * kraken_pre
 ##  8 &lt;NA&gt;          Ctenochaetus tominiensis
 ##  9 &lt;NA&gt;          Daption capense         
 ## 10 &lt;NA&gt;          Engraulis mordax        
-## # … with 405 more rows</code></pre>
+## # ℹ 405 more rows</code></pre>
 <p>29 True positives, 11 False Positives, 3 true negatives, 206 false
 negatives</p>
 <pre class="r"><code>kraken_0.1_accuracy &lt;- 29 / (29+11+3+206) 
@@ -910,11 +907,12 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
 ##  8 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
 ##  9 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
 ## 10 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-## # … with 451 more rows, and 15 more variables: familyKraken &lt;lgl&gt;,
-## #   genusKraken &lt;chr&gt;, speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;, SubjectTruth &lt;chr&gt;,
-## #   taxids &lt;chr&gt;, lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;, domainTruth &lt;chr&gt;,
-## #   phylumTruth &lt;chr&gt;, classTruth &lt;chr&gt;, orderTruth &lt;chr&gt;, familyTruth &lt;chr&gt;,
-## #   genusTruth &lt;chr&gt;, speciesTruth &lt;chr&gt;</code></pre>
+## # ℹ 451 more rows
+## # ℹ 15 more variables: familyKraken &lt;lgl&gt;, genusKraken &lt;chr&gt;,
+## #   speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;, SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;,
+## #   lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;, domainTruth &lt;chr&gt;, phylumTruth &lt;chr&gt;,
+## #   classTruth &lt;chr&gt;, orderTruth &lt;chr&gt;, familyTruth &lt;chr&gt;, genusTruth &lt;chr&gt;,
+## #   speciesTruth &lt;chr&gt;</code></pre>
 <p>True positives, False positives:</p>
 <pre class="r"><code>nbc_thirty |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;NBC&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesNBC, speciesTruth) |&gt; 
@@ -956,7 +954,7 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
 ##  8 &lt;NA&gt;       Trichiurus lepturus     
 ##  9 &lt;NA&gt;       Bostrychus sinensis     
 ## 10 &lt;NA&gt;       Cirripectes castaneus   
-## # … with 402 more rows</code></pre>
+## # ℹ 402 more rows</code></pre>
 <p>28 True positives, 15 False Positives, 3 true negatives, 203 false
 negatives</p>
 <pre class="r"><code>nbc_accuracy &lt;- 28 / (28+15+3+203) 

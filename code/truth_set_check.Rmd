@@ -4,7 +4,10 @@ output: html_document
 date: "2023-09-27"
 ---
 ```{r}
+knitr::opts_chunk$set(warning = FALSE)
+
 source('code/helpers.R')
+
 library(tidyverse)
 ```
 

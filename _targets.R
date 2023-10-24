@@ -37,7 +37,7 @@ list(
   tar_render(truth_set_investigation, 'code/truth_set_check.Rmd'),
   # time to merge all results
   tar_files(all_results, 'data/' |> list.files(full.names = TRUE, pattern = 'tsv.gz$')),
-  tar_target(merged_all_results, load_and_merge_all_results(all_results)),
+  tar_target(merged_all_results, get_hits_data(all_results)),
   # now finally, compare all data and truth sets
   tar_render(final_outcomes_100, 'code/100_species_final_checks.Rmd'),
   tar_render(final_outcomes_rottnest, 'code/rottnest_species_final_checks.Rmd'),
@@ -49,7 +49,7 @@ list(
   tar_target(median_f1_table, make_mean_median_f1_table(correctness_table)),
   tar_target(saved_median_f1_table, my_save_table(median_f1_table, 'Median_F1_table')),
   tar_target(correctness_figure, plot_correctness(counted_correctness)),
-  tar_target(save_correct, my_save_plot(correctness_figure, 'Correctness.png')),
+  tar_target(save_correct, my_save_plot(correctness_figure, 'correctness.png')),
   tar_target(big_species_table, make_big_table(correctness_table)),
   # count the kinds of errors
   tar_target(error_types_table, make_error_types_table(correctness_table)),

@@ -1,7 +1,7 @@
 source('code/helpers.R')
 
 get_classifier_data <- function(file) {
-  read.csv(file, sep='\t', row.names=1)
+  read.csv(file, sep = '\t', row.names = 1)
 }
 
 plot_dendrogram <- function(data) {
@@ -11,10 +11,6 @@ plot_dendrogram <- function(data) {
     ggdendrogram(rotate = TRUE, theme_dendro = TRUE, labels = TRUE)
 }
 
-my_save_plot <- function(plot, name) {
-  ggsave(filename = paste0('figures/', name),
-          plot = plot, dpi = 300, width = 10, height = (9/16)*10 )
-}
 
 get_hits_data <- function(file) {
   read_tsv(file)
@@ -74,11 +70,6 @@ subsample_blast_hits <- function(data) {
                   Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa'))
 }
 
-
-load_and_merge_all_results <- function(files) {
-  # files is a named list
-  read_tsv(files)
-}
 
 assess_correctness <- function(data, truth) {
   truth <- truth |> 
@@ -304,22 +295,32 @@ make_error_types_table <- function(correctness_table) {
     mutate(CorrectGenus = case_when( True_genus == genus ~ 'Correct genus', 
                                      True_genus != genus ~ 'Incorrect genus',
                                      TRUE ~ NA)) |> 
-    mutate(Outcome = case_when(CorrectSpecies == 'Correct species' & CorrectGenus == 'Correct genus' ~ 'Genus + species correct',
+    mutate(Outcome = case_when(CorrectSpecies == 'Correct species' & CorrectGenus == 'Correct genus' ~ 'Genus and species correct',
                             CorrectSpecies == 'Incorrect species' & CorrectGenus == 'Correct genus' ~ 'Genus correct, species wrong',
-                            CorrectSpecies != 'Correct species' & CorrectGenus != 'Correct genus' ~ 'Genus + species wrong')) |> 
-    mutate(Outcome = factor(Outcome, levels = c('Genus + species correct','Genus correct, species wrong', 'Genus + species wrong'))) |> 
+                            CorrectSpecies != 'Correct species' & CorrectGenus != 'Correct genus' ~ 'Genus and species wrong')) |> 
+    mutate(Outcome = factor(Outcome, levels = c('Genus and species correct','Genus correct, species wrong', 'Genus and species wrong'))) |> 
     group_by(Type, Query, Subject, Outcome) |> 
     filter(!is.na(Outcome)) |> 
     count() |> 
     group_by(Type, Query, Subject) |> 
     mutate(totals = sum(n),
-           Percentage = n/totals*100)
+           Percentage = n/totals*100) |> 
+    mutate(
+      Query = case_when(
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 'Rottnest',
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 'Rottnest',
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species'
+      )
+    ) 
 }
 
 make_error_types_figure <- function(error_types_table) {
-  cols <- list('Genus + species correct' = "#009E73",
+  cols <- list('Genus and species correct' = "#009E73",
                'Genus correct, species wrong' = "#56B4E9",
-               'Genus + species wrong' = "#D55E00")
+               'Genus and species wrong' = "#D55E00")
   
   error_types_table |> 
     ggplot(aes(x = Type, y = Percentage, fill = Outcome))  + 

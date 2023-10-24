@@ -5,7 +5,10 @@ date: "2023-09-26"
 ---
 
 ```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+
 source('code/helpers.R')
+
 library(tidyverse)
 ```
 

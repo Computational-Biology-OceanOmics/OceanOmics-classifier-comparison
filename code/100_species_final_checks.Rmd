@@ -7,6 +7,8 @@ date: "2023-10-09"
 # Setup
 
 ```{r setup}
+knitr::opts_chunk$set(warning = FALSE)
+
 source('code/helpers.R')
 library(tidyverse)
 library(forcats)
