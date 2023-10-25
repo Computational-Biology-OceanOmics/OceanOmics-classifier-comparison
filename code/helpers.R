@@ -15,10 +15,10 @@ accuracy <- function(TP, FP, FN, TN) {
 }
 
 my_save_plot <- function(plot, name) {
-  ggsave(filename = paste0('figures/', name),
+  ggsave(filename = paste0('results/figures/', name),
          plot = plot, dpi = 300, width = 10, height = (9/16)*10 )
 }
 
 my_save_table <- function(table, name) {
-  writexl::write_xlsx(table, path = paste0('results/', name, '.xlsx'))
+  writexl::write_xlsx(table, path = paste0('results/tables/', name, '.xlsx'))
 }

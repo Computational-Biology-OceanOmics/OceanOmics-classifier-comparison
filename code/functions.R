@@ -70,7 +70,6 @@ subsample_blast_hits <- function(data) {
                   Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa'))
 }
 
-
 assess_correctness <- function(data, truth) {
   truth <- truth |> 
     select(Query, OTU, species, family) |> 

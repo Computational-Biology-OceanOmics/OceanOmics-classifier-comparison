@@ -1,8 +1,11 @@
 library(targets)
+library(crew)
 library(tarchetypes)
 source('code/functions.R')
 
-options(clustermq.scheduler = "multiprocess")
+tar_option_set(
+  controller = crew_controller_local(workers = 4)
+)
 
 tar_option_set(packages = c('tidyverse', 'ggdendro', 'ggvenn', 'tidyr'))
 
