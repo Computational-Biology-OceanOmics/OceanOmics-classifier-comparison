@@ -16,7 +16,7 @@ list(
   tar_target(dendrogram, plot_dendrogram(classifier_data)),
   tar_target(saved, my_save_plot(dendrogram, 'classifier_dendrogram.png')),
   # plot classifier complexity
-  #tar_render(classifier_complexity, 'code/classifier_complexity.Rmd'),
+  tar_render(classifier_complexity, 'code/classifier_complexity.Rmd'),
   # plotting ASVs per dataset
   tar_render(plot_asvs_per_dataset, 'code/asvs_per_data.Rmd'),
   # plotting classifier species hits - all of this stuff is for the internal presentation,
@@ -39,7 +39,7 @@ list(
   tar_target(truth_set_data, get_truth_data(truth_set)),
   tar_render(truth_set_investigation, 'code/truth_set_check.Rmd'),
   # time to merge all results
-  tar_files(all_results, 'data/' |> list.files(full.names = TRUE, pattern = 'tsv.gz$')),
+  tar_files_input(all_results, 'data/' |> list.files(full.names = TRUE, pattern = 'tsv.gz$')),
   tar_target(merged_all_results, get_hits_data(all_results)),
   # now finally, compare all data and truth sets
   tar_render(final_outcomes_100, 'code/100_species_final_checks.Rmd'),

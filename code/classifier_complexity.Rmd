@@ -13,7 +13,7 @@ library(tidyverse)
 ```
 
 ```{r}
-df <- read_tsv('/home/pbayer/Data/runClassifiers/complexity.tsv', col_names = c('README length', 'Tool'))
+df <- read_tsv('data/truth/complexity.tsv', col_names = c('README length', 'Tool'))
 ```
 
 ```{r}
