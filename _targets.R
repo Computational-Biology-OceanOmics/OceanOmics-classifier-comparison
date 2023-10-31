@@ -7,7 +7,7 @@ tar_option_set(
   controller = crew_controller_local(workers = 4)
 )
 
-tar_option_set(packages = c('tidyverse', 'ggdendro', 'ggvenn', 'tidyr'))
+tar_option_set(packages = c('tidyverse', 'ggdendro', 'ggvenn', 'tidyr', 'forcats'))
 
 list(
   # phylogeny of classifiers

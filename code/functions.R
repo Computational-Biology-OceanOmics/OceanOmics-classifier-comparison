@@ -147,7 +147,9 @@ count_correctness <- function(filtered_data) {
         !is.na(species) &
           True_species == species ~ 'Correct species',
         !is.na(species) &
-          True_species != species ~ 'Incorrect species',
+          True_species != species & True_Genus == genus ~ 'Correct genus, incorrect species',
+        !is.na(species) &
+          True_species != species & True_Genus != genus ~ 'Incorrect genus, incorrect species',
         !is.na(genus) &
           !is.na(True_Genus) &
           True_Genus == genus ~ 'Correct genus',
@@ -209,10 +211,11 @@ count_correctness <- function(filtered_data) {
       c(
         'Correct species',
         'Correct genus',
+        'Correct genus, incorrect species',
         'Correct family',
-        'Incorrect family',
+        'Incorrect genus, incorrect species',
         'Incorrect genus',
-        'Incorrect species',
+        'Incorrect family',
         'No hit'
       )
     ))) |> 
@@ -227,7 +230,8 @@ plot_correctness <- function(counted_data) {
             'Correct family' = "#0072B2", 
             'Incorrect family' = "#E69F00", 
             'Incorrect genus'="#F0E442", 
-            'Incorrect species'="#D55E00", 
+            'Correct genus, incorrect species'="#D55E00", 
+            'Incorrect genus, incorrect species'="darkred", 
             'No hit'= "#D3D3D3")
   
   my_plot <- function(counted_data) {
