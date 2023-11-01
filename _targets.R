@@ -53,6 +53,8 @@ list(
   tar_target(save_correct_table, my_save_table(counted_correctness, 'Counted_correctness')),
   tar_target(median_f1_table, make_mean_median_f1_table(correctness_table)),
   tar_target(saved_median_f1_table, my_save_table(median_f1_table, 'Median_F1_table')),
+  tar_target(all_f1_table, make_all_median_f1_tables(correctness_table)), 
+  tar_target(saved_all_f1_table, my_save_table(all_f1_table, 'All_F1_tables')),
   tar_target(correctness_figure, plot_correctness(counted_correctness)),
   tar_target(save_correct, my_save_plot(correctness_figure, 'correctness')),
   tar_target(big_species_table, make_big_table(correctness_table)),

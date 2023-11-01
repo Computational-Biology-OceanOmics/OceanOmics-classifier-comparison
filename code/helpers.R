@@ -22,6 +22,9 @@ my_save_plot <- function(plot, name) {
 }
 
 my_save_table <- function(table, name) {
-  # i'll also round to two decimals
-  writexl::write_xlsx(table |> mutate(across(where(is.numeric), \(x) round(x, 2))), path = paste0('results/tables/', name, '.xlsx'))
+  if(is.data.frame(table)) {
+    # i'll round to two decimals
+    table <- table |> mutate(across(where(is.numeric), \(x) round(x, 2)))
+  } 
+  writexl::write_xlsx(table, path = paste0('results/tables/', name, '.xlsx'))
 }

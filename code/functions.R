@@ -134,6 +134,45 @@ make_mean_median_f1_table <- function(filtered_data) {
     
 }
 
+
+make_all_median_f1_tables <- function(filtered_data) {
+  # this is Table 2, but split up into subtables for Supplementary Tables
+  
+  Counted_data <- filtered_data |> 
+    mutate(all_asvs = case_when(Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 24,
+                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 27,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 102,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 112,
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99)) |>
+    group_by(Type, Query, Subject, all_asvs) |>
+    summarise(TP = sum(str_detect(CorrectSpecies, pattern = '^Correct species$'), na.rm=TRUE),
+              FP = sum(str_detect(CorrectSpecies, pattern = 'Incorrect species'), na.rm=TRUE),
+              TN = sum(str_detect(replace_na(CorrectSpecies,'NA'), pattern='NA') & is.na(True_species), na.rm=TRUE),
+              FN = sum(is.na(species) & !is.na(True_species))) |> 
+    mutate(sums = TP + FP + TN + FN)  |>
+    mutate(missing = all_asvs - sums) |>
+    mutate(FN = FN + missing) |> 
+    select(-c(missing, sums))
+  
+  named_df_list <- Counted_data |> 
+    mutate(Precision = precision(TP, FP),
+           Recall = recall(TP, FN),
+           F1 = f1(Precision, Recall),
+           F0.5 = f0.5(Precision, Recall),
+           Accuracy = accuracy(TP, FP, FN, TN)) |> 
+    ungroup() |> 
+    select(Type,Query, Subject,  Precision, Recall, F1, F0.5, Accuracy) |> 
+    pivot_longer(-c(Query, Subject, Type), names_to = 'Measure') |> 
+    unite('Pair', Query:Subject, remove = FALSE) |>  # Pair will be hte name of the sheet in the XLSX
+    pivot_wider(names_from = Measure, values_from = value) |> 
+    group_by(Pair) |> 
+    group_split()
+  
+  named_df_list
+  
+}
+
 count_correctness <- function(filtered_data) {
   filtered_data |>
     separate(True_species,
