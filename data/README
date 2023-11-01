@@ -8,3 +8,9 @@ gzip all_results.subsetConfidence.tsv
 
  cp ../../runClassifiers/12-TheNucleotideTransformer/all_together.csv 12-TNT_all_results.tsv
 gzip 12-TNT*
+
+cp ../../runClassifiers/2-mmseqs2/100perc_all_results.tsv 2.1-mmseqs2100Perc_all_results.tsv
+gzip 2.1-mmseqs2100Perc_all_results.tsv
+
+# I then moved the 2.1-mmseqs2100Perc file to not_used as it is not used in the paper;
+# slightly worse overall performance than 2.1-mmseqs2

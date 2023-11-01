@@ -5,7 +5,7 @@ source(here::here('code', 'functions.R'))
 
 tar_option_set(
   # start four workers to run tasks at the same time
-  controller = crew_controller_local(workers = 4)
+  controller = crew_controller_local(workers = 8)
 )
 
 tar_option_set(packages = c('tidyverse', 'ggdendro', 'ggvenn', 'tidyr', 'forcats',
