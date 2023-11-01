@@ -10,7 +10,7 @@ This is the same notebook as 100_species, but we look at the rottnest queryset. 
 ```{r setup}
 knitr::opts_chunk$set(warning = FALSE)
 
-source('code/helpers.R')
+source(here::here('code', 'helpers.R'))
 library(tidyverse)
 library(forcats)
 library(cowplot)
@@ -40,10 +40,11 @@ Let's remove the >0.2 Kraken runs, those are too strict
 data <- data |> filter(!Type %in% c('Kraken_0.2', 'Kraken_0.3', 'Kraken_0.4', 'Kraken_0.5', 'Kraken_0.6', 'Kraken_0.7', 'Kraken_0.8', 'Kraken_0.9'))
 ```
 
-Made a mistake- Metabuli's Database is misspelled
+Made a mistake- Metabuli's and TNT's databases is misspelled
 
 ```{r}
 data <- data |> mutate(Subject = str_replace_all(Subject, pattern = '_ref.fasta', replacement=''))
+data <- data |> mutate(Subject = str_replace_all(Subject, pattern = 'final.csv', replacement = 'final.fasta'))
 ```
 
 
@@ -649,7 +650,7 @@ un_summarised_twelve  |> group_by(Type, Database) |> mutate(best = max(mean(reca
 
 ```{r}
 un_summarised_twelve  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Kraken_0.05', 'Qiime2')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Kraken_0.05', 'Qiime2', 'TNT')) |> 
   ggplot(aes(x=Database, y = precision, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot() +
   labs(fill='Type') + 
@@ -659,7 +660,7 @@ un_summarised_twelve  |>
 
 ```{r}
 false_positives <- un_summarised_twelve  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Kraken_0.05', 'Kraken_0.1', 'MMSeqs2')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Kraken_0.05', 'Kraken_0.1', 'MMSeqs2', 'TNT')) |> 
   ggplot(aes(x=Database, y = FP/102*100, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot(outlier.shape=NA) +
   labs(fill='Type') + 
@@ -674,7 +675,7 @@ false_positives
 
 ```{r}
 true_positives <- un_summarised_twelve  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Kraken_0.05', 'Kraken_0.1', 'MMSeqs2')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Kraken_0.05', 'Kraken_0.1', 'MMSeqs2', 'TNT')) |> 
   ggplot(aes(x=Database, y = TP/102*100, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot(outlier.shape=NA) +
   labs(fill='Type') + 
@@ -721,7 +722,7 @@ spec_summarised |>
 Let's also do not all of the classifiers
 ```{r}
 spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Kraken_0.05', 'Kraken_0.1','MMSeqs2', 'Qiime2')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Kraken_0.05', 'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
   ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
   geom_boxplot() +
   geom_point(aes(color=Type), 
@@ -733,7 +734,7 @@ spec_summarised |>
 
 ```{r}
 a <- spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0','Kraken_0.05', 'Kraken_0.1','MMSeqs2', 'Qiime2')) |> 
+  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0','Kraken_0.05', 'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
   group_by(Database) |> 
   arrange(Database) |> 
   group_map(~aov(`Alpha diversity index` ~ Type, data=.))
@@ -757,7 +758,7 @@ groups_df <- bind_rows(groupslist, .id='Database')
 
 ```{r fig.height=5}
 spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0', 'Kraken_0.05', 'Kraken_0.1','MMSeqs2', 'Qiime2')) |> 
+  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0', 'Kraken_0.05', 'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
   left_join(groups_df, by = c('Database', 'Type')) |> 
   ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
   geom_boxplot(outlier.shape=NA) +
@@ -941,7 +942,7 @@ un_summarised_sixteen  |> group_by(Type, Database) |> mutate(best = max(mean(rec
 
 ```{r}
 un_summarised_sixteen  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Kraken_0.05', 'Qiime2')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Kraken_0.05', 'Qiime2', 'TNT')) |> 
   ggplot(aes(x=Database, y = precision, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot() +
   labs(fill='Type') + 
@@ -951,7 +952,7 @@ un_summarised_sixteen  |>
 
 ```{r}
 false_positives <- un_summarised_sixteen  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Kraken_0.05', 'Kraken_0.1', 'MMSeqs2')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Kraken_0.05', 'Kraken_0.1', 'MMSeqs2', 'TNT')) |> 
   ggplot(aes(x=Database, y = FP/112*100, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot(outlier.shape=NA) +
   labs(fill='Type') + 
@@ -966,7 +967,7 @@ false_positives
 
 ```{r}
 true_positives <- un_summarised_sixteen  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Kraken_0.05', 'Kraken_0.1', 'MMSeqs2')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Kraken_0.05', 'Kraken_0.1', 'MMSeqs2', 'TNT')) |> 
   ggplot(aes(x=Database, y = TP/112*100, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot(outlier.shape=NA) +
   labs(fill='Type') + 
@@ -1013,7 +1014,7 @@ spec_summarised |>
 Let's also do not all of the classifiers
 ```{r}
 spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Kraken_0.05',  'Kraken_0.1','MMSeqs2', 'Qiime2')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Kraken_0.05',  'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
   ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
   geom_boxplot() +
   geom_point(aes(color=Type), 
@@ -1025,7 +1026,7 @@ spec_summarised |>
 
 ```{r}
 a <- spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0',  'Kraken_0.05', 'Kraken_0.1','MMSeqs2', 'Qiime2')) |> 
+  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0',  'Kraken_0.05', 'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
   group_by(Database) |> 
   arrange(Database) |> 
   group_map(~aov(`Alpha diversity index` ~ Type, data=.))
@@ -1049,7 +1050,7 @@ groups_df <- bind_rows(groupslist, .id='Database')
 
 ```{r fig.height=5}
 spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0', 'Kraken_0.05',  'Kraken_0.1','MMSeqs2', 'Qiime2')) |> 
+  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0', 'Kraken_0.05',  'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
   left_join(groups_df, by = c('Database', 'Type')) |> 
   ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
   geom_boxplot(outlier.shape=NA) +

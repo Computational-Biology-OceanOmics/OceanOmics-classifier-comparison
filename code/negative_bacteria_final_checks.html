@@ -357,35 +357,17 @@ display: none;
 
 <div id="setup" class="section level1">
 <h1>Setup</h1>
-<pre class="r"><code>source(&#39;code/helpers.R&#39;)
+<pre class="r"><code>source(here::here(&#39;code&#39;, &#39;helpers.R&#39;))
 
 library(tidyverse)
 library(forcats)
-library(cowplot)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;cowplot&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:lubridate&#39;:
-## 
-##     stamp</code></pre>
-<pre class="r"><code>library(agricolae)
+library(cowplot)
+library(agricolae)
 library(ggupset)
 library(RColorBrewer)
-library(patchwork)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;patchwork&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:cowplot&#39;:
-## 
-##     align_plots</code></pre>
-<pre class="r"><code>library(vegan)</code></pre>
-<pre><code>## Loading required package: permute</code></pre>
-<pre><code>## Loading required package: lattice</code></pre>
-<pre><code>## Registered S3 methods overwritten by &#39;vegan&#39;:
-##   method      from
-##   plot.rda    klaR
-##   predict.rda klaR
-##   print.rda   klaR</code></pre>
-<pre><code>## This is vegan 2.6-4</code></pre>
-<pre class="r"><code>library(pheatmap)
+library(patchwork)
+library(vegan)
+library(pheatmap)
 library(ggradar)
 library(broom)</code></pre>
 <pre class="r"><code>data &lt;- targets::tar_read(merged_all_results)
@@ -394,32 +376,33 @@ data &lt;- data |&gt; mutate(Type = str_replace(Type, &#39;^BLAST$&#39;, &#39;BL
 truth &lt;- targets::tar_read(truth_set_data)</code></pre>
 <p>Let’s remove the &gt;0.2 Kraken runs, those are too strict</p>
 <pre class="r"><code>data &lt;- data |&gt; filter(!Type %in% c(&#39;Kraken_0.2&#39;, &#39;Kraken_0.3&#39;, &#39;Kraken_0.4&#39;, &#39;Kraken_0.5&#39;, &#39;Kraken_0.6&#39;, &#39;Kraken_0.7&#39;, &#39;Kraken_0.8&#39;, &#39;Kraken_0.9&#39;))</code></pre>
-<p>Made a mistake- Metabuli’s Database is misspelled</p>
-<pre class="r"><code>data &lt;- data |&gt; mutate(Subject = str_replace_all(Subject, pattern = &#39;_ref.fasta&#39;, replacement=&#39;&#39;))</code></pre>
+<p>Made a mistake- Metabuli’s and TNT’s databases is misspelled</p>
+<pre class="r"><code>data &lt;- data |&gt; mutate(Subject = str_replace_all(Subject, pattern = &#39;_ref.fasta&#39;, replacement=&#39;&#39;))
+data &lt;- data |&gt; mutate(Subject = str_replace_all(Subject, pattern = &#39;final.csv&#39;, replacement = &#39;final.fasta&#39;))</code></pre>
 <pre class="r"><code>table(data$Query)</code></pre>
 <pre><code>## 
 ##                                                                                KWest_16S_PooledTrue.fa 
-##                                                                                                 132865 
+##                                                                                                 161697 
 ##   make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa 
-##                                                                                                  54092 
+##                                                                                                  59339 
 ## make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_noLulu_RESULTS_dada2_asv.fa 
-##                                                                                                  54092 
+##                                                                                                  59339 
 ##   make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa 
-##                                                                                                  52001 
+##                                                                                                  57248 
 ## make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_noLulu_RESULTS_dada2_asv.fa 
-##                                                                                                  52001 
+##                                                                                                  57248 
 ##                               make_12s_16s_simulated_reads_6-fakeGenes_GreenGenes_RESULTS_dada2_asv.fa 
-##                                                                                                  44774 
+##                                                                                                  50021 
 ##                                   make_12s_16s_simulated_reads_6-fakeGenes_Random_RESULTS_dada2_asv.fa 
-##                                                                                                  45205 
+##                                                                                                  50505 
 ##                     make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa 
-##                                                                                                  13384 
+##                                                                                                  14656 
 ##                     make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa 
-##                                                                                                  14233 
+##                                                                                                  15664 
 ##                           make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa 
-##                                                                                                  55763 
+##                                                                                                  61169 
 ##                           make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa 
-##                                                                                                  58957</code></pre>
+##                                                                                                  64893</code></pre>
 </div>
 <div id="negative-greengenes" class="section level1">
 <h1>Negative greengenes</h1>
@@ -442,25 +425,25 @@ truth &lt;- targets::tar_read(truth_set_data)</code></pre>
 table(sixteen_exclusions$Subject)</code></pre>
 <pre><code>## 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_1.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_10.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_2.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_3.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_4.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_5.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_6.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_7.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_8.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_9.fasta 
-##                                                                    594 
+##                                                                    693 
 ##  16S_v04_final.fasta_Taxonomies.CountedFams.txt_seventy_subset_1.fasta 
 ##                                                                    594 
 ## 16S_v04_final.fasta_Taxonomies.CountedFams.txt_seventy_subset_10.fasta 
@@ -482,25 +465,25 @@ table(sixteen_exclusions$Subject)</code></pre>
 ##  16S_v04_final.fasta_Taxonomies.CountedFams.txt_seventy_subset_9.fasta 
 ##                                                                    594 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_1.fasta 
-##                                                                    598 
+##                                                                    697 
 ##  16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_10.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_2.fasta 
-##                                                                    616 
+##                                                                    715 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_3.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_4.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_5.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_6.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_7.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_8.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_9.fasta 
-##                                                                    594</code></pre>
+##                                                                    693</code></pre>
 <pre class="r"><code>sixteen_exclusions_split &lt;- sixteen_exclusions |&gt; separate(Subject, into = c(&#39;before&#39;, &#39;hit&#39;), sep=&#39;.txt_&#39;) |&gt; 
   # get rid of leftover non-subsetted databases
   filter(!is.na(hit)) |&gt; 
@@ -551,25 +534,25 @@ greengenes_data_12S |&gt; filter(!is.na(species))</code></pre>
 table(sixteen_exclusions$Subject)</code></pre>
 <pre><code>## 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_1.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_10.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_2.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_3.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_4.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_5.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_6.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_7.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_8.fasta 
-##                                                                    594 
+##                                                                    693 
 ##    16S_v04_final.fasta_Taxonomies.CountedFams.txt_fifty_subset_9.fasta 
-##                                                                    594 
+##                                                                    693 
 ##  16S_v04_final.fasta_Taxonomies.CountedFams.txt_seventy_subset_1.fasta 
 ##                                                                    594 
 ## 16S_v04_final.fasta_Taxonomies.CountedFams.txt_seventy_subset_10.fasta 
@@ -591,25 +574,25 @@ table(sixteen_exclusions$Subject)</code></pre>
 ##  16S_v04_final.fasta_Taxonomies.CountedFams.txt_seventy_subset_9.fasta 
 ##                                                                    594 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_1.fasta 
-##                                                                    598 
+##                                                                    697 
 ##  16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_10.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_2.fasta 
-##                                                                    616 
+##                                                                    715 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_3.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_4.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_5.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_6.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_7.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_8.fasta 
-##                                                                    594 
+##                                                                    693 
 ##   16S_v04_final.fasta_Taxonomies.CountedFams.txt_thirty_subset_9.fasta 
-##                                                                    594</code></pre>
+##                                                                    693</code></pre>
 <pre class="r"><code>twelve_exclusions_split &lt;- twelve_exclusions |&gt; separate(Subject, into = c(&#39;before&#39;, &#39;hit&#39;), sep=&#39;.txt_&#39;) |&gt; 
   # get rid of leftover non-subsetted databases
   filter(!is.na(hit)) |&gt; 

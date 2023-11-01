@@ -5,3 +5,6 @@ for l in *tsv; do gzip $l; done
 rm 7-kraken_all_results.tsv.gz
 cp ../../runClassifiers/7-kraken/all_results.subsetConfidence.tsv .
 gzip all_results.subsetConfidence.tsv
+
+ cp ../../runClassifiers/12-TheNucleotideTransformer/all_together.csv 12-TNT_all_results.tsv
+gzip 12-TNT*

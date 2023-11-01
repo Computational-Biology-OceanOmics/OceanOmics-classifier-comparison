@@ -7,13 +7,13 @@ date: "2023-09-26"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE)
 
-source('code/helpers.R')
+source(here::here('code', 'helpers.R'))
 
 library(tidyverse)
 ```
 
 ```{r}
-df <- read_tsv('data/truth/complexity.tsv', col_names = c('README length', 'Tool'))
+df <- read_tsv(here::here('data/truth/complexity.tsv'), col_names = c('README length', 'Tool'))
 ```
 
 ```{r}

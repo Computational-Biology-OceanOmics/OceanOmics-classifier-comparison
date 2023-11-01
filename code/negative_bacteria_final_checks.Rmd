@@ -7,7 +7,7 @@ date: "2023-10-09"
 # Setup
 
 ```{r setup}
-source('code/helpers.R')
+source(here::here('code', 'helpers.R'))
 
 library(tidyverse)
 library(forcats)
@@ -36,12 +36,12 @@ Let's remove the >0.2 Kraken runs, those are too strict
 data <- data |> filter(!Type %in% c('Kraken_0.2', 'Kraken_0.3', 'Kraken_0.4', 'Kraken_0.5', 'Kraken_0.6', 'Kraken_0.7', 'Kraken_0.8', 'Kraken_0.9'))
 ```
 
-Made a mistake- Metabuli's Database is misspelled
+Made a mistake- Metabuli's and TNT's databases is misspelled
 
 ```{r}
 data <- data |> mutate(Subject = str_replace_all(Subject, pattern = '_ref.fasta', replacement=''))
+data <- data |> mutate(Subject = str_replace_all(Subject, pattern = 'final.csv', replacement = 'final.fasta'))
 ```
-
 
 
 ```{r}
