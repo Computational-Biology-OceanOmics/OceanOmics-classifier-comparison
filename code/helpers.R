@@ -1,13 +1,26 @@
 precision <- function(TP, FP) {
+  if (TP + FP == 0) {
+    # when a classifier returns garbage we get many errors
+    return(0)
+    }
   TP / (TP + FP )
 }
 recall <- function(TP, FN) {
+  if (TP + FN == 0) {
+    return(0)
+  }
   TP / (TP + FN)
 }
 f1 <- function(precision, recall) {
+  if(precision + recall == 0){
+    return(0)
+  }
   2*precision * recall / (precision + recall)
 }
 f0.5 <- function(precision, recall) {
+  if(precision + recall == 0){
+    return(0)
+  }
   ((1 + 0.5^2) * precision * recall) / (0.5^2 * precision + recall)
 }
 accuracy <- function(TP, FP, FN, TN) {

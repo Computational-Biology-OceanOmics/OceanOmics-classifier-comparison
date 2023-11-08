@@ -907,7 +907,7 @@ un_summarised_sixteen <- sixteen_exclusions_split |> left_join(sixteenS_truth, b
 ```
 
 ```{r}
-un_summarised_sixteen |> group_by(Type, Database) |> mutate(best = max(mean(precision))) |>
+un_summarised_sixteen |> group_by(Type, Database) |> mutate(best = max(mean(precision, na.rm = TRUE))) |>
   ggplot(aes(x = fct_reorder(Type, best), group = interaction(Type, Database),  color=Database, y = precision)) +
   geom_boxplot(outlier.shape = NA) +
   coord_flip() +

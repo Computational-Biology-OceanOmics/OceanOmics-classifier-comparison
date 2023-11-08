@@ -1895,6 +1895,18 @@
       ],
       "Hash": "d61238fd44fc63c8adf4565efe8eb682"
     },
+    "svglite": {
+      "Package": "svglite",
+      "Version": "2.1.2",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "cpp11",
+        "systemfonts"
+      ],
+      "Hash": "be5318f6b48c136ecd6b8b5de24cc0ae"
+    },
     "sys": {
       "Package": "sys",
       "Version": "3.4.1",

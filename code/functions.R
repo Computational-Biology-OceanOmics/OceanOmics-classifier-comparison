@@ -78,19 +78,26 @@ assess_correctness <- function(data, truth) {
   
   filtered_data <- data |> 
     mutate(Type = str_replace(Type, '^BLAST$', 'BLAST97')) |>
-    filter(Subject %in% c('16S_v04_final.fasta', '12s_v010_final.fasta')) |>
+    mutate(Type = str_replace(Type, '^MMSeqs2$', 'MMSeqs2_97')) |>
+    filter(Subject %in% c('16S_v04_final.fasta', 
+                          '12s_v010_final.fasta', 
+                          'c01_v03_final.fasta')) |>
     filter(!Type %in% c('Kraken_0.2', 'Kraken_0.3', 'Kraken_0.4', 'Kraken_0.5', 'Kraken_0.6', 'Kraken_0.7', 'Kraken_0.8', 'Kraken_0.9')) |> 
     mutate(Type = str_replace(Type, 'Kraken', 'Kraken2')) |> 
     mutate(Subject = str_replace_all(Subject, pattern = '_ref.fasta', replacement=''),
            species = na_if(species, 'dropped')) |> 
     select(Type, Query, Subject, genus, family, species, OTU) |>
-    left_join(truth, by=c('Query'= 'True_Query', 'OTU' = 'True_OTU')) |>
+    left_join(truth, by=c('Query'= 'True_Query', 
+                          'OTU' = 'True_OTU')) |>
     filter( ( Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' & Subject == '12s_v010_final.fasta') | 
               (  Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' & Subject == '16S_v04_final.fasta') |
+              ( Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' & Subject == 'c01_v03_final.fasta') |
               ( Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' & Subject == '12s_v010_final.fasta') | 
               (  Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' & Subject == '16S_v04_final.fasta') |
+              (Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' & Subject == 'c01_v03_final.fasta') | 
               ( Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' & Subject == '12s_v010_final.fasta') | 
-              (  Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' & Subject == '16S_v04_final.fasta')) |> 
+              (  Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' & Subject == '16S_v04_final.fasta') |
+              (Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' & Subject == 'c01_v03_final.fasta')) |> 
     mutate(CorrectSpecies = case_when(!is.na(species) & True_species == species ~ 'Correct species',
                                       !is.na(species) & True_species != species ~ 'Incorrect species',
                                       TRUE ~ NA))
@@ -99,16 +106,17 @@ assess_correctness <- function(data, truth) {
   filtered_data
 }
 
-make_mean_median_f1_table <- function(filtered_data) {
-  # this is Table 2
-
+prepare_mean_median_f1_table <- function(filtered_data) {
   Counted_data <- filtered_data |> 
     mutate(all_asvs = case_when(Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 24,
                                 Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 27,
+                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 27,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 102,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 112,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 117,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
-                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99)) |>
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 99)) |>
     group_by(Type, Query, Subject, all_asvs) |>
     summarise(TP = sum(str_detect(CorrectSpecies, pattern = '^Correct species$'), na.rm=TRUE),
               FP = sum(str_detect(CorrectSpecies, pattern = 'Incorrect species'), na.rm=TRUE),
@@ -125,7 +133,14 @@ make_mean_median_f1_table <- function(filtered_data) {
            F1 = f1(Precision, Recall),
            F0.5 = f0.5(Precision, Recall),
            Accuracy = accuracy(TP, FP, FN, TN)) |> 
-    ungroup() |> 
+    ungroup()
+}
+
+make_median_f1_table <- function(filtered_data) {
+  # this is Table 2
+  Counted_data <- prepare_mean_median_f1_table(filtered_data)
+  Counted_data |> 
+    filter(! str_detect(Subject, '^c01')) |>  # TODO: DECIDE IF THIS IS FAIR
     select(Type, Precision, Recall, F1, F0.5, Accuracy) |> 
     pivot_longer(-Type, names_to = 'Measure') |> 
     group_by(Type, Measure) |> 
@@ -134,6 +149,17 @@ make_mean_median_f1_table <- function(filtered_data) {
     
 }
 
+make_mean_f1_table <- function(filtered_data){
+  Counted_data <- prepare_mean_median_f1_table(filtered_data)
+  Counted_data |> 
+    filter(! str_detect(Subject, '^c01')) |> 
+    select(Type, Precision, Recall, F1, F0.5, Accuracy) |> 
+    pivot_longer(-Type, names_to = 'Measure') |> 
+    group_by(Type, Measure) |> 
+    summarise(mean = mean(value)) |> 
+    pivot_wider(names_from = Measure, values_from = mean) 
+  
+}
 
 make_all_median_f1_tables <- function(filtered_data) {
   # this is Table 2, but split up into subtables for Supplementary Tables
@@ -141,10 +167,13 @@ make_all_median_f1_tables <- function(filtered_data) {
   Counted_data <- filtered_data |> 
     mutate(all_asvs = case_when(Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 24,
                                 Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 27,
+                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 27,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 102,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 112,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 117,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
-                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99)) |>
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 99)) |>
     group_by(Type, Query, Subject, all_asvs) |>
     summarise(TP = sum(str_detect(CorrectSpecies, pattern = '^Correct species$'), na.rm=TRUE),
               FP = sum(str_detect(CorrectSpecies, pattern = 'Incorrect species'), na.rm=TRUE),
@@ -162,11 +191,27 @@ make_all_median_f1_tables <- function(filtered_data) {
            F0.5 = f0.5(Precision, Recall),
            Accuracy = accuracy(TP, FP, FN, TN)) |> 
     ungroup() |> 
+    mutate(
+      Query = case_when(
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 'Rottnest',
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 'Rottnest',
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Rottnest',
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ '100 Australian speces'
+      )
+    ) |> 
+    mutate(Subject = case_when(Subject == '12s_v010_final.fasta' ~ '12S',
+                               Subject ==  '16S_v04_final.fasta' ~ '16S',
+                               TRUE ~ 'CO1')) |> # TODO: CO1
     select(Type,Query, Subject,  Precision, Recall, F1, F0.5, Accuracy) |> 
     pivot_longer(-c(Query, Subject, Type), names_to = 'Measure') |> 
-    unite('Pair', Query:Subject, remove = FALSE) |>  # Pair will be hte name of the sheet in the XLSX
+    #unite('Pair', Query:Subject, remove = FALSE) |>  # Pair will be hte name of the sheet in the XLSX
     pivot_wider(names_from = Measure, values_from = value) |> 
-    group_by(Pair) |> 
+    group_by(Query, Subject) |> 
     group_split()
   
   named_df_list
@@ -206,16 +251,15 @@ count_correctness <- function(filtered_data) {
     count(CorrectSpecies) |>
     group_by(Query, Type, Subject) |>
     mutate(total = sum(n)) |>
-    mutate(
-      all_asvs = case_when(
-        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 24,
-        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 27,
-        Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 102,
-        Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 112,
-        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
-        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99
-      )
-    ) |>
+    mutate(all_asvs = case_when(Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 24,
+                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 27,
+                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 27,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 102,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 112,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 117,
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 99)) |>
     mutate(missing = all_asvs - total) |>
     group_modify( ~ add_row(.x)) |>
     group_modify( ~ {
@@ -238,14 +282,18 @@ count_correctness <- function(filtered_data) {
       Query = case_when(
         Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
         Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
         Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 'Rottnest',
         Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 'Rottnest',
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Rottnest',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
-        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species'
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ '100 Australian speces'
       )
-    ) |>
+    ) |> 
     mutate(Subject = case_when(Subject == '12s_v010_final.fasta' ~ '12S',
-                               TRUE ~ '16S')) |>
+                               Subject == '16S_v04_final.fasta' ~ '16S',
+                               TRUE ~ 'CO1')) |> # TODO: CO1
     mutate(CorrectSpecies = factor(CorrectSpecies, rev(
       c(
         'Correct species',
@@ -331,7 +379,8 @@ make_error_types_table <- function(correctness_table) {
 
   correctness_table |> 
     mutate(Subject = case_when(Subject == '12s_v010_final.fasta' ~ '12S',
-                               TRUE ~ '16S')) |> 
+                               Subject ==  '16S_v04_final.fasta' ~ '16S',
+                               TRUE ~ 'CO1')) |> # TODO: CO1
     separate(species, into = c('genus', 'epiteth')) |> 
     separate(True_species, into = c('True_genus', 'True_epiteth')) |> 
     mutate(CorrectGenus = case_when( True_genus == genus ~ 'Correct genus', 
@@ -351,10 +400,13 @@ make_error_types_table <- function(correctness_table) {
       Query = case_when(
         Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
         Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
         Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 'Rottnest',
         Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 'Rottnest',
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Rottnest',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
-        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species'
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ '100 Australian speces'
       )
     ) 
 }

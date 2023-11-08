@@ -4,7 +4,7 @@ library(tarchetypes)
 source(here::here('code', 'functions.R'))
 
 tar_option_set(
-  # start four workers to run tasks at the same time
+  # start eight workers to run tasks at the same time
   controller = crew_controller_local(workers = 8)
 )
 
@@ -50,9 +50,12 @@ list(
   # make a table where we mean/median all F1s etc. across all query datasets,
   tar_target(correctness_table, assess_correctness(merged_all_results, truth_set_data)),
   tar_target(counted_correctness, count_correctness(correctness_table)),
+  tar_render(correctness_report, 'code/correctness_report.Rmd'),
   tar_target(save_correct_table, my_save_table(counted_correctness, 'Counted_correctness')),
-  tar_target(median_f1_table, make_mean_median_f1_table(correctness_table)),
+  tar_target(median_f1_table, make_median_f1_table(correctness_table)),
+  tar_target(mean_f1_table, make_mean_f1_table(correctness_table)),
   tar_target(saved_median_f1_table, my_save_table(median_f1_table, 'Median_F1_table')),
+  tar_target(saved_mean_f1_table, my_save_table(mean_f1_table, 'Mean_F1_table')),
   tar_target(all_f1_table, make_all_median_f1_tables(correctness_table)), 
   tar_target(saved_all_f1_table, my_save_table(all_f1_table, 'All_F1_tables')),
   tar_target(correctness_figure, plot_correctness(counted_correctness)),
@@ -63,5 +66,4 @@ list(
   tar_target(saved_error_types, my_save_table(error_types_table, 'Error_types_table')),
   tar_target(error_types_figure, make_error_types_figure(error_types_table)),
   tar_target(saved_errors, my_save_plot(error_types_figure, 'error_types'))
-  
 )
