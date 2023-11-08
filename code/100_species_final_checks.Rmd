@@ -26,9 +26,7 @@ library(broom)
 
 ```{r}
 data <- targets::tar_read(merged_all_results)
-# rename BLAST to BLAST97 to differentiate from BLAST100 (percentage identity in both cases)
-data <- data |> mutate(Type = str_replace(Type, '^BLAST$', 'BLAST97'),
-                       Type = str_replace(Type, '^MMSeqs2$', 'MMSeqs2_97'))
+
 truth <- targets::tar_read(truth_set_data)
 ```
 

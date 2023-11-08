@@ -1,3 +1,5 @@
+# A collection of smaller helper scripts
+
 precision <- function(TP, FP) {
   if (TP + FP == 0) {
     # when a classifier returns garbage we get many errors

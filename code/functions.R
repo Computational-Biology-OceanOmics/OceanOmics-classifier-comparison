@@ -13,7 +13,10 @@ plot_dendrogram <- function(data) {
 
 
 get_hits_data <- function(file) {
-  read_tsv(file)
+  read_tsv(file) |> 
+    mutate(Type = str_replace(Type, '^NBC$', 'CustomNBC'),
+           Type = str_replace(Type, '^BLAST$', 'BLAST97'),
+           Type = str_replace(Type, '^MMSeqs2$', 'MMSeqs2_97'))
 }
 
 get_truth_data <- function(file) {

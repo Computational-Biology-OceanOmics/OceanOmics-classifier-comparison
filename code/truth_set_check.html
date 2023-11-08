@@ -575,18 +575,18 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
 <pre class="r"><code>nbc |&gt;
   right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) </code></pre>
 <pre><code>## # A tibble: 704 × 22
-##    Type  Query   SubjectKraken domainKraken phylumKraken classKraken orderKraken
-##    &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;         &lt;lgl&gt;        &lt;lgl&gt;        &lt;lgl&gt;       &lt;lgl&gt;      
-##  1 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  2 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  3 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  4 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  5 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  6 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  7 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  8 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  9 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-## 10 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
+##    Type    Query SubjectKraken domainKraken phylumKraken classKraken orderKraken
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;lgl&gt;        &lt;lgl&gt;        &lt;lgl&gt;       &lt;lgl&gt;      
+##  1 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  2 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  3 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  4 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  5 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  6 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  7 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  8 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  9 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+## 10 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
 ## # ℹ 694 more rows
 ## # ℹ 15 more variables: familyKraken &lt;lgl&gt;, genusKraken &lt;chr&gt;,
 ## #   speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;, SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;,
@@ -924,18 +924,18 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
 <pre class="r"><code>nbc_thirty |&gt;
   right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) </code></pre>
 <pre><code>## # A tibble: 704 × 22
-##    Type  Query   SubjectKraken domainKraken phylumKraken classKraken orderKraken
-##    &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;         &lt;lgl&gt;        &lt;lgl&gt;        &lt;lgl&gt;       &lt;lgl&gt;      
-##  1 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  2 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  3 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  4 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  5 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  6 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  7 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  8 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-##  9 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
-## 10 NBC   make_1… 12s_v010_fin… NA           NA           NA          NA         
+##    Type    Query SubjectKraken domainKraken phylumKraken classKraken orderKraken
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;lgl&gt;        &lt;lgl&gt;        &lt;lgl&gt;       &lt;lgl&gt;      
+##  1 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  2 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  3 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  4 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  5 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  6 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  7 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  8 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+##  9 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
+## 10 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
 ## # ℹ 694 more rows
 ## # ℹ 15 more variables: familyKraken &lt;lgl&gt;, genusKraken &lt;chr&gt;,
 ## #   speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;, SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;,
