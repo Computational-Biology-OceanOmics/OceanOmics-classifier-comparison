@@ -354,7 +354,7 @@ plot_correctness <- function(counted_data) {
             fill = "white",
             colour = "white"
           ), 
-          axis.text.y = element_text(size = 8))
+          axis.text.y = element_text(size = 6))
 }
 
 

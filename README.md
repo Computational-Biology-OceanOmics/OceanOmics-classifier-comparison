@@ -23,7 +23,7 @@ The simulated database sequences used for all classifiers are in `data/databases
 
 ## How do I add more results?
 
-The targets pipeline pulls in results from data/*tsv.gz, tab delimited files.
+The targets pipeline pulls in results from `data/*tsv.gz`, tab delimited files.
 
 The results should look like this:
 
@@ -32,11 +32,18 @@ The results should look like this:
 | BLAST97 | query1 | subject1 | Eukaryota | Chodata | Actinopteri | Myfamily | Mygenus | Myspecies | ASV_1 | 
 
 Add a new tsv.gz file (see the README inside `data/` too) and targets should pick it up. The name in the `Type` column will be used as the
-classifier label in all tables and figures.  
+classifier label in all tables and figures. Make sure that the ASV-names in the OTU column are the same names as the ASVs in `data/amplicons/`.
 
 ## How to run this
 
-Check out the repo, run `targets::tar_make()`, it should rerun the entire analysis and make all figures.
+1- Check out the repo,
+2- restore packages and the environment using `renv::restore()`,
+3- run `targets::tar_make()`, 
+
+You should have all results in `results/` as targets::tar_make() will rerun the entire analysis and make all figures.
+
+
+## Dependency graph
 
 (regenerate the following using `cat('```mermaid', targets::tar_mermaid(), '```', sep='\n')`)
 
