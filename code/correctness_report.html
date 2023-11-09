@@ -356,18 +356,18 @@ display: none;
 
 
 <pre class="r"><code>df &lt;- targets::tar_read(counted_correctness)</code></pre>
-<p>On average, classifiers assigned a correct species label to 73 45% of
+<p>On average, classifiers assigned a correct species label to 73 46% of
 ASVs, ranging from 0 X (X%)</p>
 <pre class="r"><code>df |&gt; filter(CorrectSpecies == &#39;Correct species&#39;) |&gt; select(-c(all_asvs, missing, new_col, newcol2)) |&gt; arrange(desc(perc)) |&gt; head(5)</code></pre>
 <pre><code>## # A tibble: 5 × 7
 ## # Groups:   Query, Classifier, Subject [5]
-##   Query      Classifier  Subject CorrectSpecies      n total  perc
-##   &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;   &lt;fct&gt;           &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
-## 1 Lutjanidae Mothur      CO1     Correct species    23    27  85.2
-## 2 Lutjanidae Qiime2      CO1     Correct species    23    26  85.2
-## 3 Rottnest   Mothur      CO1     Correct species    90   117  76.9
-## 4 Rottnest   Qiime2      CO1     Correct species    88    96  75.2
-## 5 Rottnest   Kraken2_0.0 CO1     Correct species    83   117  70.9</code></pre>
+##   Query      Classifier Subject CorrectSpecies      n total  perc
+##   &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;   &lt;fct&gt;           &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+## 1 Lutjanidae CustomNBC  CO1     Correct species    23    27  85.2
+## 2 Lutjanidae Mothur     CO1     Correct species    23    27  85.2
+## 3 Lutjanidae Qiime2     CO1     Correct species    23    26  85.2
+## 4 Rottnest   Mothur     CO1     Correct species    90   117  76.9
+## 5 Rottnest   Qiime2     CO1     Correct species    88    96  75.2</code></pre>
 <pre class="r"><code>df |&gt; filter(CorrectSpecies == &#39;Correct species&#39;) |&gt; select(-c(all_asvs, missing, new_col, newcol2)) |&gt; arrange(desc(perc)) |&gt; tail(5)</code></pre>
 <pre><code>## # A tibble: 5 × 7
 ## # Groups:   Query, Classifier, Subject [5]
