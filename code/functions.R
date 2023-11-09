@@ -356,25 +356,6 @@ plot_correctness <- function(counted_data) {
           ), 
           axis.text.y = element_text(size = 8))
 }
-  # The version with 'proper' A-F tags via patchwork
-  # plots <- counted_data |> 
-  #   group_by(Query, Subject)  |> 
-  #   group_split(.keep = TRUE) |> 
-  #   lapply(my_plot) |> 
-  #   wrap_plots() + 
-  #   plot_annotation(tag_levels = 'A') + 
-  #   plot_layout(guides = 'collect') &
-  #   theme(legend.position = 'bottom')
-  # # turn off some of the shared labels
-  # plots[[2]]$labels$x <- ''
-  # plots[[3]]$labels$x <- ''
-  # plots[[5]]$labels$x <- ''
-  # plots[[6]]$labels$x <- ''
-  # plots[[1]]$labels$y <- ''
-  # plots[[2]]$labels$y <- ''
-  # plots[[3]]$labels$y <- ''
-  
-  # the version with facet_wrap
 
 
 get_stats_on_correctness <- function(counted_data){

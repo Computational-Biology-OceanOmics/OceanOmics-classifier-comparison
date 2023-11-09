@@ -32,11 +32,11 @@ big_species_table|stem|1c8f98844e63b2d5|2c5deea00415b807|9898385083f5c49b|-18128
 blast_hits|stem|37be8a2c22ba59bc|0beff3b9045daae2|ef46db3751d8e999|769111007|/home/pbayer/Data/OceanOmics-classifier-comparison/data/1-BLAST_all_results.tsv.gz|t19669.2659039207s|a7e0dbdaefa2862c|195186|file|local|vector|||0.752||
 blast_hits_data|stem|346add8bd0407864|31c6144bbbfd872a|1ecea230f7f28459|-1761911244||t19669.3291162978s|9b12101d1b92ddc6|131639|rds|local|vector|||0.974||
 blast_hits_plot|stem|ef63b32dd2eacb07|46b907368f50e32d|8c1bd5b07b1b4642|192061366||t19626.2950085343s|9b668dbbdb341606|20714|rds|local|vector|||0.019||
-classifier_complexity|stem|506cbc6d114441db|cef163a4ab0e3577|ef46db3751d8e999|-583805716|code/classifier_complexity.html*code/classifier_complexity.Rmd|t19662.112426434s|5e4e5ba7d43ae6ae|681955|file|local|vector|||0.579||
+classifier_complexity|stem|506cbc6d114441db|cef163a4ab0e3577|ef46db3751d8e999|-583805716|code/classifier_complexity.html*code/classifier_complexity.Rmd|t19670.2837013029s|5e4e5ba7d43ae6ae|681955|file|local|vector|||2.553||
 classifier_data|stem|6152ffad8742c353|5f5456b72362300e|b4bce2e934f5b477|325809025||t19661.3174892409s|b118d73574f00f7d|299|rds|local|vector|||0.001||
 classifier_distances|stem|9947b66dd5e2d485|0bccad6bbac8c93a|ef46db3751d8e999|-1832693194|/home/pbayer/Data/OceanOmics-classifier-comparison/data/distances.csv|t19613.14903127s|8729b3dc109d06c6|313|file|local|vector|||0||
 correctness_figure|stem|dc323d490b1ceb5b|facf6f8ddcfa735f|6d1894417875c768|573065697||t19670.2624547556s|c428c6aed1df8c60|112719|rds|local|vector|||1.41||
-correctness_report|stem|5da5ffb9e6abd83b|5f66b0e8ee4c1013|0d0d4b473ff6c93e|2093613054|code/correctness_report.html*code/correctness_report.Rmd|t19670.2624491075s|c314d77e8867ec09|628779|file|local|vector|||1.088||
+correctness_report|stem|5da5ffb9e6abd83b|5f66b0e8ee4c1013|0d0d4b473ff6c93e|2093613054|code/correctness_report.html*code/correctness_report.Rmd|t19670.2837182012s|c314d77e8867ec09|628779|file|local|vector|||0.49||
 correctness_table|stem|f2db83545c9c7d42|1ef5da4036cb76ff|d9a47ef0e35188d3|-2136763944||t19669.3296987546s|08f7bc79a8ba32ab|65498|rds|local|vector|||0.759||
 count_correctness|function|17047f4bac251e90|||||||||||||||
 counted_correctness|stem|ce385bae24ded434|250553d3143efe1c|4cacdee72e49d15f|31741457||t19670.2624366074s|8fbdd7d53faf3796|7212|rds|local|vector|||2.265||
@@ -46,9 +46,9 @@ error_types_table|stem|310faee5adb7c01a|cf7e12cce067a9c0|9571a0928b4dc828|-18404
 f0.5|function|cb0c3afd0d3e978b|||||||||||||||
 f1|function|673f56fd3b2c154f|||||||||||||||
 final_outcomes|stem|bfea5c1324389ee1|a5e42b66cf5e06e7|66d04d209987ab02|-788458200|code/final_checks.html*code/final_checks.Rmd|t19643.1235827624s|d6a89459719242f9|7050317|file|local|vector|||34.632||
-final_outcomes_100|stem|658006f60722df6a|78c2a7e2dca24206|10b0d341fad93767|-940418235|code/100_species_final_checks.html*code/100_species_final_checks.Rmd|t19669.3303447966s|94077698ae0e4f43|9895895|file|local|vector|||55.937||
-final_outcomes_negative_bacteria|stem|97585b3442bb7a38|c4ea40dfde8d8415|10b0d341fad93767|690698864|code/negative_bacteria_final_checks.html*code/negative_bacteria_final_checks.Rmd|t19670.2624358204s|4c3c76c94077d4df|869949|file|local|vector|||19.896||
-final_outcomes_rottnest|stem|5c2547c2de3247e1|dcd45b0c8d3b4dc3|10b0d341fad93767|1612126785|code/rottnest_species_final_checks.html*code/rottnest_species_final_checks.Rmd|t19669.3296633393s|5bca38af22fff838|6920835|file|local|vector|||36.927||
+final_outcomes_100|stem|658006f60722df6a|78c2a7e2dca24206|10b0d341fad93767|-940418235|code/100_species_final_checks.html*code/100_species_final_checks.Rmd|t19670.2847698272s|94077698ae0e4f43|9895895|file|local|vector|||54.4||
+final_outcomes_negative_bacteria|stem|58dad79c41cd4ce1|c4ea40dfde8d8415|10b0d341fad93767|690698864|code/negative_bacteria_final_checks.html*code/negative_bacteria_final_checks.Rmd|t19670.2848939019s|94f4086eea28f74b|869149|file|local|vector|||8.754||
+final_outcomes_rottnest|stem|5c2547c2de3247e1|dcd45b0c8d3b4dc3|10b0d341fad93767|1612126785|code/rottnest_species_final_checks.html*code/rottnest_species_final_checks.Rmd|t19670.2841407497s|5bca38af22fff838|6920835|file|local|vector|||34.503||
 get_classifier_data|function|e553cd2560ad684b|||||||||||||||
 get_hits_data|function|765e9c1a18cb8c62|||||||||||||||
 get_stats_on_correctness|function|606f7c97097f6ceb|||||||||||||||
@@ -74,7 +74,7 @@ my_save_table|function|4d41e98d88729e09|||||||||||||||
 nbc_hits|stem|e6bc8d5798b9a799|be3bd449a17bb3fa|ef46db3751d8e999|204417559|/home/pbayer/Data/OceanOmics-classifier-comparison/data/8-NBC_all_results.tsv.gz|t19669.2659068375s|b1f8cf6dfec1d2db|555844|file|local|vector|||0.665||
 nbc_hits_data|stem|c7119e6e764b59a5|a408b8b6024a50cf|0b10b5d851ce15e5|-1938953770||t19669.3291236593s|3b0e213277429872|183267|rds|local|vector|||1.272||
 plot_1|stem|ba8d5d6bb8ebf9cd|25d5d61a9cedd614|63a41907066f342f|-1007940262||t19613.1530010985s|19e426cce5adb19f|489|rds|local|vector|||0.035||
-plot_asvs_per_dataset|stem|62b78004b280cb60|f02ee74b778b81dd|ef46db3751d8e999|179366340|code/asvs_per_data.html*code/asvs_per_data.Rmd|t19662.1124196284s|5efd421a7ab2fcb8|670380|file|local|vector|||1.552||
+plot_asvs_per_dataset|stem|62b78004b280cb60|f02ee74b778b81dd|ef46db3751d8e999|179366340|code/asvs_per_data.html*code/asvs_per_data.Rmd|t19670.2837125067s|5efd421a7ab2fcb8|670380|file|local|vector|||0.9||
 plot_blast_hits|function|b231509387285314|||||||||||||||
 plot_correctness|function|520320dfd0b6bebe|||||||||||||||
 plot_dendrogram|function|94bef4a78e9d8f65|||||||||||||||
@@ -105,4 +105,4 @@ thirty_subsampled_kraken_hits_data|stem|51cfb94feb057d47|56c5fcb7a264e68d|d8db14
 thirty_subsampled_nbc_hits_data|stem|46f4f102f8a33700|09d88538f58e3bba|2a44b38c6de6ae15|-1077222718||t19669.3291544478s|720bf3a3502491ff|1903|rds|local|vector|||0.007||
 truth_set|stem|1eccce50f46a0aa8|00df988817761686|ef46db3751d8e999|640448977|/home/pbayer/Data/OceanOmics-classifier-comparison/data/truth/truthsets_with_lineages.tsv.gz|t19668.1557678939s|b98c5f62bd110c1d|29094|file|local|vector|||0.655||
 truth_set_data|stem|c34f7709291e3926|94c239d32ae62f37|1e477df9160d21ce|717282996||t19668.2802792957s|5c17b2b23d4af0b9|33646|rds|local|vector|||0.189||
-truth_set_investigation|stem|c2c4329d4cd6517a|d301d9efa627b06e|f000e10b4ae0ca96|-1713979401|code/truth_set_check.html*code/truth_set_check.Rmd|t19669.3296901901s|04d1a11583cbe298|909454|file|local|vector|||1.968||
+truth_set_investigation|stem|c2c4329d4cd6517a|d301d9efa627b06e|f000e10b4ae0ca96|-1713979401|code/truth_set_check.html*code/truth_set_check.Rmd|t19670.2893179997s|04d1a11583cbe298|909454|file|local|vector|||2.914||

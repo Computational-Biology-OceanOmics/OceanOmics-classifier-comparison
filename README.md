@@ -27,7 +27,6 @@ The targets pipeline pulls in results from data/*tsv.gz, tab delimited files.
 
 The results should look like this:
 
-| First Header  | Second Header |
 | Type |   Query |    Subject | domain | phylum | class|  order|  family|  genus|  species|  OTU |
 | -----|---------|------------|--------|--------|------|-------|--------|-------|---------|------|
 | BLAST97 | query1 | subject1 | Eukaryota | Chodata | Actinopteri | Myfamily | Mygenus | Myspecies | ASV_1 | 
