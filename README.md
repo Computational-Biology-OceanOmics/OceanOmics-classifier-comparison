@@ -36,9 +36,9 @@ classifier label in all tables and figures. Make sure that the ASV-names in the 
 
 ## How to run this
 
-1- Check out the repo,
-2- restore packages and the environment using `renv::restore()`,
-3- run `targets::tar_make()`, 
+1. Check out the repo,
+2. restore packages and the environment using `renv::restore()`,
+3. run `targets::tar_make()`, 
 
 You should have all results in `results/` as targets::tar_make() will rerun the entire analysis and make all figures.
 
