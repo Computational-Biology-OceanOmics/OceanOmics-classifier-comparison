@@ -9,7 +9,7 @@ tar_option_set(
 )
 
 tar_option_set(packages = c('tidyverse', 'ggdendro', 'ggvenn', 'tidyr', 'forcats',
-                            'svglite'))
+                            'svglite', 'tidytext'))
 
 list(
   # phylogeny of classifiers

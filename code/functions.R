@@ -204,7 +204,7 @@ make_all_median_f1_tables <- function(filtered_data) {
         Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Rottnest',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
-        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ '100 Australian speces'
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ '100 Australian species'
       )
     ) |> 
     mutate(Subject = case_when(Subject == '12s_v010_final.fasta' ~ '12S',
@@ -291,7 +291,7 @@ count_correctness <- function(filtered_data) {
         Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Rottnest',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
-        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ '100 Australian speces'
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ '100 Australian species'
       )
     ) |> 
     mutate(Subject = case_when(Subject == '12s_v010_final.fasta' ~ '12S',
@@ -323,11 +323,19 @@ plot_correctness <- function(counted_data) {
             'Correct genus, incorrect species'="#D55E00", 
             'Incorrect genus, incorrect species'="darkred", 
             'No hit'= "#D3D3D3")
+
+  mymax <- function(perc){
+    # the last element of the percentages 
+    # is the 'Correct species' percentage
+    perc[length(perc)]
+  }
   
-  my_plot <- function(counted_data) {
-    counted_data |> 
+  counted_data |> 
+    group_by(Classifier) |> 
     ggplot(aes(
-      x = fct_rev(fct_reorder2(Classifier, CorrectSpecies, n)),
+      x = tidytext::reorder_within(x=Classifier, by=perc, 
+                                   list(Subject, Query), 
+                                   fun = mymax),
       fill = CorrectSpecies,
       y = perc
     )) +
@@ -338,8 +346,16 @@ plot_correctness <- function(counted_data) {
     xlab('Classifier') +
     scale_fill_manual(name = 'Outcome',
                       values = cols,
-                      breaks = names(cols))
-  }
+                      breaks = names(cols)) +
+    tidytext::scale_x_reordered() +
+    facet_wrap(~ Subject + Query, scales='free') + 
+    theme(legend.position = 'bottom',
+          plot.background = element_rect(
+            fill = "white",
+            colour = "white"
+          ), 
+          axis.text.y = element_text(size = 8))
+}
   # The version with 'proper' A-F tags via patchwork
   # plots <- counted_data |> 
   #   group_by(Query, Subject)  |> 
@@ -359,14 +375,7 @@ plot_correctness <- function(counted_data) {
   # plots[[3]]$labels$y <- ''
   
   # the version with facet_wrap
-  plots <- my_plot(counted_data) + facet_wrap(~ Subject + Query) + 
-    theme(legend.position = 'bottom', 
-    plot.background = element_rect(
-      fill = "white",
-      colour = "white"
-    ))
-  plots
-}
+
 
 get_stats_on_correctness <- function(counted_data){
   counted_data |> 
@@ -409,7 +418,7 @@ make_error_types_table <- function(correctness_table) {
         Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Rottnest',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
-        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ '100 Australian speces'
+        Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ '100 Australian species'
       )
     ) 
 }

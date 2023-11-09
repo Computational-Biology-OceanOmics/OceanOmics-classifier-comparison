@@ -74,9 +74,9 @@ twelve_exclusions_split <- twelve_exclusions |> separate(Subject, into = c('befo
 
 ```{r}
 twelve_exclusions_split |> filter(!is.na(species)) |> 
-  mutate(Database = case_when(Database == 'thirty' ~ '30%',
+  mutate(Database = case_when(Database == 'thirty' ~ '70%',
                               Database == 'fifty' ~ '50%',
-                              Database == 'seventy' ~ '70%')) |> 
+                              Database == 'seventy' ~ '30%')) |> 
   group_by(Type, Database, after) |>
   summarise(counts = n()) |> 
   ggplot(aes(x = Database, group = interaction(Database, Type), fill = Type, y = counts)) + geom_boxplot(outlier.shape=NA) + 
@@ -116,9 +116,9 @@ sixteen_exclusions_split <- sixteen_exclusions |> separate(Subject, into = c('be
 ```{r}
 sixteen_exclusions_plot <- 
  sixteen_exclusions_split |> filter(!is.na(species)) |> 
-  mutate(Database = case_when(Database == 'thirty' ~ '30%',
+  mutate(Database = case_when(Database == 'thirty' ~ '70%',
                               Database == 'fifty' ~ '50%',
-                              Database == 'seventy' ~ '70%')) |> 
+                              Database == 'seventy' ~ '30%')) |> 
   group_by(Type, Database, after) |>
   summarise(counts = n()) |> 
   ggplot(aes(x = Database, group = interaction(Database, Type), color = Type, y = counts)) + geom_boxplot() + 
@@ -160,9 +160,9 @@ twelve_exclusions_split <- twelve_exclusions |> separate(Subject, into = c('befo
 
 ```{r}
 twelve_exclusions_plot <- twelve_exclusions_split |> filter(!is.na(species)) |> 
-  mutate(Database = case_when(Database == 'thirty' ~ '30%',
+  mutate(Database = case_when(Database == 'thirty' ~ '70%',
                               Database == 'fifty' ~ '50%',
-                              Database == 'seventy' ~ '70%')) |> 
+                              Database == 'seventy' ~ '30%')) |> 
   group_by(Type, Database, after) |>
   summarise(counts = n()) |> 
   ggplot(aes(x = Database, group = interaction(Database, Type), color = Type, y = counts)) + geom_boxplot() + 
@@ -197,9 +197,9 @@ co1_exclusions_split <- co1_exclusions |> separate(Subject, into = c('before', '
 ```
 ```{r}
 co1_exclusions_plot <- co1_exclusions_split |> filter(!is.na(species)) |> 
-  mutate(Database = case_when(Database == 'thirty' ~ '30%',
+  mutate(Database = case_when(Database == 'thirty' ~ '70%',
                               Database == 'fifty' ~ '50%',
-                              Database == 'seventy' ~ '70%')) |> 
+                              Database == 'seventy' ~ '30%')) |> 
   group_by(Type, Database, after) |>
   summarise(counts = n()) |> 
   ggplot(aes(x = Database, group = interaction(Database, Type), color = Type, y = counts)) + geom_boxplot() + 
@@ -225,9 +225,9 @@ both
 
 ```{r}
 greengenes_fp_plot <-both |> filter(!is.na(species)) |> 
-  mutate(Database = case_when(Database == 'thirty' ~ '30%',
+  mutate(Database = case_when(Database == 'thirty' ~ '70%',
                               Database == 'fifty' ~ '50%',
-                              Database == 'seventy' ~ '70%')) |> 
+                              Database == 'seventy' ~ '30%')) |> 
   group_by(Gene, Classifier, Database, after) |>
   summarise(counts = n()) |> 
   ggplot(aes(x = Database, group = interaction(Database, Classifier), color = Classifier, y = counts)) + 
@@ -235,7 +235,8 @@ greengenes_fp_plot <-both |> filter(!is.na(species)) |>
   geom_point(position = position_jitterdodge(), alpha=0.5) +
   theme_minimal() + 
   ylab("False positive species") +
-  facet_wrap(~Gene, nrow = 2)
+  facet_wrap(~Gene, nrow = 2) + theme_minimal() +    theme(legend.position="bottom")
+
 greengenes_fp_plot
 ```
 
