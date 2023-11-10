@@ -37,8 +37,9 @@ Missing taxonomic labels are either 'dropped' or 'NA'.
 
 ### New target databases or queries
 
-This one is a bit trickier. You'd have to rerun all classifiers with your new database or your new query, then look into `code/functions.R` and `code/100_species_final_checks.Rmd` to add the new databases. You'd also have to add the new databases to the `data/databases/` folder, but that's just for reproducibility.
+This one is a bit trickier. You'd have to rerun all classifiers with your new database or your new query, then look into `code/functions.R` and `code/100_species_final_checks.Rmd` to add the new databases. You'd also have to add the new databases to the `data/databases/` folder, but that's just for reproducibility. See the `README` files in the `classifiers/` folders for notes on how I ran every classifier.
 
+All the code to generate the family-exclusion databases is in `data/make_exclusion_databases/`.
 
 ## How to run this
 
