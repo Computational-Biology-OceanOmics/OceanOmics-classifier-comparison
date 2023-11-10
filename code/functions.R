@@ -169,6 +169,20 @@ make_mean_f1_table <- function(filtered_data){
   
 }
 
+make_overview_f1_table <- function(filtered_data) {
+  # make one table for everything, but pivot_wider the three genes
+  Counted_data <- prepare_mean_median_f1_table(filtered_data)
+  Counted_data |> 
+    group_by(Type, Subject) |> 
+    summarise(avg_acc = mean(Accuracy), 
+              avg_prec = mean(Precision), 
+              avg_rec = mean(Recall), 
+              avg_f1 = mean(F1), 
+              avg_f0.5 = mean(F0.5)) |> 
+    mutate(across(where(is.numeric), \(x) round(x, 2))) |> 
+    pivot_wider(names_from = Subject, values_from = c(avg_prec, avg_acc, avg_rec, avg_f1, avg_f0.5))
+    
+}
 make_all_median_f1_tables <- function(filtered_data) {
   # this is Table 2, but split up into subtables for Supplementary Tables
   

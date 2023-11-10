@@ -371,13 +371,13 @@ ASVs, ranging from 0 X (X%)</p>
 <pre class="r"><code>df |&gt; filter(CorrectSpecies == &#39;Correct species&#39;) |&gt; select(-c(all_asvs, missing, new_col, newcol2)) |&gt; arrange(desc(perc)) |&gt; tail(5)</code></pre>
 <pre><code>## # A tibble: 5 × 7
 ## # Groups:   Query, Classifier, Subject [5]
-##   Query      Classifier  Subject CorrectSpecies      n total  perc
-##   &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;   &lt;fct&gt;           &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
-## 1 Lutjanidae MMSeqs2_97  CO1     Correct species     0    27     0
-## 2 Lutjanidae VSEARCH     CO1     Correct species     0    27     0
-## 3 Rottnest   MMSeqs2_100 CO1     Correct species     0   117     0
-## 4 Rottnest   MMSeqs2_97  CO1     Correct species     0   117     0
-## 5 Rottnest   VSEARCH     CO1     Correct species     0   117     0</code></pre>
+##   Query                  Classifier  Subject CorrectSpecies      n total  perc
+##   &lt;chr&gt;                  &lt;chr&gt;       &lt;chr&gt;   &lt;fct&gt;           &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+## 1 100 Australian species MMSeqs2_97  CO1     Correct species     0    99     0
+## 2 Lutjanidae             MMSeqs2_100 CO1     Correct species     0    27     0
+## 3 Lutjanidae             MMSeqs2_97  CO1     Correct species     0    27     0
+## 4 Rottnest               MMSeqs2_100 CO1     Correct species     0   117     0
+## 5 Rottnest               MMSeqs2_97  CO1     Correct species     0   117     0</code></pre>
 <pre class="r"><code>df |&gt; filter(Classifier == &#39;Kraken2_0.0&#39;, Query == &#39;Lutjanidae&#39;, Subject == &#39;16S&#39;) |&gt;  select(-c(all_asvs, missing, new_col, newcol2))</code></pre>
 <pre><code>## # A tibble: 8 × 7
 ## # Groups:   Query, Classifier, Subject [1]
