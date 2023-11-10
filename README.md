@@ -12,7 +12,7 @@ This repository contains all data and code to generate the figures and statistic
 
 ## Where does the data in this repo come from?
 
-This data is based on parsing the output of several classifiers. The code for that is in the `parsing/` folder.
+This data is based on parsing the output of several classifiers. The code for that is in the `classifiers/` folder. The final parser is usually called `putAllTogether.py`, but each folder's README will tell you details.
 
 The simulated amplicon sequences used for all classifiers are in `data/amplicons/`.
 
