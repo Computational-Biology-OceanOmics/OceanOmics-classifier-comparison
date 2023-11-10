@@ -12,11 +12,11 @@ This repository contains all data and code to generate the figures and statistic
 
 ## Where does the data in this repo come from?
 
-This data is based on parsing the output of several classifiers. The code for that is in the `classifiers/` folder. The final parser is usually called `putAllTogether.py`, but each folder's README will tell you details.
+This data is based on parsing the output of several classifiers. The code for that is in the `classifiers/` folder. The final parser is usually called `putAllTogether.py`, but each folder's `README` will tell you details.
 
 The simulated amplicon sequences used for all classifiers are in `data/amplicons/`.
 
-The simulated database sequences used for all classifiers are in `data/databases/`.
+The simulated database sequences used for all classifiers are in `data/databases/`. All the code to generate the family-exclusion databases is in `data/make_exclusion_databases/`.
 
 ## How do I add more results?
 
@@ -39,15 +39,13 @@ Missing taxonomic labels are either 'dropped' or 'NA'.
 
 This one is a bit trickier. You'd have to rerun all classifiers with your new database or your new query, then look into `code/functions.R` and `code/100_species_final_checks.Rmd` to add the new databases. You'd also have to add the new databases to the `data/databases/` folder, but that's just for reproducibility. See the `README` files in the `classifiers/` folders for notes on how I ran every classifier.
 
-All the code to generate the family-exclusion databases is in `data/make_exclusion_databases/`.
-
 ## How to run this
 
-1. Check out the repo,
+1. Clone the repo,
 2. restore packages and the environment using `renv::restore()`,
 3. run `targets::tar_make()`, 
 
-You should have all results in `results/` as targets::tar_make() will rerun the entire analysis and make all figures.
+You should have all results in `results/` as targets::tar_make() will rerun the entire analysis and make all figures. All the reports are rendered as html files in `code/`.
 
 
 ## Dependency graph
