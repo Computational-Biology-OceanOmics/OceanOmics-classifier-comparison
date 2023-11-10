@@ -5,13 +5,10 @@ Launch analysis (RStudio): [![Binder](https://mybinder.org/badge_logo.svg)](http
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/) [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 
 ## Analysis
+
+We compared taxonomic classifiers using 12S, 16S, and CO1 databases and different scenarios of Australian marine vertebrate eDNA to answer which classifier works best in which situation, and which classifier is overconfident when given incomplete reference databases. We hope that these results increase trust in eDNA-based biodiversity studies.
+
 This repository contains all data and code to generate the figures and statistics for the OceanOmics taxonomic classifier comparison study. Simply click on the above `binder` button to launch either a Rstudio or Jupyter notebook session in the browser, with access to all code and data in this GitHub repository. There, the code can interactively be changed and different plots and statistics can be (re-)created. The entire analysis is based on R targets which keeps track of all data objects which ensures full reproducibility.
-
-### What is binder?
-For an overview of what binder is, please check out [this link](https://mybinder.org/).  
-
-### What is targets?
-For an overview of what targets is, please check out [this link](https://books.ropensci.org/targets/walkthrough.html).
 
 ## Where does the data in this repo come from?
 
@@ -23,6 +20,8 @@ The simulated database sequences used for all classifiers are in `data/databases
 
 ## How do I add more results?
 
+### New classifier
+
 The targets pipeline pulls in results from `data/*tsv.gz`, tab delimited files.
 
 The results should look like this:
@@ -33,6 +32,12 @@ The results should look like this:
 
 Add a new tsv.gz file (see the README inside `data/` too) and targets should pick it up. The name in the `Type` column will be used as the
 classifier label in all tables and figures. Make sure that the ASV-names in the OTU column are the same names as the ASVs in `data/amplicons/`.
+
+
+### New target databases or queries
+
+This one is a bit trickier. You'd have to rerun all classifiers with your new database or your new query, then look into `code/functions.R` and `code/100_species_final_checks.Rmd` to add the new databases. You'd also have to add the new databases to the `data/databases/` folder, but that's just for reproducibility.
+
 
 ## How to run this
 

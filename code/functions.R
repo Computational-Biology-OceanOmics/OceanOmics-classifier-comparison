@@ -14,9 +14,14 @@ plot_dendrogram <- function(data) {
 
 get_hits_data <- function(file) {
   read_tsv(file) |> 
-    mutate(Type = str_replace(Type, '^NBC$', 'CustomNBC'),
-           Type = str_replace(Type, '^BLAST$', 'BLAST97'),
-           Type = str_replace(Type, '^MMSeqs2$', 'MMSeqs2_97'))
+    # give more descriptive names to Classifiers
+    mutate(
+            Type = str_replace(Type, '^NBC$', 'CustomNBC'),
+            Type = str_replace(Type, '^BLAST$', 'BLAST97'),
+            Type = str_replace(Type, '^MMSeqs2$', 'MMSeqs2_97'),
+            # fix typo in Metabuli output I introduced
+            Subject = str_replace(Subject, 'fasta_ref.fasta', 'fasta')
+           )
 }
 
 get_truth_data <- function(file) {
