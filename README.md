@@ -52,7 +52,7 @@ For reproducibility you'd also have to add the new databases to the `data/databa
 2. restore packages and the environment using `renv::restore()`,
 3. run `targets::tar_make()`, 
 
-You should have all results in `results/` as targets::tar_make() will rerun the entire analysis and make all figures. All the reports are rendered as html files in `code/` until I figure out how to change that.
+You should have all results in `results/figures/` and `results/tables/` as targets::tar_make() will rerun the entire analysis and make all figures and tables. All the reports are rendered as html files in `code/` until I figure out how to change that.
 
 ## Other projects to check out
 
