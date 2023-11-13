@@ -1,3 +1,5 @@
+IMPORTANT: Run using the newScore branch on Metabuli
+
 # first we need to rename the sequences; and make the ./Metabuli/build/src/metabuli tax ID txts
 
 python makeReferenceDBs.py
