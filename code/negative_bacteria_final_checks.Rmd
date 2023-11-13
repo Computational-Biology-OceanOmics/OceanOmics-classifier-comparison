@@ -1,5 +1,5 @@
 ---
-title: "100 species comparison"
+title: "Negative bacterial species comparison"
 output: html_document
 date: "2023-10-09"
 ---
@@ -137,13 +137,26 @@ sixteen_exclusions_split |> filter(!is.na(species)) |>
   summarise(species = paste(unique(species), sep = ',', collapse=', ' ))
 ```
 
+```{r}
+# add the average number of ASVs after grouping for Database and Type
+sixteen_exclusions_split |> filter(!is.na(species)) |> 
+  group_by(Type, Database, after) |>
+  summarise(cases= n()) |> 
+  group_by(Type, Database) |> 
+  summarise(mean_c = mean(cases) , median_c = median(cases))
+
+```
+
 ## 12S
 
 12S should have even fewer hits, but let's check!
 
 ```{r}
-greengenes_data_12S <- data |> filter(Query == 'make_12s_16s_simulated_reads_6-fakeGenes_GreenGenes_RESULTS_dada2_asv.fa', Subject == '12s_v010_final.fasta')
-greengenes_data_12S |> filter(!is.na(species))
+greengenes_data_12S <- data |> 
+  filter(Query == 'make_12s_16s_simulated_reads_6-fakeGenes_GreenGenes_RESULTS_dada2_asv.fa', 
+         Subject == '12s_v010_final.fasta')
+greengenes_data_12S |> 
+  filter(!is.na(species))
 ```
 Good.
 
@@ -238,7 +251,7 @@ greengenes_fp_plot <-both |> filter(!is.na(species)) |>
   geom_point(position = position_jitterdodge(), alpha=0.5) +
   theme_minimal() + 
   ylab("False positive species") +
-  facet_wrap(~Gene, nrow = 2) + theme_minimal() +    theme(legend.position="bottom")
+  facet_wrap(~Gene, nrow = 2) + theme_minimal() + theme(legend.position="bottom")
 
 greengenes_fp_plot
 ```

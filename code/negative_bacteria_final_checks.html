@@ -12,7 +12,7 @@
 
 <meta name="date" content="2023-10-09" />
 
-<title>100 species comparison</title>
+<title>Negative bacterial species comparison</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,7 +349,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">100 species comparison</h1>
+<h1 class="title toc-ignore">Negative bacterial species comparison</h1>
 <h4 class="date">2023-10-09</h4>
 
 </div>
@@ -361,13 +361,31 @@ display: none;
 
 library(tidyverse)
 library(forcats)
-library(cowplot)
-library(agricolae)
+library(cowplot)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:lubridate&#39;:
+## 
+##     stamp</code></pre>
+<pre class="r"><code>library(agricolae)
 library(ggupset)
 library(RColorBrewer)
-library(patchwork)
-library(vegan)
-library(pheatmap)
+library(patchwork)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;patchwork&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:cowplot&#39;:
+## 
+##     align_plots</code></pre>
+<pre class="r"><code>library(vegan)</code></pre>
+<pre><code>## Loading required package: permute</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;vegan&#39;:
+##   method      from
+##   plot.rda    klaR
+##   predict.rda klaR
+##   print.rda   klaR</code></pre>
+<pre><code>## This is vegan 2.6-4</code></pre>
+<pre class="r"><code>library(pheatmap)
 library(ggradar)
 library(broom)</code></pre>
 <pre class="r"><code>data &lt;- targets::tar_read(merged_all_results)
@@ -614,12 +632,33 @@ table(sixteen_exclusions$Subject)</code></pre>
 ## 2 CustomNBC 50%      Plestiodon brevirostris                                  
 ## 3 CustomNBC 70%      Tursiops aduncus, Sillago sihama, Plestiodon brevirostris
 ## 4 Qiime2    30%      Nexilosus latifrons</code></pre>
+<pre class="r"><code># add the average number of ASVs after grouping for Database and Type
+sixteen_exclusions_split |&gt; filter(!is.na(species)) |&gt; 
+  group_by(Type, Database, after) |&gt;
+  summarise(cases= n()) |&gt; 
+  group_by(Type, Database) |&gt; 
+  summarise(mean_c = mean(cases) , median_c = median(cases))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;Type&#39;, &#39;Database&#39;. You can override using
+## the `.groups` argument.
+## `summarise()` has grouped output by &#39;Type&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 4 × 4
+## # Groups:   Type [2]
+##   Type      Database mean_c median_c
+##   &lt;chr&gt;     &lt;chr&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 CustomNBC fifty      49.8     44.5
+## 2 CustomNBC seventy    28.5     28.5
+## 3 CustomNBC thirty      9        9  
+## 4 Qiime2    thirty     13       13</code></pre>
 </div>
 <div id="s-1" class="section level2">
 <h2>12S</h2>
 <p>12S should have even fewer hits, but let’s check!</p>
-<pre class="r"><code>greengenes_data_12S &lt;- data |&gt; filter(Query == &#39;make_12s_16s_simulated_reads_6-fakeGenes_GreenGenes_RESULTS_dada2_asv.fa&#39;, Subject == &#39;12s_v010_final.fasta&#39;)
-greengenes_data_12S |&gt; filter(!is.na(species))</code></pre>
+<pre class="r"><code>greengenes_data_12S &lt;- data |&gt; 
+  filter(Query == &#39;make_12s_16s_simulated_reads_6-fakeGenes_GreenGenes_RESULTS_dada2_asv.fa&#39;, 
+         Subject == &#39;12s_v010_final.fasta&#39;)
+greengenes_data_12S |&gt; 
+  filter(!is.na(species))</code></pre>
 <pre><code>## # A tibble: 0 × 11
 ## # ℹ 11 variables: Type &lt;chr&gt;, Query &lt;chr&gt;, Subject &lt;chr&gt;, domain &lt;chr&gt;,
 ## #   phylum &lt;chr&gt;, class &lt;chr&gt;, order &lt;chr&gt;, family &lt;chr&gt;, genus &lt;chr&gt;,
