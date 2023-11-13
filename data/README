@@ -17,4 +17,4 @@ gzip -f 2.1-mmseqs2100Perc_all_results.tsv
  cp ../../runClassifiers/12-TheNucleotideTransformer/all_together.csv 12-TNT_all_results.tsv
 gzip 12-TNT*
 
-#  moved Metabuli and TNT to Not_used
+#  moved TNT to Not_used

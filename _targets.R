@@ -45,7 +45,7 @@ list(
   tar_target(merged_all_results, get_hits_data(all_results)),
   # now finally, compare all data and truth sets
   tar_render(final_outcomes_100, here::here('code/100_species_final_checks.Rmd')),
-  tar_render(final_outcomes_rottnest, here::here('code/rottnest_species_final_checks.Rmd')),
+  tar_render(final_outcomes_wadjemup, here::here('code/wadjemup_species_final_checks.Rmd')),
   tar_render(final_outcomes_negative_bacteria, here::here('code/negative_bacteria_final_checks.Rmd')),
   # make a table where we mean/median all F1s etc. across all query datasets,
   tar_target(correctness_table, assess_correctness(merged_all_results, truth_set_data)),
@@ -63,6 +63,7 @@ list(
   tar_target(correctness_figure, plot_correctness(counted_correctness)),
   tar_target(save_correct, my_save_plot(correctness_figure, 'correctness')),
   tar_target(big_species_table, make_big_table(correctness_table)),
+  tar_target(saved_big_species_table, my_save_table(big_species_table, 'Big_species_table')),
   # count the kinds of errors
   tar_target(error_types_table, make_error_types_table(correctness_table)),
   tar_target(saved_error_types, my_save_table(error_types_table, 'Error_types_table')),

@@ -380,33 +380,33 @@ data &lt;- data |&gt; mutate(Subject = str_replace_all(Subject, pattern = &#39;f
 <pre class="r"><code>table(data$Query)</code></pre>
 <pre><code>## 
 ##                                                                                KWest_16S_PooledTrue.fa 
-##                                                                                                 263191 
+##                                                                                                 261015 
 ##   make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa 
-##                                                                                                  81389 
+##                                                                                                  80993 
 ## make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_noLulu_RESULTS_dada2_asv.fa 
-##                                                                                                  81125 
+##                                                                                                  80729 
 ##   make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa 
-##                                                                                                  78712 
+##                                                                                                  78316 
 ## make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_noLulu_RESULTS_dada2_asv.fa 
-##                                                                                                  78532 
+##                                                                                                  78136 
 ##        make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa 
-##                                                                                                  84288 
+##                                                                                                  83694 
 ##                               make_12s_16s_simulated_reads_6-fakeGenes_GreenGenes_RESULTS_dada2_asv.fa 
-##                                                                                                  69810 
+##                                                                                                  69414 
 ##                                   make_12s_16s_simulated_reads_6-fakeGenes_Random_RESULTS_dada2_asv.fa 
-##                                                                                                  70294 
+##                                                                                                  69894 
 ##                     make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa 
-##                                                                                                  19843 
+##                                                                                                  19747 
 ##                     make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa 
-##                                                                                                  21672 
+##                                                                                                  21564 
 ##                     make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa 
-##                                                                                                  23099 
+##                                                                                                  22937 
 ##                      make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa 
-##                                                                                                  99867 
+##                                                                                                  99165 
 ##                           make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa 
-##                                                                                                  83623 
+##                                                                                                  83215 
 ##                           make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa 
-##                                                                                                  88710</code></pre>
+##                                                                                                  88262</code></pre>
 </div>
 <div id="negative-greengenes" class="section level1">
 <h1>Negative greengenes</h1>
@@ -699,7 +699,10 @@ table(sixteen_exclusions$Subject)</code></pre>
                               Database == &#39;seventy&#39; ~ &#39;30%&#39;)) |&gt; 
   group_by(Type, Database, after) |&gt;
   summarise(counts = n()) |&gt; 
-  ggplot(aes(x = Database, group = interaction(Database, Type), color = Type, y = counts)) + geom_boxplot() + 
+  ggplot(aes(x = Database, 
+             group = interaction(Database, Type),
+             color = Type, y = counts)) + 
+  geom_boxplot() + 
   geom_point(position = position_jitterdodge(), alpha=0.5) +
   theme_minimal() + 
   ylab(&quot;False positive species&quot;)</code></pre>

@@ -34,10 +34,17 @@ Add a new tsv.gz file (see the README inside `data/` too) and targets should pic
 classifier label in all tables and figures. Make sure that the ASV-names in the OTU column are the same names as the ASVs in `data/amplicons/`.
 Missing taxonomic labels are either 'dropped' or 'NA'.
 
+Conversely, to remove a classifier move the `.tsv.gz` file out of /data/ (there's a subfolder named `Not_used`) and rerun `targets::tar_make()`.
 
 ### New target databases or queries
 
-This one is a bit trickier. You'd have to rerun all classifiers with your new database or your new query, then look into `code/functions.R` and `code/100_species_final_checks.Rmd` to add the new databases. You'd also have to add the new databases to the `data/databases/` folder, but that's just for reproducibility. See the `README` files in the `classifiers/` folders for notes on how I ran every classifier.
+This one is a bit trickier. You'd have to rerun all classifiers with your new database or your new query, see the `README` files in the `classifiers/` folders for notes on how I ran every classifier.
+
+I used a little trick to make my classification tasks easier: query files end in `.fa`, subject files end in `.fasta`. 
+
+Then look into `code/functions.R` and `code/100_species_final_checks.Rmd` to add the new databases. Most of the hardcoded values in there are to make the plots look prettier because my Query filenames are so long, but the Subject filenames have to be the same as in the other `tsv.gz` files as I use those file-names to distinguish exclusion databases from 'full' databases.
+
+For reproducibility you'd also have to add the new databases to the `data/databases/` folder. 
 
 ## How to run this
 
@@ -45,8 +52,12 @@ This one is a bit trickier. You'd have to rerun all classifiers with your new da
 2. restore packages and the environment using `renv::restore()`,
 3. run `targets::tar_make()`, 
 
-You should have all results in `results/` as targets::tar_make() will rerun the entire analysis and make all figures. All the reports are rendered as html files in `code/`.
+You should have all results in `results/` as targets::tar_make() will rerun the entire analysis and make all figures. All the reports are rendered as html files in `code/` until I figure out how to change that.
 
+## Other projects to check out
+
+ * [nf-core taxprofiler](https://github.com/nf-core/taxprofiler) for the automated running of many taxonomic classifiers
+ * [nf-core createtaxdb](https://github.com/nf-core/createtaxdb) for the automated reference database creation of many taxonomic classifiers 
 
 ## Dependency graph
 

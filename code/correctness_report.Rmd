@@ -41,3 +41,18 @@ df |> filter(Classifier == 'Kraken2_0.05', Query == 'Lutjanidae', Subject == '16
 
 ```
 
+```{r}
+df |> filter(Query  == 'Lutjanidae', CorrectSpecies == 'Correct species', Subject == 'CO1') |>  select(-c(all_asvs, missing, new_col, newcol2)) |> arrange(desc(perc)) |> head()
+
+```
+
+
+```{r}
+df |> filter(Query  == 'Lutjanidae', CorrectSpecies == 'Correct species', Subject == '12S') |>  select(-c(all_asvs, missing, new_col, newcol2)) |> arrange(desc(perc)) |> head()
+
+```
+
+```{r}
+df |> filter(Query  == 'Lutjanidae', CorrectSpecies == 'Correct species', Subject == '16S') |>  select(-c(all_asvs, missing, new_col, newcol2)) |> arrange(desc(perc)) |> head()
+```
+

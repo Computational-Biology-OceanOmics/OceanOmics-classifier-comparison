@@ -316,7 +316,7 @@ First, we count the per-OTU species hits
 twelveS_data_vs_12S_100_maxCount <- twelveS_data_vs_12S_100 |>  
   mutate(species = na_if(species, 'dropped')) |> 
   filter(!is.na(species)) |> 
-  #filter(! Type %in% c('Mothur', 'VSEARCH', 'Kraken_0.2', 'Qiime2', 'Metabuli', 'NBC', 'BLAST97', 'Kraken_0.0', 'Kraken_0.1')) |> 
+  #filter(! Type %in% c('Mothur', 'VSEARCH', 'Kraken_0.2', 'Mothur', 'Metabuli', 'NBC', 'BLAST97', 'Kraken_0.0', 'Kraken_0.1')) |> 
   group_by(Query, Subject, OTU) |> 
   count(species) |> 
   # double check the truth
@@ -333,7 +333,7 @@ twelveS_data_vs_12S_100_maxCount
 ```{r}
 twelveS_data_vs_12S_100_with_MaxTruth <- twelveS_data_vs_12S_100 |> 
   bind_rows(twelveS_data_vs_12S_100_maxCount) #|>  
-  #filter(! Type %in% c('Mothur', 'VSEARCH', 'Kraken_0.2', 'Qiime2', 'Metabuli', 'NBC', 'BLAST97', 'Kraken_0.0', 'Kraken_0.1')) 
+  #filter(! Type %in% c('Mothur', 'VSEARCH', 'Kraken_0.2', 'Mothur', 'Metabuli', 'NBC', 'BLAST97', 'Kraken_0.0', 'Kraken_0.1')) 
   
 ```
 
@@ -823,7 +823,7 @@ un_summarised_twelve  |> group_by(Type, Database) |> mutate(best = max(mean(Reca
 
 ```{r}
 un_summarised_twelve  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Metabuli',  'Qiime2', 'TNT')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Metabuli',  'Mothur')) |> 
   ggplot(aes(x=Database, y = Precision, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot() +
   labs(fill='Type') + 
@@ -833,7 +833,7 @@ un_summarised_twelve  |>
 
 ```{r}
 false_positives <- un_summarised_twelve  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0','Metabuli', 'Kraken_0.1', 'MMSeqs2', 'TNT')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0','Metabuli', 'Kraken_0.1', 'MMSeqs2')) |> 
   ggplot(aes(x=Database, y = FP/99*100, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot(outlier.shape=NA) +
   labs(fill='Type') + 
@@ -848,7 +848,7 @@ false_positives
 
 ```{r}
 true_positives <- un_summarised_twelve  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Metabuli',  'Kraken_0.1', 'MMSeqs2', 'TNT')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Metabuli',  'Kraken_0.1', 'MMSeqs2')) |> 
   ggplot(aes(x=Database, y = TP/99*100, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot(outlier.shape=NA) +
   labs(fill='Type') + 
@@ -895,7 +895,7 @@ spec_summarised |>
 Let's also do not all of the classifiers
 ```{r}
 spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Metabuli',  'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Metabuli',  'Kraken_0.1','MMSeqs2', 'Mothur')) |> 
   ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
   geom_boxplot() +
   geom_point(aes(color=Type), 
@@ -907,7 +907,7 @@ spec_summarised |>
 
 ```{r}
 a <- spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0','Metabuli',  'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
+  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0','Metabuli',  'Kraken_0.1','MMSeqs2', 'Mothur')) |> 
   group_by(Database) |> 
   arrange(Database) |> 
   group_map(~aov(`Alpha diversity index` ~ Type, data=.))
@@ -930,7 +930,7 @@ groups_df <- bind_rows(groupslist, .id='Database')
 
 ```{r fig.height=5}
 twelve_s_exclusions_fig <- spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0','Metabuli',  'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
+  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0','Metabuli',  'Kraken_0.1','MMSeqs2', 'Mothur')) |> 
   left_join(groups_df, by = c('Database', 'Type')) |> 
   ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
   geom_boxplot(outlier.shape=NA) +
@@ -1121,7 +1121,7 @@ un_summarised_sixteen  |> group_by(Type, Database) |> mutate(best = max(mean(Rec
 
 ```{r}
 un_summarised_sixteen  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Metabuli',  'Qiime2')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Metabuli',  'Mothur')) |> 
   ggplot(aes(x=Database, y = Precision, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot() +
   labs(fill='Type') + 
@@ -1131,7 +1131,7 @@ un_summarised_sixteen  |>
 
 ```{r}
 false_positives <- un_summarised_sixteen  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Metabuli',  'Kraken_0.1', 'MMSeqs2', 'TNT')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Metabuli',  'Kraken_0.1', 'MMSeqs2')) |> 
   ggplot(aes(x=Database, y = FP/99*100, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot(outlier.shape=NA) +
   labs(fill='Type') + 
@@ -1146,7 +1146,7 @@ false_positives
 
 ```{r}
 true_positives <- un_summarised_sixteen  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Metabuli', 'Kraken_0.1', 'MMSeqs2', 'TNT')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Metabuli', 'Kraken_0.1', 'MMSeqs2')) |> 
   ggplot(aes(x=Database, y = TP/99*100, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot(outlier.shape=NA) +
   labs(fill='Type') + 
@@ -1193,7 +1193,7 @@ spec_summarised |>
 Let's also do not all of the classifiers
 ```{r}
 spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Metabuli',  'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Metabuli',  'Kraken_0.1','MMSeqs2', 'Mothur')) |> 
   ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
   geom_boxplot() +
   geom_point(aes(color=Type), 
@@ -1205,7 +1205,7 @@ spec_summarised |>
 
 ```{r}
 a <- spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0',  'Metabuli',  'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
+  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0',  'Metabuli',  'Kraken_0.1','MMSeqs2', 'Mothur')) |> 
   group_by(Database) |> 
   arrange(Database) |> 
   group_map(~aov(`Alpha diversity index` ~ Type, data=.))
@@ -1229,7 +1229,7 @@ groups_df <- bind_rows(groupslist, .id='Database')
 
 ```{r fig.height=5}
 sixteen_s_exclusions_fig <- spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0', 'Metabuli',   'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
+  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0', 'Metabuli',   'Kraken_0.1','MMSeqs2', 'Mothur')) |> 
   left_join(groups_df, by = c('Database', 'Type')) |> 
   ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
   geom_boxplot(outlier.shape=NA) +
@@ -1417,7 +1417,7 @@ un_summarised_co1  |> group_by(Type, Database) |> mutate(best = max(mean(Recall)
 
 ```{r}
 un_summarised_co1  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Metabuli',  'Qiime2')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Metabuli',  'Mothur')) |> 
   ggplot(aes(x=Database, y = Precision, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot() +
   labs(fill='Type') + 
@@ -1427,7 +1427,7 @@ un_summarised_co1  |>
 
 ```{r}
 false_positives <- un_summarised_co1  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Metabuli', 'Kraken_0.1', 'MMSeqs2', 'TNT')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Metabuli', 'Kraken_0.1', 'MMSeqs2')) |> 
   ggplot(aes(x=Database, y = FP/99*100, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot(outlier.shape=NA) +
   labs(fill='Type') + 
@@ -1442,7 +1442,7 @@ false_positives
 
 ```{r}
 true_positives <- un_summarised_co1  |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Metabuli', 'Kraken_0.1', 'MMSeqs2', 'TNT')) |> 
+  filter(Type %in% c('BLAST100', 'Kraken_0.0',  'Metabuli', 'Kraken_0.1', 'MMSeqs2')) |> 
   ggplot(aes(x=Database, y = TP/99*100, fill=Type)) + #fill=factor(Database, levels=c('30%','50%','70%')))) + 
   geom_boxplot(outlier.shape=NA) +
   labs(fill='Type') + 
@@ -1489,7 +1489,7 @@ spec_summarised |>
 Let's also do not all of the classifiers
 ```{r}
 spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'Kraken_0.0', 'Metabuli',   'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
+  filter(Type %in% c('BLAST97', 'Kraken_0.0', 'Metabuli', 'MMSeqs2_97', 'Mothur')) |> 
   ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
   geom_boxplot() +
   geom_point(aes(color=Type), 
@@ -1501,7 +1501,7 @@ spec_summarised |>
 
 ```{r}
 a <- spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0', 'Metabuli', 'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
+  filter(Type %in% c('BLAST97', 'Metabuli', 'Kraken_0.05', 'Kraken_0.0', 'MMSeqs2_97', 'Mothur')) |> 
   group_by(Database) |> 
   arrange(Database) |> 
   group_map(~aov(`Alpha diversity index` ~ Type, data=.))
@@ -1525,7 +1525,7 @@ groups_df <- bind_rows(groupslist, .id='Database')
 
 ```{r fig.height=5}
 co1_s_exclusions_fig <- spec_summarised |> 
-  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0', 'Metabuli', 'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
+  filter(Type %in% c('BLAST97', 'Metabuli', 'Kraken_0.05', 'Kraken_0.0', 'MMSeqs2_97', 'Mothur')) |> 
   left_join(groups_df, by = c('Database', 'Type')) |> 
   ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
   geom_boxplot(outlier.shape=NA) +
@@ -1559,7 +1559,7 @@ both <- rbind(twelve_spec_summarised, sixteen_spec_summarised, co1_spec_summaris
 
 ```{r fig.height=8}
 both_fig <- both |> 
-  filter(Type %in% c('BLAST100', 'BLAST97', 'Kraken_0.0', 'Metabuli', 'Kraken_0.1','MMSeqs2', 'Qiime2', 'TNT')) |> 
+  filter(Type %in% c('BLAST97', 'Metabuli', 'Kraken_0.05', 'Kraken_0.0', 'MMSeqs2_97', 'Mothur')) |> 
   left_join(groups_df, by = c('Database', 'Type')) |> 
   ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
   geom_boxplot(outlier.shape=NA) +
@@ -1570,7 +1570,7 @@ both_fig <- both |>
   facet_wrap(~Database) + 
   geom_text(aes(x = Type, y = max(`Alpha diversity index`) + 2, label = groups),
             #col = 'black',
-            size = 4) +
+            size = 3) +
   #coord_flip() + 
   theme_minimal() +
   theme(axis.text.x = element_text( angle = 90, hjust = 1)) +

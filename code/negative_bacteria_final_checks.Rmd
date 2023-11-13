@@ -165,7 +165,10 @@ twelve_exclusions_plot <- twelve_exclusions_split |> filter(!is.na(species)) |>
                               Database == 'seventy' ~ '30%')) |> 
   group_by(Type, Database, after) |>
   summarise(counts = n()) |> 
-  ggplot(aes(x = Database, group = interaction(Database, Type), color = Type, y = counts)) + geom_boxplot() + 
+  ggplot(aes(x = Database, 
+             group = interaction(Database, Type),
+             color = Type, y = counts)) + 
+  geom_boxplot() + 
   geom_point(position = position_jitterdodge(), alpha=0.5) +
   theme_minimal() + 
   ylab("False positive species")
