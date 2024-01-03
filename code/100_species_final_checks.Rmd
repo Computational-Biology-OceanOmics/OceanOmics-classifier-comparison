@@ -1580,6 +1580,99 @@ both_fig
 my_save_plot(both_fig, 'exclusions_fig')
 ```
 
+I want to remove 50%, there's too much going on. I also want to use patchwork
+```{r}
+top_12 <-  both |> 
+  filter(gene == '12S') |> 
+  filter(Type %in% c('BLAST97', 'Metabuli', 'Kraken_0.05', 'Kraken_0.0', 'MMSeqs2_97', 'Mothur')) |> 
+  left_join(groups_df, by = c('Database', 'Type')) |> 
+  filter(Database != '50%') |> 
+  ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
+  geom_boxplot(outlier.shape=NA) +
+  geom_point(aes(color=Type), 
+           position = position_jitterdodge(jitter.width = 0.2), 
+           alpha=0.5,
+           show.legend = FALSE) + 
+  facet_wrap(~Database) + 
+  geom_text(aes(x = Type, y = max(`Alpha diversity index`) + 2, label = groups),
+            #col = 'black',
+            size = 3) +
+  #coord_flip() + 
+  theme_minimal() +
+  theme(axis.text.x = element_text( angle = 90, hjust = 1)) +
+  guides(fill="none") +
+  ylab('Number of identified species')+ 
+  facet_wrap(~Database, nrow = 1) +
+  theme(panel.spacing = unit(2, "lines")) + 
+  ylim(c(10,90))
+
+middle_16 <- both |> 
+  filter(gene == '16S') |> 
+  filter(Type %in% c('BLAST97', 'Metabuli', 'Kraken_0.05', 'Kraken_0.0', 'MMSeqs2_97', 'Mothur')) |> 
+  left_join(groups_df, by = c('Database', 'Type')) |> 
+  filter(Database != '50%') |> 
+  ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
+  geom_boxplot(outlier.shape=NA) +
+  geom_point(aes(color=Type), 
+           position = position_jitterdodge(jitter.width = 0.2), 
+           alpha=0.5,
+           show.legend = FALSE) + 
+  facet_wrap(~Database) + 
+  geom_text(aes(x = Type, y = max(`Alpha diversity index`) + 2, label = groups),
+            #col = 'black',
+            size = 3) +
+  #coord_flip() + 
+  theme_minimal() +
+  theme(axis.text.x = element_text( angle = 90, hjust = 1)) +
+  guides(fill="none") +
+  ylab('Number of identified species')+ 
+  facet_wrap(~Database, nrow = 1) +
+  theme(panel.spacing = unit(2, "lines"))+ 
+  ylim(c(10,90))
+
+  
+bottom_coi <- both |> 
+  filter(gene == 'CO1') |> 
+  filter(Type %in% c('BLAST97', 'Metabuli', 'Kraken_0.05', 'Kraken_0.0', 'MMSeqs2_97', 'Mothur')) |> 
+  left_join(groups_df, by = c('Database', 'Type')) |> 
+  filter(Database != '50%') |> 
+  ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
+  geom_boxplot(outlier.shape=NA) +
+  geom_point(aes(color=Type), 
+           position = position_jitterdodge(jitter.width = 0.2), 
+           alpha=0.5,
+           show.legend = FALSE) + 
+  facet_wrap(~Database) + 
+  geom_text(aes(x = Type, y = max(`Alpha diversity index`) + 2, label = groups),
+            #col = 'black',
+            size = 3) +
+  #coord_flip() + 
+  theme_minimal() +
+  theme(axis.text.x = element_text( angle = 90, hjust = 1)) +
+  guides(fill="none") +
+  ylab('Number of identified species')+
+  xlab('Classifier')+ 
+  facet_wrap(~Database, nrow = 1) +
+  theme(panel.spacing = unit(2, "lines"))+ 
+  ylim(c(10,90))
+
+  
+without50_fig <- (top_12 + theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  ) + ylab(NULL)) / (middle_16 +  theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  ) ) / (bottom_coi + ylab(NULL)) + plot_annotation(tag_levels = 'A') +
+  plot_layout(guides = 'collect')
+
+
+without50_fig
+my_save_plot(without50_fig, 'exclusions_without50_fig')
+```
+
 Let's make the tables too:
 
 ```{r}
