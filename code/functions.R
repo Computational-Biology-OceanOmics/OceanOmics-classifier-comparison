@@ -183,6 +183,44 @@ make_overview_f1_table <- function(filtered_data) {
     pivot_wider(names_from = Subject, values_from = c(avg_prec, avg_acc, avg_rec, avg_f1, avg_f0.5))
     
 }
+
+plot_overview_f1_table <- function(overview_f1_table) {
+  # first, we get the top 3 and the bottom 3 classifiers
+  
+
+  classifier_levels <-   overview_f1_table |> 
+    rename(Classifier = Type) |> 
+    pivot_longer(-Classifier, names_to = 'Measure') |> 
+    mutate(Measure = str_remove(Measure, 'avg_')) |> 
+    separate(Measure, into=c('Measure', 'Database'), sep = '_', extra='merge') |>
+    mutate(Database = case_when(Database == '12s_v010_final.fasta' ~ '12S',
+                                Database ==  '16S_v04_final.fasta' ~ '16S',
+                                TRUE ~ 'CO1')) |>
+    arrange(desc(value)) |> pull(Classifier) |> unique()
+    
+  overview_f1_table |> 
+    rename(Classifier = Type) |> 
+    pivot_longer(-Classifier, names_to = 'Measure') |> 
+    mutate(Measure = str_remove(Measure, 'avg_')) |> 
+    separate(Measure, into=c('Measure', 'Database'), sep = '_', extra='merge') |>
+    mutate(Database = case_when(Database == '12s_v010_final.fasta' ~ '12S_Miya',
+                                Database ==  '16S_v04_final.fasta' ~ '16S_Berry',
+                                TRUE ~ 'COI_Leray')) |>
+    mutate(Classifier = factor(Classifier, levels =classifier_levels)) |>
+    filter(Measure %in% c('prec', 'acc')) |> 
+    pivot_wider(names_from = Measure, values_from = value) |> 
+    ggplot(aes(x=prec, y = acc, color=Classifier, shape=Classifier)) + 
+    geom_point(size=3) + 
+    scale_shape_manual(values=1:14) +
+    ylab('Accuracy') + 
+    xlab('Precision') + 
+    facet_wrap(~Database) +
+    theme_minimal() +
+    theme(panel.spacing = unit(2, "lines")) +
+    # rotate xaxis labels
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+}
+
 make_all_median_f1_tables <- function(filtered_data) {
   # this is Table 2, but split up into subtables for Supplementary Tables
   
