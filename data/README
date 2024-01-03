@@ -18,3 +18,9 @@ gzip -f 2.1-mmseqs2100Perc_all_results.tsv
 gzip 12-TNT*
 
 #  moved TNT to Not_used
+
+# then added DADA2
+cp ../../runClassifiers/13-DADA2/assignSpecies/all_results.tsv 13-DADA2Species_all_results.tsv
+gzip 13-DADA2Species_all_results.tsv
+cp ../../runClassifiers/13-DADA2/assignTaxonomy/all_results.tsv 13-DADA2Taxonomy_all_results.tsv
+gzip 13-DADA2Taxonomy_all_results.tsv

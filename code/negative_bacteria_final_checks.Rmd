@@ -256,6 +256,32 @@ greengenes_fp_plot <-both |> filter(!is.na(species)) |>
 greengenes_fp_plot
 ```
 
+Eh, let's make that as a table
+
+```{r}
+both |> filter(!is.na(species)) |> 
+  mutate(Database = case_when(Database == 'thirty' ~ '70%',
+                              Database == 'fifty' ~ '50%',
+                              Database == 'seventy' ~ '30%')) |> 
+  group_by(Gene, Classifier, Database, after) |>
+  summarise(counts = n()) |> 
+  group_by(Gene, Classifier, Database) |> 
+  summarise(`False positives` = median(counts),
+            `False positives min` = min(counts),
+            `False positives max` = max(counts)) |> 
+  my_save_table('Table_of_Exclusion_False_Positives')
+```
+
+
+```{r}
+both |> filter(!is.na(species)) |> 
+  mutate(Database = case_when(Database == 'thirty' ~ '70%',
+                              Database == 'fifty' ~ '50%',
+                              Database == 'seventy' ~ '30%')) |> 
+  group_by(Gene, Classifier, Database, after, species) |>
+  summarise(count = n())
+```
+
 ```{r}
 my_save_plot(greengenes_fp_plot, 'greengenes_exclusion_lib_plot')
 ```

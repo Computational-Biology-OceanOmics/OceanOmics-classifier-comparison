@@ -56,8 +56,8 @@ You should have all results in `results/figures/` and `results/tables/` as targe
 
 ## Other projects to check out
 
- * [nf-core taxprofiler](https://github.com/nf-core/taxprofiler) for the automated running of many taxonomic classifiers
- * [nf-core createtaxdb](https://github.com/nf-core/createtaxdb) for the automated reference database creation of many taxonomic classifiers 
+ * [nf-core taxprofiler](https://github.com/nf-core/taxprofiler) to run many taxonomic classifiers using existing reference databases
+ * [nf-core createtaxdb](https://github.com/nf-core/createtaxdb) database creation of many taxonomic classifiers 
 
 ## Dependency graph
 
