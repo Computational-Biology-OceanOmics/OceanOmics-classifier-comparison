@@ -215,6 +215,8 @@ plot_overview_f1_table <- function(overview_f1_table) {
     ylab('Accuracy') + 
     xlab('Precision') + 
     facet_wrap(~Database) +
+    ylim(c(0,1)) + 
+    xlim(c(0,1)) +
     theme_minimal() +
     theme(panel.spacing = unit(2, "lines")) +
     # rotate xaxis labels

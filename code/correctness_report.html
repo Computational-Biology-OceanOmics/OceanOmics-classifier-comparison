@@ -356,7 +356,7 @@ display: none;
 
 
 <pre class="r"><code>df &lt;- targets::tar_read(counted_correctness)</code></pre>
-<p>On average, classifiers assigned a correct species label to 74 45% of
+<p>On average, classifiers assigned a correct species label to 74 44% of
 ASVs, ranging from 0 X (X%)</p>
 <pre class="r"><code>df |&gt; filter(CorrectSpecies == &#39;Correct species&#39;) |&gt; select(-c(all_asvs, missing, new_col, newcol2)) |&gt; arrange(desc(perc)) |&gt; head(5)</code></pre>
 <pre><code>## # A tibble: 5 × 7
@@ -371,13 +371,13 @@ ASVs, ranging from 0 X (X%)</p>
 <pre class="r"><code>df |&gt; filter(CorrectSpecies == &#39;Correct species&#39;) |&gt; select(-c(all_asvs, missing, new_col, newcol2)) |&gt; arrange(desc(perc)) |&gt; tail(5)</code></pre>
 <pre><code>## # A tibble: 5 × 7
 ## # Groups:   Query, Classifier, Subject [5]
-##   Query      Classifier    Subject CorrectSpecies      n total  perc
-##   &lt;chr&gt;      &lt;chr&gt;         &lt;chr&gt;   &lt;fct&gt;           &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
-## 1 Lutjanidae DADA2_Species 16S     Correct species     0    27     0
-## 2 Lutjanidae DADA2_Species CO1     Correct species     0    27     0
-## 3 Wadjemup   DADA2_Species 12S     Correct species     0   102     0
-## 4 Wadjemup   DADA2_Species 16S     Correct species     0   112     0
-## 5 Wadjemup   DADA2_Species CO1     Correct species     0   117     0</code></pre>
+##   Query      Classifier Subject CorrectSpecies      n total  perc
+##   &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;   &lt;fct&gt;           &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+## 1 Lutjanidae DADA2Spec  16S     Correct species     0    27     0
+## 2 Lutjanidae DADA2Spec  CO1     Correct species     0    27     0
+## 3 Wadjemup   DADA2Spec  12S     Correct species     0   102     0
+## 4 Wadjemup   DADA2Spec  16S     Correct species     0   112     0
+## 5 Wadjemup   DADA2Spec  CO1     Correct species     0   117     0</code></pre>
 <pre class="r"><code>df |&gt; filter(Classifier == &#39;Kraken2_0.0&#39;, Query == &#39;Lutjanidae&#39;, Subject == &#39;16S&#39;) |&gt;  select(-c(all_asvs, missing, new_col, newcol2))</code></pre>
 <pre><code>## # A tibble: 8 × 7
 ## # Groups:   Query, Classifier, Subject [1]
