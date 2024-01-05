@@ -195,7 +195,7 @@ plot_overview_f1_table <- function(overview_f1_table) {
     separate(Measure, into=c('Measure', 'Database'), sep = '_', extra='merge') |>
     mutate(Database = case_when(Database == '12s_v010_final.fasta' ~ '12S',
                                 Database ==  '16S_v04_final.fasta' ~ '16S',
-                                TRUE ~ 'CO1')) |>
+                                TRUE ~ 'COI')) |>
     arrange(desc(value)) |> pull(Classifier) |> unique()
     
   overview_f1_table |> 
@@ -268,7 +268,7 @@ make_all_median_f1_tables <- function(filtered_data) {
     ) |> 
     mutate(Subject = case_when(Subject == '12s_v010_final.fasta' ~ '12S',
                                Subject ==  '16S_v04_final.fasta' ~ '16S',
-                               TRUE ~ 'CO1')) |> # TODO: CO1
+                               TRUE ~ 'COI')) |>
     select(Type,Query, Subject,  Precision, Recall, F1, F0.5, Accuracy) |> 
     pivot_longer(-c(Query, Subject, Type), names_to = 'Measure') |> 
     #unite('Pair', Query:Subject, remove = FALSE) |>  # Pair will be hte name of the sheet in the XLSX
@@ -355,7 +355,7 @@ count_correctness <- function(filtered_data) {
     ) |> 
     mutate(Subject = case_when(Subject == '12s_v010_final.fasta' ~ '12S',
                                Subject == '16S_v04_final.fasta' ~ '16S',
-                               TRUE ~ 'CO1')) |> # TODO: CO1
+                               TRUE ~ 'COI')) |> # TODO: CO1
     mutate(CorrectSpecies = factor(CorrectSpecies, rev(
       c(
         'Correct species',
@@ -413,7 +413,7 @@ plot_correctness <- function(counted_data) {
             fill = "white",
             colour = "white"
           ), 
-          axis.text.y = element_text(size = 6))
+          axis.text.y = element_text(size = 5))
 }
 
 
@@ -432,7 +432,7 @@ make_error_types_table <- function(correctness_table) {
   correctness_table |> 
     mutate(Subject = case_when(Subject == '12s_v010_final.fasta' ~ '12S',
                                Subject ==  '16S_v04_final.fasta' ~ '16S',
-                               TRUE ~ 'CO1')) |> # TODO: CO1
+                               TRUE ~ 'COI')) |> # TODO: CO1
     separate(species, into = c('genus', 'epiteth')) |> 
     separate(True_species, into = c('True_genus', 'True_epiteth')) |> 
     mutate(CorrectGenus = case_when( True_genus == genus ~ 'Correct genus', 
@@ -477,6 +477,7 @@ make_error_types_figure <- function(error_types_table) {
     xlab('Classifier') +
     theme_minimal() +
     theme(legend.position = 'bottom', 
+          axis.text.y = element_text(size = 5),
           plot.background = element_rect(
             fill = "white",
             colour = "white"
@@ -522,5 +523,5 @@ make_big_table <- function(correctness_table) {
   ) |> 
     mutate(Subject = case_when(Subject == '12s_v010_final.fasta' ~ '12S',
                                Subject ==  '16S_v04_final.fasta' ~ '16S',
-                               TRUE ~ 'CO1'))
+                               TRUE ~ 'COI'))
 }
