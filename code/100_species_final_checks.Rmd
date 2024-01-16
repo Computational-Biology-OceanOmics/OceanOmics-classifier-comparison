@@ -1673,6 +1673,49 @@ without50_fig
 my_save_plot(without50_fig, 'exclusions_without50_fig')
 ```
 
+Hmmm I don't like this.
+
+Let's do it different:
+
+```{r}
+without_50_redesigned_top <- both |> 
+  filter(gene == '12S') |> 
+  filter(Type %in% c('BLAST97', 'Metabuli', 'Kraken_0.05', 'Kraken_0.0', 'MMSeqs2_97', 'Mothur')) |> 
+  left_join(groups_df, by = c('Database', 'Type')) |> 
+  filter(Database != '50%') |> 
+  ggplot(aes(x = Database, y = `Alpha diversity index`, fill=Type, group = Database )) + 
+  geom_boxplot(outlier.shape=NA, show.legend = FALSE) + 
+  facet_wrap(~Type, nrow=1) + 
+  ylab('Number of identified species') +
+  xlab('Exclusion percentage') +  
+  geom_point(aes(color=Type), 
+           position = position_jitterdodge(jitter.width = 0.2), 
+           alpha=0.5,
+           show.legend = FALSE)
+
+without_50_redesigned_bottom <- both |> 
+  filter(gene == 'CO1') |> 
+  filter(Type %in% c('BLAST97', 'Metabuli', 'Kraken_0.05', 'Kraken_0.0', 'MMSeqs2_97', 'Mothur')) |> 
+  left_join(groups_df, by = c('Database', 'Type')) |> 
+  filter(Database != '50%') |> 
+  ggplot(aes(x = Database, y = `Alpha diversity index`, fill=Type, group = Database )) + 
+  geom_boxplot(outlier.shape=NA, show.legend = FALSE) + 
+  facet_wrap(~Type, nrow=1) + 
+  ylab('Number of identified species') +
+  xlab('Exclusion percentage') +  
+  geom_point(aes(color=Type), 
+           position = position_jitterdodge(jitter.width = 0.2), 
+           alpha=0.5,
+           show.legend = FALSE) 
+
+both_figs <- (without_50_redesigned_top + theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank())) / without_50_redesigned_bottom  + plot_annotation(tag_levels = 'A') 
+my_save_plot(both_figs, 'exclusions_without50_fig_redesigned')
+```
+
+
 Let's make the tables too:
 
 ```{r}
