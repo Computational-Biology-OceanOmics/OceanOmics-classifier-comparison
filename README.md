@@ -46,6 +46,8 @@ Then look into `code/functions.R` and `code/100_species_final_checks.Rmd` to add
 
 For reproducibility you'd also have to add the new databases to the `data/databases/` folder. 
 
+We codified our ASV simulation pipeline into [nf-core/readsimulator](https://github.com/nf-core/readsimulator). If you want to add new query files, you can use that pipeline to generate them.
+
 ## How to run this
 
 1. Clone the repo,
