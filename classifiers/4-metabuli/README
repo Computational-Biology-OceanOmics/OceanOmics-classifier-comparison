@@ -23,7 +23,7 @@ for l in db/taxonomy/*; do for x in *_db/taxonomy/; do cd $x; ln -s ../../$l; cd
 for l in *fasta.txt; do ./Metabuli/build/src/metabuli add-to-library $l ${l%%_ref.fasta.txt}_taxa.txt ${l%%.txt}_db; done
 for l in *_db; do find $l -name '*fna' > ${l}.txt; done
 for l in *_db; do ./Metabuli/build/src/metabuli build --accession-level 1 $l ${l}.txt ${l%%_ref.fasta_db}_taxa.txt ; done
-for l in ../*fa; do for x in *_db; do ./Metabuli/build/src/metabuli classify --seq-mode 3 --accession-level 1 $l $x $(basename $l)_vs_${x}_RESULTS $(basename $l)_vs_${x}_RESULTS  --min-cons-cnt-euk 4 --min-cons-cnt 4 ; done ; done
+for l in ../*fa; do for x in *_db; do ./metabuli_main_git/build/src/metabuli classify --seq-mode 1 --accession-level 0 $l $x $(basename $l)_vs_${x}_RESULTS $(basename $l)_vs_${x}_RESULTS  --min-cons-cnt-euk 4 --min-cons-cnt 4 --tie-ratio 0.99 ; done ; done  
 
 for l in */*classifications.tsv; do echo taxonkit lineage -i 3 $l \| taxonkit reformat -i 10 \> ${l%%.tsv}_fixed.tsv; done > cmds.txt
 parallel -P 50 < cmds.txt

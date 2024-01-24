@@ -8,14 +8,15 @@ with open('all_results.tsv', 'w') as out:
         database = database.replace('_db_RESULTS','')
         # 0       ASV_1   0       225     0       0       0       no rank
         # 1       ASV_10  75042   201     0.283582        0.283582        0       species 75042:12        cellular organisms;Eukaryota;Opisthokonta;Metazoa;Eumetazoa;Bilateria;Deuterostomia;Chordata;Craniata;Vertebrata;Gnathostomata;Teleostomi;Euteleostomi;Actinopterygii;Actinopteri;Neopterygii;Teleostei;Osteoglossocephalai;Clupeocephala;Euteleosteomorpha;Neoteleostei;Eurypterygia;Ctenosquamata;Acanthomorphata;Euacanthomorphacea;Percomorphaceae;Eupercaria;Eupercaria incertae sedis;Siganidae;Siganus;Siganus canaliculatus     Eukaryota;Chordata;Actinopteri;;Siganidae;Siganus;Siganus canaliculatus
+        # ['0', 'ASV_1', '0', '195', '0', 'no rank']
         with open(l) as fh:
             for line in fh:
                 ll = line.rstrip().split('\t')
                 asv = ll[1]
                 taxid = ll[2]
-                dna_ident = ll[4]
-                prot_ident = ll[5]
-                hamming_dist = ll[6]
+                #dna_ident = ll[4]
+                #prot_ident = ll[5]
+                #hamming_dist = ll[6]
                 if ll[0] == '0' or ':' in ll[-1]:
                     # unassigned
                     newll = ['Metabuli', query, database, 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', asv]#, dna_ident, prot_ident, hamming_dist]
