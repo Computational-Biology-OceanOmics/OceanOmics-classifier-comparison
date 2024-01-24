@@ -1560,7 +1560,8 @@ both <- rbind(twelve_spec_summarised, sixteen_spec_summarised, co1_spec_summaris
 ```{r fig.height=8}
 both_fig <- both |> 
   filter(Type %in% c('BLAST97', 'Metabuli', 'Kraken_0.05', 'Kraken_0.0', 'MMSeqs2_97', 'Mothur')) |> 
-  left_join(groups_df, by = c('Database', 'Type')) |> 
+  left_join(groups_df, by = c('Database', 'Type')) |>
+  mutate(Type = gsub('Kraken', 'Kraken2', Type)) |> 
   ggplot(aes(x = Type, y = `Alpha diversity index`, fill=Type, group = Type )) + 
   geom_boxplot(outlier.shape=NA) +
   geom_point(aes(color=Type), 
@@ -1682,6 +1683,7 @@ without_50_redesigned_top <- both |>
   filter(gene == '12S') |> 
   filter(Type %in% c('BLAST97', 'Metabuli', 'Kraken_0.05', 'Kraken_0.0', 'MMSeqs2_97', 'Mothur')) |> 
   left_join(groups_df, by = c('Database', 'Type')) |> 
+   mutate(Type = gsub('Kraken', 'Kraken2', Type)) |> 
   filter(Database != '50%') |> 
   ggplot(aes(x = Database, y = `Alpha diversity index`, fill=Type, group = Database )) + 
   geom_boxplot(outlier.shape=NA, show.legend = FALSE) + 
@@ -1696,7 +1698,8 @@ without_50_redesigned_top <- both |>
 without_50_redesigned_bottom <- both |> 
   filter(gene == 'CO1') |> 
   filter(Type %in% c('BLAST97', 'Metabuli', 'Kraken_0.05', 'Kraken_0.0', 'MMSeqs2_97', 'Mothur')) |> 
-  left_join(groups_df, by = c('Database', 'Type')) |> 
+  left_join(groups_df, by = c('Database', 'Type')) |>
+     mutate(Type = gsub('Kraken', 'Kraken2', Type)) |> 
   filter(Database != '50%') |> 
   ggplot(aes(x = Database, y = `Alpha diversity index`, fill=Type, group = Database )) + 
   geom_boxplot(outlier.shape=NA, show.legend = FALSE) + 
