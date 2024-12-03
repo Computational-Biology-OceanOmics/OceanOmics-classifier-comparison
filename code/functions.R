@@ -118,13 +118,13 @@ prepare_mean_median_f1_table <- function(filtered_data) {
   Counted_data <- filtered_data |> 
     mutate(all_asvs = case_when(Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 24,
                                 Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 27,
-                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 27,
+                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 26,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 102,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 112,
-                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 117,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 114,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
-                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 99)) |>
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 100)) |>
     group_by(Type, Query, Subject, all_asvs) |>
     summarise(TP = sum(str_detect(CorrectSpecies, pattern = '^Correct species$'), na.rm=TRUE),
               FP = sum(str_detect(CorrectSpecies, pattern = 'Incorrect species'), na.rm=TRUE),
@@ -229,13 +229,13 @@ make_all_median_f1_tables <- function(filtered_data) {
   Counted_data <- filtered_data |> 
     mutate(all_asvs = case_when(Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 24,
                                 Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 27,
-                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 27,
+                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 26,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 102,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 112,
-                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 117,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 114,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
-                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 99)) |>
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 100)) |>
     group_by(Type, Query, Subject, all_asvs) |>
     summarise(TP = sum(str_detect(CorrectSpecies, pattern = '^Correct species$'), na.rm=TRUE),
               FP = sum(str_detect(CorrectSpecies, pattern = 'Incorrect species'), na.rm=TRUE),
@@ -315,13 +315,13 @@ count_correctness <- function(filtered_data) {
     mutate(total = sum(n)) |>
     mutate(all_asvs = case_when(Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 24,
                                 Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 27,
-                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 27,
+                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 26,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 102,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 112,
-                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 117,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 114,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
-                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 99)) |>
+                                Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 100)) |>
     mutate(missing = all_asvs - total) |>
     group_modify( ~ add_row(.x)) |>
     group_modify( ~ {

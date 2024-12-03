@@ -356,8 +356,8 @@ display: none;
 
 
 <pre class="r"><code>df &lt;- targets::tar_read(counted_correctness)</code></pre>
-<p>On average, classifiers assigned a correct species label to 76 45% of
-ASVs, ranging from 0 X (X%)</p>
+<p>On average, classifiers assigned a correct species label to 76 47% of
+ASVs, ranging from 4 X (X%)</p>
 <pre class="r"><code>df |&gt; filter(CorrectSpecies == &#39;Correct species&#39;) |&gt; select(-c(all_asvs, missing, new_col, newcol2)) |&gt; arrange(desc(perc)) |&gt; head(5)</code></pre>
 <pre><code>## # A tibble: 5 × 7
 ## # Groups:   Query, Classifier, Subject [5]
@@ -366,18 +366,18 @@ ASVs, ranging from 0 X (X%)</p>
 ## 1 Lutjanidae             Kraken2_0.0 12S     Correct species    16    24  66.7
 ## 2 Lutjanidae             MMSeqs2_97  12S     Correct species    16    24  66.7
 ## 3 Lutjanidae             Metabuli    12S     Correct species    16    24  66.7
-## 4 100 Australian species Mothur      COI     Correct species    64   100  64.6
+## 4 100 Australian species Mothur      COI     Correct species    64   100  64  
 ## 5 Wadjemup               Metabuli    12S     Correct species    65   102  63.7</code></pre>
 <pre class="r"><code>df |&gt; filter(CorrectSpecies == &#39;Correct species&#39;) |&gt; select(-c(all_asvs, missing, new_col, newcol2)) |&gt; arrange(desc(perc)) |&gt; tail(5)</code></pre>
 <pre><code>## # A tibble: 5 × 7
 ## # Groups:   Query, Classifier, Subject [5]
-##   Query                  Classifier   Subject CorrectSpecies      n total  perc
-##   &lt;chr&gt;                  &lt;chr&gt;        &lt;chr&gt;   &lt;fct&gt;           &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
-## 1 Wadjemup               DADA2Tax     12S     Correct species     7   102  6.86
-## 2 Lutjanidae             DADA2Tax     12S     Correct species     1    24  4.17
-## 3 100 Australian species Kraken2_0.0  COI     Correct species     0    99  0   
-## 4 100 Australian species Kraken2_0.05 COI     Correct species     0    99  0   
-## 5 100 Australian species Kraken2_0.1  COI     Correct species     0    99  0</code></pre>
+##   Query                  Classifier Subject CorrectSpecies      n total  perc
+##   &lt;chr&gt;                  &lt;chr&gt;      &lt;chr&gt;   &lt;fct&gt;           &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+## 1 100 Australian species DADA2Tax   12S     Correct species    12    99 12.1 
+## 2 100 Australian species DADA2Tax   COI     Correct species    10   100 10   
+## 3 Wadjemup               DADA2Tax   16S     Correct species     8   112  7.14
+## 4 Wadjemup               DADA2Tax   12S     Correct species     7   102  6.86
+## 5 Lutjanidae             DADA2Tax   12S     Correct species     1    24  4.17</code></pre>
 <pre class="r"><code>df |&gt; filter(Classifier == &#39;Kraken2_0.0&#39;, Query == &#39;Lutjanidae&#39;, Subject == &#39;16S&#39;) |&gt;  select(-c(all_asvs, missing, new_col, newcol2))</code></pre>
 <pre><code>## # A tibble: 8 × 7
 ## # Groups:   Query, Classifier, Subject [1]
