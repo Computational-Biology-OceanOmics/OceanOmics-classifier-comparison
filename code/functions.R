@@ -99,10 +99,10 @@ assess_correctness <- function(data, truth) {
                           'OTU' = 'True_OTU')) |>
     filter( ( Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' & Subject == '12s_v010_final.fasta') | 
               (  Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' & Subject == '16S_v04_final.fasta') |
-              ( Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' & Subject == 'c01_v03_final.fasta') |
+              ( Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' & Subject == 'c01_v03_final.fasta') |
               ( Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' & Subject == '12s_v010_final.fasta') | 
               (  Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' & Subject == '16S_v04_final.fasta') |
-              (Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' & Subject == 'c01_v03_final.fasta') | 
+              (Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' & Subject == 'c01_v03_final.fasta') | 
               ( Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' & Subject == '12s_v010_final.fasta') | 
               (  Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' & Subject == '16S_v04_final.fasta') |
               (Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' & Subject == 'c01_v03_final.fasta')) |> 
@@ -118,10 +118,10 @@ prepare_mean_median_f1_table <- function(filtered_data) {
   Counted_data <- filtered_data |> 
     mutate(all_asvs = case_when(Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 24,
                                 Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 27,
-                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 26,
+                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 26,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 102,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 112,
-                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 114,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 114,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 100)) |>
@@ -229,10 +229,10 @@ make_all_median_f1_tables <- function(filtered_data) {
   Counted_data <- filtered_data |> 
     mutate(all_asvs = case_when(Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 24,
                                 Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 27,
-                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 26,
+                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 26,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 102,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 112,
-                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 114,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 114,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 100)) |>
@@ -257,10 +257,10 @@ make_all_median_f1_tables <- function(filtered_data) {
       Query = case_when(
         Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
         Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
-        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
         Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
         Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
-        Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ '100 Australian species'
@@ -315,10 +315,10 @@ count_correctness <- function(filtered_data) {
     mutate(total = sum(n)) |>
     mutate(all_asvs = case_when(Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 24,
                                 Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 27,
-                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 26,
+                                Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 26,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 102,
                                 Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 112,
-                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 114,
+                                Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 114,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ 99,
                                 Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 100)) |>
@@ -344,10 +344,10 @@ count_correctness <- function(filtered_data) {
       Query = case_when(
         Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
         Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
-        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
         Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
         Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
-        Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ '100 Australian species'
@@ -452,10 +452,10 @@ make_error_types_table <- function(correctness_table) {
       Query = case_when(
         Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
         Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
-        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
+        Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
         Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
         Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
-        Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
+        Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
         Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ '100 Australian species'
@@ -512,10 +512,10 @@ make_big_table <- function(correctness_table) {
     Query = case_when(
       Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_12S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
       Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
-      Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
+      Query == 'make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 'Lutjanidae',
       Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
       Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
-      Query == 'make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
+      Query == 'make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ 'Wadjemup',
       Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_12S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
       Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_Lulu_RESULTS_dada2_asv.fa' ~ '100 Australian species',
       Query == 'make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa' ~ '100 Australian species'
