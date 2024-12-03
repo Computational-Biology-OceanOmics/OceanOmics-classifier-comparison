@@ -521,7 +521,7 @@ CO1_relative_plot <- co1_data_vs_co1_100 |> left_join(CO1_truth, by = c('OTU' = 
   group_by(Type) |> 
   count(CorrectSpecies) |> 
   mutate(total = sum(n)) |> 
-  mutate(missing = 99 - total) |> 
+  mutate(missing = 100 - total) |> 
   group_modify(~ add_row(.x)) |> 
   group_modify(~ {
     .x |> mutate(new_col= max(missing, na.rm=TRUE)) |> 

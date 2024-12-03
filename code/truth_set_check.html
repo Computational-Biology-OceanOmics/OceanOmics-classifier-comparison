@@ -377,8 +377,8 @@ nbc &lt;- targets::tar_read(subsampled_nbc_hits_data)</code></pre>
 <pre><code>## # A tibble: 2 × 2
 ##   species            n
 ##   &lt;chr&gt;          &lt;int&gt;
-## 1 OnGenusLevel      38
-## 2 OnSpeciesLevel   666</code></pre>
+## 1 OnGenusLevel      22
+## 2 OnSpeciesLevel   679</code></pre>
 <pre class="r"><code>blast |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Blast&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesBlast, speciesTruth) |&gt; 
   filter(speciesBlast != &#39;dropped&#39;,
@@ -392,7 +392,7 @@ nbc &lt;- targets::tar_read(subsampled_nbc_hits_data)</code></pre>
   select(speciesBlast, speciesTruth) |&gt; 
   filter(speciesBlast %in% c(NA, &#39;dropped&#39;),
          speciesTruth == &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 38 × 2
+<pre><code>## # A tibble: 22 × 2
 ##    speciesBlast speciesTruth
 ##    &lt;chr&gt;        &lt;chr&gt;       
 ##  1 &lt;NA&gt;         dropped     
@@ -405,28 +405,28 @@ nbc &lt;- targets::tar_read(subsampled_nbc_hits_data)</code></pre>
 ##  8 &lt;NA&gt;         dropped     
 ##  9 &lt;NA&gt;         dropped     
 ## 10 &lt;NA&gt;         dropped     
-## # ℹ 28 more rows</code></pre>
+## # ℹ 12 more rows</code></pre>
 <p>false negatives:</p>
 <pre class="r"><code>blast |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Blast&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesBlast, speciesTruth) |&gt; 
   filter(speciesBlast %in% c(NA, &#39;dropped&#39;),
          speciesTruth != &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 557 × 2
-##    speciesBlast speciesTruth           
-##    &lt;chr&gt;        &lt;chr&gt;                  
-##  1 dropped      Hippocampus algiricus  
-##  2 dropped      Liparis bathyarcticus  
-##  3 dropped      Dipturus intermedius   
-##  4 dropped      Lycodes polaris        
-##  5 dropped      Hydrolagus affinis     
-##  6 dropped      Istigobius campbelli   
-##  7 dropped      Bathyraja maccaini     
-##  8 dropped      Cheilopogon cyanopterus
-##  9 dropped      Cottus asper           
-## 10 dropped      Cirrhigaleus australis 
-## # ℹ 547 more rows</code></pre>
+<pre><code>## # A tibble: 570 × 2
+##    speciesBlast speciesTruth            
+##    &lt;chr&gt;        &lt;chr&gt;                   
+##  1 dropped      Ctenochaetus tominiensis
+##  2 dropped      Alepocephalus umbriceps 
+##  3 dropped      Cheilopogon unicolor    
+##  4 dropped      Cirripectes castaneus   
+##  5 dropped      Trachurus japonicus     
+##  6 dropped      Maccullochella peelii   
+##  7 dropped      Alosa aestivalis        
+##  8 dropped      Sardinella jussieu      
+##  9 dropped      Anguilla marmorata      
+## 10 dropped      Lentipes kijimuna       
+## # ℹ 560 more rows</code></pre>
 <pre class="r"><code>blast |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Blast&#39;, &#39;Truth&#39;)) |&gt; nrow()</code></pre>
-<pre><code>## [1] 704</code></pre>
+<pre><code>## [1] 701</code></pre>
 <p>So we have 137 false negatives, 96 true positives, 13 false
 positives, 3 true negatives.</p>
 <pre class="r"><code>blast_accuracy &lt;- 96 / (249) 
@@ -438,20 +438,20 @@ blast_f0.5 &lt;- 1.25 * ( blast_precision * blast_recall / (0.25 * blast_precisi
 <h1>Kraken</h1>
 <p>For Kraken:</p>
 <pre class="r"><code>kraken |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) </code></pre>
-<pre><code>## # A tibble: 704 × 23
+<pre><code>## # A tibble: 701 × 23
 ##    Type   Kraken_confidence Query        SubjectKraken domainKraken phylumKraken
 ##    &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt;        &lt;chr&gt;       
-##  1 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-##  2 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-##  3 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-##  4 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-##  5 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-##  6 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-##  7 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-##  8 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-##  9 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-## 10 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-## # ℹ 694 more rows
+##  1 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  2 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  3 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  4 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  5 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  6 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  7 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  8 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  9 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+## 10 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+## # ℹ 691 more rows
 ## # ℹ 17 more variables: classKraken &lt;chr&gt;, orderKraken &lt;chr&gt;,
 ## #   familyKraken &lt;chr&gt;, genusKraken &lt;chr&gt;, speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;,
 ## #   SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;, lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;,
@@ -471,7 +471,7 @@ blast_f0.5 &lt;- 1.25 * ( blast_precision * blast_recall / (0.25 * blast_precisi
   select(speciesKraken, speciesTruth) |&gt; 
   filter(is.na(speciesKraken),
          speciesTruth == &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 38 × 2
+<pre><code>## # A tibble: 22 × 2
 ##    speciesKraken speciesTruth
 ##    &lt;chr&gt;         &lt;chr&gt;       
 ##  1 &lt;NA&gt;          dropped     
@@ -484,26 +484,26 @@ blast_f0.5 &lt;- 1.25 * ( blast_precision * blast_recall / (0.25 * blast_precisi
 ##  8 &lt;NA&gt;          dropped     
 ##  9 &lt;NA&gt;          dropped     
 ## 10 &lt;NA&gt;          dropped     
-## # ℹ 28 more rows</code></pre>
+## # ℹ 12 more rows</code></pre>
 <p>False negatives:</p>
 <pre class="r"><code>kraken |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesKraken, speciesTruth) |&gt; 
   filter(is.na(speciesKraken),
          speciesTruth != &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 531 × 2
+<pre><code>## # A tibble: 544 × 2
 ##    speciesKraken speciesTruth           
 ##    &lt;chr&gt;         &lt;chr&gt;                  
-##  1 &lt;NA&gt;          Hippocampus algiricus  
-##  2 &lt;NA&gt;          Bostrychus sinensis    
-##  3 &lt;NA&gt;          Dipturus intermedius   
-##  4 &lt;NA&gt;          Lycodes polaris        
-##  5 &lt;NA&gt;          Hydrolagus affinis     
-##  6 &lt;NA&gt;          Istigobius campbelli   
-##  7 &lt;NA&gt;          Bathyraja maccaini     
-##  8 &lt;NA&gt;          Cheilopogon cyanopterus
-##  9 &lt;NA&gt;          Cottus asper           
-## 10 &lt;NA&gt;          Cirrhigaleus australis 
-## # ℹ 521 more rows</code></pre>
+##  1 &lt;NA&gt;          Alepocephalus umbriceps
+##  2 &lt;NA&gt;          Anguilla marmorata     
+##  3 &lt;NA&gt;          Cheilopogon unicolor   
+##  4 &lt;NA&gt;          Cirripectes castaneus  
+##  5 &lt;NA&gt;          Trachurus japonicus    
+##  6 &lt;NA&gt;          Maccullochella peelii  
+##  7 &lt;NA&gt;          Alosa aestivalis       
+##  8 &lt;NA&gt;          Sardinella jussieu     
+##  9 &lt;NA&gt;          Lentipes kijimuna      
+## 10 &lt;NA&gt;          Rhinogobius brunneus   
+## # ℹ 534 more rows</code></pre>
 <p>106 True positives, 29 False Positives, 3 true negatives, 111 false
 negatives</p>
 <pre class="r"><code>kraken_accuracy &lt;- 106 / (106+29+3+111) 
@@ -528,7 +528,7 @@ kraken_f0.5 &lt;- 1.25 * ( kraken_precision * kraken_recall / (0.25 * kraken_pre
   select(speciesKraken, speciesTruth) |&gt; 
   filter(is.na(speciesKraken),
          speciesTruth == &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 38 × 2
+<pre><code>## # A tibble: 22 × 2
 ##    speciesKraken speciesTruth
 ##    &lt;chr&gt;         &lt;chr&gt;       
 ##  1 &lt;NA&gt;          dropped     
@@ -541,26 +541,26 @@ kraken_f0.5 &lt;- 1.25 * ( kraken_precision * kraken_recall / (0.25 * kraken_pre
 ##  8 &lt;NA&gt;          dropped     
 ##  9 &lt;NA&gt;          dropped     
 ## 10 &lt;NA&gt;          dropped     
-## # ℹ 28 more rows</code></pre>
+## # ℹ 12 more rows</code></pre>
 <p>False negatives:</p>
 <pre class="r"><code>kraken_0.1 |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesKraken, speciesTruth) |&gt; 
   filter(is.na(speciesKraken),
          speciesTruth != &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 559 × 2
-##    speciesKraken speciesTruth         
-##    &lt;chr&gt;         &lt;chr&gt;                
-##  1 &lt;NA&gt;          Glyphis garricki     
-##  2 &lt;NA&gt;          Hippocampus algiricus
-##  3 &lt;NA&gt;          Bostrychus sinensis  
-##  4 &lt;NA&gt;          Liparis bathyarcticus
-##  5 &lt;NA&gt;          Dipturus intermedius 
-##  6 &lt;NA&gt;          Lycodes polaris      
-##  7 &lt;NA&gt;          Chaetodon wiebeli    
-##  8 &lt;NA&gt;          Hydrolagus affinis   
-##  9 &lt;NA&gt;          Istigobius campbelli 
-## 10 &lt;NA&gt;          Bathyraja maccaini   
-## # ℹ 549 more rows</code></pre>
+<pre><code>## # A tibble: 572 × 2
+##    speciesKraken speciesTruth            
+##    &lt;chr&gt;         &lt;chr&gt;                   
+##  1 &lt;NA&gt;          Ctenochaetus tominiensis
+##  2 &lt;NA&gt;          Alepocephalus umbriceps 
+##  3 &lt;NA&gt;          Anguilla marmorata      
+##  4 &lt;NA&gt;          Cheilopogon unicolor    
+##  5 &lt;NA&gt;          Cirripectes castaneus   
+##  6 &lt;NA&gt;          Trachurus japonicus     
+##  7 &lt;NA&gt;          Tilodon sexfasciatus    
+##  8 &lt;NA&gt;          Maccullochella peelii   
+##  9 &lt;NA&gt;          Alosa aestivalis        
+## 10 &lt;NA&gt;          Sardinella jussieu      
+## # ℹ 562 more rows</code></pre>
 <p>92 True positives, 15 False Positives, 3 true negatives, 139 false
 negatives</p>
 <pre class="r"><code>kraken_0.1_accuracy &lt;- 92 / (92+15+3+139) 
@@ -574,7 +574,7 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
 <h1>NBC</h1>
 <pre class="r"><code>nbc |&gt;
   right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) </code></pre>
-<pre><code>## # A tibble: 704 × 22
+<pre><code>## # A tibble: 701 × 22
 ##    Type    Query SubjectKraken domainKraken phylumKraken classKraken orderKraken
 ##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;lgl&gt;        &lt;lgl&gt;        &lt;lgl&gt;       &lt;lgl&gt;      
 ##  1 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
@@ -587,7 +587,7 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
 ##  8 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
 ##  9 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
 ## 10 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
-## # ℹ 694 more rows
+## # ℹ 691 more rows
 ## # ℹ 15 more variables: familyKraken &lt;lgl&gt;, genusKraken &lt;chr&gt;,
 ## #   speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;, SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;,
 ## #   lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;, domainTruth &lt;chr&gt;, phylumTruth &lt;chr&gt;,
@@ -607,7 +607,7 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
   select(speciesNBC, speciesTruth) |&gt; 
   filter(is.na(speciesNBC),
          speciesTruth == &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 38 × 2
+<pre><code>## # A tibble: 22 × 2
 ##    speciesNBC speciesTruth
 ##    &lt;chr&gt;      &lt;chr&gt;       
 ##  1 &lt;NA&gt;       dropped     
@@ -620,26 +620,26 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
 ##  8 &lt;NA&gt;       dropped     
 ##  9 &lt;NA&gt;       dropped     
 ## 10 &lt;NA&gt;       dropped     
-## # ℹ 28 more rows</code></pre>
+## # ℹ 12 more rows</code></pre>
 <p>False negatives:</p>
 <pre class="r"><code>nbc |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;NBC&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesNBC, speciesTruth) |&gt; 
   filter(is.na(speciesNBC),
          speciesTruth != &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 543 × 2
+<pre><code>## # A tibble: 556 × 2
 ##    speciesNBC speciesTruth            
 ##    &lt;chr&gt;      &lt;chr&gt;                   
 ##  1 &lt;NA&gt;       Phyllopteryx taeniolatus
-##  2 &lt;NA&gt;       Glyphis garricki        
-##  3 &lt;NA&gt;       Bostrychus sinensis     
-##  4 &lt;NA&gt;       Carcharhinus brachyurus 
-##  5 &lt;NA&gt;       Ctenochaetus tominiensis
-##  6 &lt;NA&gt;       Cheilopogon unicolor    
-##  7 &lt;NA&gt;       Plestiodon chinensis    
-##  8 &lt;NA&gt;       Cleisthenes herzensteini
-##  9 &lt;NA&gt;       Holacanthus ciliaris    
-## 10 &lt;NA&gt;       Pristis pectinata       
-## # ℹ 533 more rows</code></pre>
+##  2 &lt;NA&gt;       Carcharhinus brachyurus 
+##  3 &lt;NA&gt;       Ctenochaetus tominiensis
+##  4 &lt;NA&gt;       Glyphis garricki        
+##  5 &lt;NA&gt;       Cheilopogon unicolor    
+##  6 &lt;NA&gt;       Plestiodon chinensis    
+##  7 &lt;NA&gt;       Cleisthenes herzensteini
+##  8 &lt;NA&gt;       Holacanthus ciliaris    
+##  9 &lt;NA&gt;       Pristis pectinata       
+## 10 &lt;NA&gt;       Himantura microphthalma 
+## # ℹ 546 more rows</code></pre>
 <p>96 True positives, 31 False Positives, 3 true negatives, 119 false
 negatives</p>
 <pre class="r"><code>nbc_accuracy &lt;- 96 / (96+31+3+119) 
@@ -675,16 +675,16 @@ df</code></pre>
 <pre><code>## # A tibble: 183 × 4
 ##    speciesTruth             speciesKraken_0.1       species_Kraken species_Blast
 ##    &lt;chr&gt;                    &lt;chr&gt;                   &lt;chr&gt;          &lt;chr&gt;        
-##  1 Phyllopteryx taeniolatus Phyllopteryx taeniolat… Phyllopteryx … Phyllopteryx…
-##  2 Glyphis garricki         &lt;NA&gt;                    Glyphis garri… Glyphis garr…
-##  3 Merluccius productus     Merluccius productus    Merluccius pr… Merluccius p…
-##  4 Parupeneus barberinus    Parupeneus indicus      Parupeneus in… Parupeneus i…
-##  5 Hippocampus algiricus    &lt;NA&gt;                    &lt;NA&gt;           &lt;NA&gt;         
-##  6 Cirripectes castaneus    Cirripectes castaneus   Cirripectes c… Cirripectes …
-##  7 Gymnothorax mucifer      Gymnothorax mucifer     Gymnothorax m… Gymnothorax …
-##  8 Liparis bathyarcticus    &lt;NA&gt;                    Liparis bathy… &lt;NA&gt;         
-##  9 Dipturus intermedius     &lt;NA&gt;                    &lt;NA&gt;           &lt;NA&gt;         
-## 10 Hemigymnus melapterus    Hemigymnus melapterus   Hemigymnus me… Hemigymnus m…
+##  1 Ctenochaetus tominiensis &lt;NA&gt;                    Ctenochaetus … &lt;NA&gt;         
+##  2 Stereolepis doederleini  Stereolepis doederleini Stereolepis d… Stereolepis …
+##  3 Alepocephalus umbriceps  &lt;NA&gt;                    &lt;NA&gt;           &lt;NA&gt;         
+##  4 Anguilla marmorata       &lt;NA&gt;                    &lt;NA&gt;           &lt;NA&gt;         
+##  5 Gymnothorax javanicus    Gymnothorax javanicus   Gymnothorax j… Gymnothorax …
+##  6 Nettastoma parviceps     Nettastoma parviceps    Nettastoma pa… Nettastoma p…
+##  7 Atherinomorus stipes     Atherinomorus stipes    Atherinomorus… Atherinomoru…
+##  8 Saurida wanieso          Saurida wanieso         Saurida wanie… Saurida wani…
+##  9 Cheilopogon unicolor     &lt;NA&gt;                    &lt;NA&gt;           &lt;NA&gt;         
+## 10 Cirripectes castaneus    &lt;NA&gt;                    &lt;NA&gt;           &lt;NA&gt;         
 ## # ℹ 173 more rows</code></pre>
 </div>
 <div id="more" class="section level1">
@@ -705,8 +705,8 @@ nbc_thirty &lt;- targets::tar_read(thirty_subsampled_nbc_hits_data) </code></pre
 <pre><code>## # A tibble: 2 × 2
 ##   species            n
 ##   &lt;chr&gt;          &lt;int&gt;
-## 1 OnGenusLevel      38
-## 2 OnSpeciesLevel   666</code></pre>
+## 1 OnGenusLevel      22
+## 2 OnSpeciesLevel   679</code></pre>
 <pre class="r"><code>blast_thirty |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Blast&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesBlast, speciesTruth) |&gt; 
   filter(speciesBlast != &#39;dropped&#39;,
@@ -720,7 +720,7 @@ nbc_thirty &lt;- targets::tar_read(thirty_subsampled_nbc_hits_data) </code></pre
   select(speciesBlast, speciesTruth) |&gt; 
   filter(speciesBlast %in% c(NA, &#39;dropped&#39;),
          speciesTruth == &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 38 × 2
+<pre><code>## # A tibble: 22 × 2
 ##    speciesBlast speciesTruth
 ##    &lt;chr&gt;        &lt;chr&gt;       
 ##  1 &lt;NA&gt;         dropped     
@@ -733,28 +733,28 @@ nbc_thirty &lt;- targets::tar_read(thirty_subsampled_nbc_hits_data) </code></pre
 ##  8 &lt;NA&gt;         dropped     
 ##  9 &lt;NA&gt;         dropped     
 ## 10 &lt;NA&gt;         dropped     
-## # ℹ 28 more rows</code></pre>
+## # ℹ 12 more rows</code></pre>
 <p>false negatives:</p>
 <pre class="r"><code>blast_thirty |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Blast&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesBlast, speciesTruth) |&gt; 
   filter(speciesBlast %in% c(NA, &#39;dropped&#39;),
          speciesTruth != &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 633 × 2
-##    speciesBlast speciesTruth                  
-##    &lt;chr&gt;        &lt;chr&gt;                         
-##  1 dropped      Dipturus intermedius          
-##  2 dropped      Hydrolagus affinis            
-##  3 dropped      Coilia grayii                 
-##  4 dropped      Pseudobalistes flavimarginatus
-##  5 dropped      Globicephala macrorhynchus    
-##  6 dropped      Stenobrachius leucopsarus     
-##  7 dropped      Aythya nyroca                 
-##  8 dropped      Ctenochaetus tominiensis      
-##  9 dropped      Ostracion rhinorhynchos       
-## 10 dropped      Cleisthenes herzensteini      
-## # ℹ 623 more rows</code></pre>
+<pre><code>## # A tibble: 646 × 2
+##    speciesBlast speciesTruth               
+##    &lt;chr&gt;        &lt;chr&gt;                      
+##  1 dropped      Ctenochaetus tominiensis   
+##  2 dropped      Istiophorus platypterus    
+##  3 dropped      Eutrigla gurnardus         
+##  4 dropped      Cleisthenes herzensteini   
+##  5 dropped      Auxis rochei               
+##  6 dropped      Syngnathus pelagicus       
+##  7 dropped      Hippocampus kuda           
+##  8 dropped      Xanthichthys auromarginatus
+##  9 dropped      Ostracion rhinorhynchos    
+## 10 dropped      Aythya nyroca              
+## # ℹ 636 more rows</code></pre>
 <pre class="r"><code>blast_thirty |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Blast&#39;, &#39;Truth&#39;)) |&gt; nrow()</code></pre>
-<pre><code>## [1] 704</code></pre>
+<pre><code>## [1] 701</code></pre>
 <p>So we have 213 false negatives, 27 true positives, 6 false positives,
 3 true negatives.</p>
 <pre class="r"><code>blast_accuracy &lt;- 27 / (249) 
@@ -767,20 +767,20 @@ blast_f0.5 &lt;- 1.25 * ( blast_precision * blast_recall / (0.25 * blast_precisi
 <h1>Kraken</h1>
 <p>For Kraken:</p>
 <pre class="r"><code>kraken_thirty |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) </code></pre>
-<pre><code>## # A tibble: 704 × 23
+<pre><code>## # A tibble: 701 × 23
 ##    Type   Kraken_confidence Query        SubjectKraken domainKraken phylumKraken
 ##    &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt;        &lt;chr&gt;       
-##  1 Kraken                 0 make_12s_16… 16S_v04_fina… &lt;NA&gt;         &lt;NA&gt;        
-##  2 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-##  3 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-##  4 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-##  5 Kraken                 0 make_12s_16… 16S_v04_fina… &lt;NA&gt;         &lt;NA&gt;        
-##  6 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-##  7 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-##  8 Kraken                 0 make_12s_16… 16S_v04_fina… &lt;NA&gt;         &lt;NA&gt;        
-##  9 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-## 10 Kraken                 0 make_12s_16… 16S_v04_fina… Eukaryota    Chordata    
-## # ℹ 694 more rows
+##  1 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  2 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  3 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  4 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  5 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  6 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  7 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  8 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+##  9 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+## 10 Kraken                 0 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+## # ℹ 691 more rows
 ## # ℹ 17 more variables: classKraken &lt;chr&gt;, orderKraken &lt;chr&gt;,
 ## #   familyKraken &lt;chr&gt;, genusKraken &lt;chr&gt;, speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;,
 ## #   SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;, lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;,
@@ -800,7 +800,7 @@ blast_f0.5 &lt;- 1.25 * ( blast_precision * blast_recall / (0.25 * blast_precisi
   select(speciesKraken, speciesTruth) |&gt; 
   filter(is.na(speciesKraken),
          speciesTruth == &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 38 × 2
+<pre><code>## # A tibble: 22 × 2
 ##    speciesKraken speciesTruth
 ##    &lt;chr&gt;         &lt;chr&gt;       
 ##  1 &lt;NA&gt;          dropped     
@@ -813,26 +813,26 @@ blast_f0.5 &lt;- 1.25 * ( blast_precision * blast_recall / (0.25 * blast_precisi
 ##  8 &lt;NA&gt;          dropped     
 ##  9 &lt;NA&gt;          dropped     
 ## 10 &lt;NA&gt;          dropped     
-## # ℹ 28 more rows</code></pre>
+## # ℹ 12 more rows</code></pre>
 <p>False negatives:</p>
 <pre class="r"><code>kraken_thirty |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesKraken, speciesTruth) |&gt; 
   filter(is.na(speciesKraken),
          speciesTruth != &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 568 × 2
-##    speciesKraken speciesTruth            
-##    &lt;chr&gt;         &lt;chr&gt;                   
-##  1 &lt;NA&gt;          Phyllopteryx taeniolatus
-##  2 &lt;NA&gt;          Parupeneus barberinus   
-##  3 &lt;NA&gt;          Hippocampus algiricus   
-##  4 &lt;NA&gt;          Gymnothorax mucifer     
-##  5 &lt;NA&gt;          Dipturus intermedius    
-##  6 &lt;NA&gt;          Hemigymnus melapterus   
-##  7 &lt;NA&gt;          Lycodes polaris         
-##  8 &lt;NA&gt;          Tropidophorus hangnam   
-##  9 &lt;NA&gt;          Hydrolagus affinis      
-## 10 &lt;NA&gt;          Istigobius campbelli    
-## # ℹ 558 more rows</code></pre>
+<pre><code>## # A tibble: 581 × 2
+##    speciesKraken speciesTruth              
+##    &lt;chr&gt;         &lt;chr&gt;                     
+##  1 &lt;NA&gt;          Myoxocephalus quadricornis
+##  2 &lt;NA&gt;          Istiophorus platypterus   
+##  3 &lt;NA&gt;          Cheilinus undulatus       
+##  4 &lt;NA&gt;          Rhinogobius brunneus      
+##  5 &lt;NA&gt;          Holacanthus ciliaris      
+##  6 &lt;NA&gt;          Lutjanus argentimaculatus 
+##  7 &lt;NA&gt;          Alepocephalus umbriceps   
+##  8 &lt;NA&gt;          Taenioides cirratus       
+##  9 &lt;NA&gt;          Rhinogobius estrellae     
+## 10 &lt;NA&gt;          Gymnothorax javanicus     
+## # ℹ 571 more rows</code></pre>
 <p>33 True positives, 65 False Positives, 3 true negatives, 148 false
 negatives</p>
 <pre class="r"><code>kraken_accuracy &lt;- 33 / (33+65+3+148) 
@@ -845,20 +845,20 @@ kraken_f0.5 &lt;- 1.25 * ( kraken_precision * kraken_recall / (0.25 * kraken_pre
 <h1>Kraken 0.1</h1>
 <p>For Kraken:</p>
 <pre class="r"><code>kraken_0.1_thirty |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) </code></pre>
-<pre><code>## # A tibble: 704 × 23
+<pre><code>## # A tibble: 701 × 23
 ##    Type   Kraken_confidence Query        SubjectKraken domainKraken phylumKraken
 ##    &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt;        &lt;chr&gt;       
 ##  1 Kraken               0.1 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
-##  2 Kraken               0.1 make_12s_16… 12s_v010_fin… &lt;NA&gt;         &lt;NA&gt;        
+##  2 Kraken               0.1 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
 ##  3 Kraken               0.1 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
 ##  4 Kraken               0.1 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
 ##  5 Kraken               0.1 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
 ##  6 Kraken               0.1 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
-##  7 Kraken               0.1 make_12s_16… 12s_v010_fin… &lt;NA&gt;         &lt;NA&gt;        
+##  7 Kraken               0.1 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
 ##  8 Kraken               0.1 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
 ##  9 Kraken               0.1 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
-## 10 Kraken               0.1 make_12s_16… 12s_v010_fin… &lt;NA&gt;         &lt;NA&gt;        
-## # ℹ 694 more rows
+## 10 Kraken               0.1 make_12s_16… 12s_v010_fin… Eukaryota    Chordata    
+## # ℹ 691 more rows
 ## # ℹ 17 more variables: classKraken &lt;chr&gt;, orderKraken &lt;chr&gt;,
 ## #   familyKraken &lt;chr&gt;, genusKraken &lt;chr&gt;, speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;,
 ## #   SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;, lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;,
@@ -878,7 +878,7 @@ kraken_f0.5 &lt;- 1.25 * ( kraken_precision * kraken_recall / (0.25 * kraken_pre
   select(speciesKraken, speciesTruth) |&gt; 
   filter(is.na(speciesKraken),
          speciesTruth == &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 38 × 2
+<pre><code>## # A tibble: 22 × 2
 ##    speciesKraken speciesTruth
 ##    &lt;chr&gt;         &lt;chr&gt;       
 ##  1 &lt;NA&gt;          dropped     
@@ -891,26 +891,26 @@ kraken_f0.5 &lt;- 1.25 * ( kraken_precision * kraken_recall / (0.25 * kraken_pre
 ##  8 &lt;NA&gt;          dropped     
 ##  9 &lt;NA&gt;          dropped     
 ## 10 &lt;NA&gt;          dropped     
-## # ℹ 28 more rows</code></pre>
+## # ℹ 12 more rows</code></pre>
 <p>False negatives:</p>
 <pre class="r"><code>kraken_0.1_thirty |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesKraken, speciesTruth) |&gt; 
   filter(is.na(speciesKraken),
          speciesTruth != &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 626 × 2
+<pre><code>## # A tibble: 639 × 2
 ##    speciesKraken speciesTruth            
 ##    &lt;chr&gt;         &lt;chr&gt;                   
-##  1 &lt;NA&gt;          Glyphis garricki        
-##  2 &lt;NA&gt;          Myripristis vittata     
-##  3 &lt;NA&gt;          Aythya nyroca           
-##  4 &lt;NA&gt;          Acanthogobius flavimanus
-##  5 &lt;NA&gt;          Bostrychus sinensis     
-##  6 &lt;NA&gt;          Cirripectes castaneus   
-##  7 &lt;NA&gt;          Hemigymnus melapterus   
-##  8 &lt;NA&gt;          Ctenochaetus tominiensis
-##  9 &lt;NA&gt;          Daption capense         
-## 10 &lt;NA&gt;          Engraulis mordax        
-## # ℹ 616 more rows</code></pre>
+##  1 &lt;NA&gt;          Ctenochaetus tominiensis
+##  2 &lt;NA&gt;          Nettastoma parviceps    
+##  3 &lt;NA&gt;          Cheilopogon unicolor    
+##  4 &lt;NA&gt;          Istiophorus platypterus 
+##  5 &lt;NA&gt;          Rhinogobius brunneus    
+##  6 &lt;NA&gt;          Holacanthus ciliaris    
+##  7 &lt;NA&gt;          Saurida wanieso         
+##  8 &lt;NA&gt;          Sillago aeolus          
+##  9 &lt;NA&gt;          Tilodon sexfasciatus    
+## 10 &lt;NA&gt;          Amphiprion clarkii      
+## # ℹ 629 more rows</code></pre>
 <p>29 True positives, 11 False Positives, 3 true negatives, 206 false
 negatives</p>
 <pre class="r"><code>kraken_0.1_accuracy &lt;- 29 / (29+11+3+206) 
@@ -923,7 +923,7 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
 <h1>NBC</h1>
 <pre class="r"><code>nbc_thirty |&gt;
   right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;Kraken&#39;, &#39;Truth&#39;)) </code></pre>
-<pre><code>## # A tibble: 704 × 22
+<pre><code>## # A tibble: 701 × 22
 ##    Type    Query SubjectKraken domainKraken phylumKraken classKraken orderKraken
 ##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;lgl&gt;        &lt;lgl&gt;        &lt;lgl&gt;       &lt;lgl&gt;      
 ##  1 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
@@ -936,7 +936,7 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
 ##  8 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
 ##  9 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
 ## 10 Custom… make… 12s_v010_fin… NA           NA           NA          NA         
-## # ℹ 694 more rows
+## # ℹ 691 more rows
 ## # ℹ 15 more variables: familyKraken &lt;lgl&gt;, genusKraken &lt;chr&gt;,
 ## #   speciesKraken &lt;chr&gt;, OTU &lt;chr&gt;, SubjectTruth &lt;chr&gt;, taxids &lt;chr&gt;,
 ## #   lca_taxid &lt;dbl&gt;, long_lineage &lt;chr&gt;, domainTruth &lt;chr&gt;, phylumTruth &lt;chr&gt;,
@@ -956,7 +956,7 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
   select(speciesNBC, speciesTruth) |&gt; 
   filter(is.na(speciesNBC),
          speciesTruth == &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 38 × 2
+<pre><code>## # A tibble: 22 × 2
 ##    speciesNBC speciesTruth
 ##    &lt;chr&gt;      &lt;chr&gt;       
 ##  1 &lt;NA&gt;       dropped     
@@ -969,26 +969,26 @@ kraken_0.1_f0.5 &lt;- 1.25 * ( kraken_0.1_precision * kraken_0.1_recall / (0.25 
 ##  8 &lt;NA&gt;       dropped     
 ##  9 &lt;NA&gt;       dropped     
 ## 10 &lt;NA&gt;       dropped     
-## # ℹ 28 more rows</code></pre>
+## # ℹ 12 more rows</code></pre>
 <p>False negatives:</p>
 <pre class="r"><code>nbc_thirty |&gt; right_join(data, by = c(&#39;Query&#39;,&#39;OTU&#39;), suffix = c(&#39;NBC&#39;, &#39;Truth&#39;)) |&gt; 
   select(speciesNBC, speciesTruth) |&gt; 
   filter(is.na(speciesNBC),
          speciesTruth != &#39;dropped&#39;)</code></pre>
-<pre><code>## # A tibble: 623 × 2
+<pre><code>## # A tibble: 636 × 2
 ##    speciesNBC speciesTruth            
 ##    &lt;chr&gt;      &lt;chr&gt;                   
 ##  1 &lt;NA&gt;       Phyllopteryx taeniolatus
-##  2 &lt;NA&gt;       Glyphis garricki        
-##  3 &lt;NA&gt;       Parupeneus barberinus   
-##  4 &lt;NA&gt;       Myripristis vittata     
-##  5 &lt;NA&gt;       Tropidophorus hainanus  
-##  6 &lt;NA&gt;       Aythya nyroca           
-##  7 &lt;NA&gt;       Acanthogobius flavimanus
-##  8 &lt;NA&gt;       Trichiurus lepturus     
-##  9 &lt;NA&gt;       Bostrychus sinensis     
-## 10 &lt;NA&gt;       Cirripectes castaneus   
-## # ℹ 613 more rows</code></pre>
+##  2 &lt;NA&gt;       Cirripectes castaneus   
+##  3 &lt;NA&gt;       Stercorarius longicaudus
+##  4 &lt;NA&gt;       Carcharhinus brachyurus 
+##  5 &lt;NA&gt;       Hemigymnus melapterus   
+##  6 &lt;NA&gt;       Ctenochaetus tominiensis
+##  7 &lt;NA&gt;       Engraulis mordax        
+##  8 &lt;NA&gt;       Bathyraja meridionalis  
+##  9 &lt;NA&gt;       Triphoturus mexicanus   
+## 10 &lt;NA&gt;       Ostracion rhinorhynchos 
+## # ℹ 626 more rows</code></pre>
 <p>28 True positives, 15 False Positives, 3 true negatives, 203 false
 negatives</p>
 <pre class="r"><code>nbc_accuracy &lt;- 28 / (28+15+3+203) 
