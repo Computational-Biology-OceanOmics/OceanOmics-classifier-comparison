@@ -390,7 +390,7 @@ data &lt;- data |&gt; mutate(Subject = str_replace_all(Subject, pattern = &#39;f
 ## make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_16S_noLulu_RESULTS_dada2_asv.fa 
 ##                                                                                                  97254 
 ##        make_12s_16s_simulated_reads_5-BetterDatabaseARTSimulation_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa 
-##                                                                                                 103936 
+##                                                                                                 101106 
 ##                               make_12s_16s_simulated_reads_6-fakeGenes_GreenGenes_RESULTS_dada2_asv.fa 
 ##                                                                                                  88422 
 ##                                   make_12s_16s_simulated_reads_6-fakeGenes_Random_RESULTS_dada2_asv.fa 
@@ -399,14 +399,14 @@ data &lt;- data |&gt; mutate(Subject = str_replace_all(Subject, pattern = &#39;f
 ##                                                                                                  24355 
 ##                     make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_16S_RESULTS_dada2_asv.fa 
 ##                                                                                                  26746 
-##                     make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa 
-##                                                                                                  28373 
-##                      make_12s_16s_simulated_reads_8-Rottnest_Mock_runEDNAFlow_CO1_RESULTS_dada2_asv.fa 
-##                                                                                                 123053 
+##                     make_12s_16s_simulated_reads_7-Lutjanids_Mock_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa 
+##                                                                                                  26505 
 ##                           make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_12S_RESULTS_dada2_asv.fa 
 ##                                                                                                 102811 
 ##                           make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_16S_RESULTS_dada2_asv.fa 
-##                                                                                                 109807</code></pre>
+##                                                                                                 109807 
+##                           make_12s_16s_simulated_reads_8-Rottnest_runEDNAFLOW_CO1_RESULTS_dada2_asv.fa 
+##                                                                                                 115261</code></pre>
 </div>
 <div id="negative-greengenes" class="section level1">
 <h1>Negative greengenes</h1>
@@ -612,7 +612,7 @@ table(sixteen_exclusions$Subject)</code></pre>
 ##   &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;                                                    
 ## 1 CustomNBC 30%      Tursiops aduncus, Monopterus albus                       
 ## 2 CustomNBC 50%      Plestiodon brevirostris                                  
-## 3 CustomNBC 70%      Tursiops aduncus, Sillago sihama, Plestiodon brevirostris
+## 3 CustomNBC 70%      Sillago sihama, Tursiops aduncus, Plestiodon brevirostris
 ## 4 Qiime2    30%      Nexilosus latifrons</code></pre>
 <pre class="r"><code># add the average number of ASVs after grouping for Database and Type
 sixteen_exclusions_split |&gt; filter(!is.na(species)) |&gt; 
@@ -841,16 +841,16 @@ both</code></pre>
 <pre><code>## # A tibble: 53,970 × 14
 ##    Gene  Classifier Query before Database after domain phylum class order family
 ##    &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; 
-##  1 CO1   DADA2Spec  make… c01_v… seventy  _2.f… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
-##  2 CO1   DADA2Spec  make… c01_v… seventy  _2.f… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
-##  3 CO1   DADA2Spec  make… c01_v… seventy  _2.f… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
-##  4 CO1   DADA2Spec  make… c01_v… seventy  _2.f… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
-##  5 CO1   DADA2Spec  make… c01_v… seventy  _2.f… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
-##  6 CO1   DADA2Spec  make… c01_v… seventy  _2.f… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
-##  7 CO1   DADA2Spec  make… c01_v… seventy  _2.f… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
-##  8 CO1   DADA2Spec  make… c01_v… seventy  _2.f… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
-##  9 CO1   DADA2Spec  make… c01_v… seventy  _2.f… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
-## 10 CO1   DADA2Spec  make… c01_v… seventy  _2.f… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
+##  1 CO1   DADA2Spec  make… c01_v… fifty    _10.… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
+##  2 CO1   DADA2Spec  make… c01_v… fifty    _10.… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
+##  3 CO1   DADA2Spec  make… c01_v… fifty    _10.… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
+##  4 CO1   DADA2Spec  make… c01_v… fifty    _10.… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
+##  5 CO1   DADA2Spec  make… c01_v… fifty    _10.… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
+##  6 CO1   DADA2Spec  make… c01_v… fifty    _10.… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
+##  7 CO1   DADA2Spec  make… c01_v… fifty    _10.… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
+##  8 CO1   DADA2Spec  make… c01_v… fifty    _10.… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
+##  9 CO1   DADA2Spec  make… c01_v… fifty    _10.… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
+## 10 CO1   DADA2Spec  make… c01_v… fifty    _10.… &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  
 ## # ℹ 53,960 more rows
 ## # ℹ 3 more variables: genus &lt;chr&gt;, species &lt;chr&gt;, OTU &lt;chr&gt;</code></pre>
 <pre class="r"><code>greengenes_fp_plot &lt;-both |&gt; filter(!is.na(species)) |&gt; 
