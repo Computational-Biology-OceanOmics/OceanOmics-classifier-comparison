@@ -356,7 +356,7 @@ display: none;
 
 
 <pre class="r"><code>df &lt;- targets::tar_read(counted_correctness)</code></pre>
-<p>On average, classifiers assigned a correct species label to 75 46% of
+<p>On average, classifiers assigned a correct species label to 76 45% of
 ASVs, ranging from 0 X (X%)</p>
 <pre class="r"><code>df |&gt; filter(CorrectSpecies == &#39;Correct species&#39;) |&gt; select(-c(all_asvs, missing, new_col, newcol2)) |&gt; arrange(desc(perc)) |&gt; head(5)</code></pre>
 <pre><code>## # A tibble: 5 × 7
